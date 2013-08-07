@@ -96,7 +96,7 @@
   <div class="two-thirds-half">
     <ul class="bullet-disc-blue">
       {% for birthday in birthday_left %}
-      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.get_pure_sid|render_sid:14|safe }} {{ birthday.user.first_name|render_black:14|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
       {% endfor %}
     </ul>
   </div>
@@ -105,7 +105,7 @@
   <div class="two-thirds-half">
     <ul class="bullet-disc-blue">
       {% for birthday in birthday_right %}
-      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.get_pure_sid|render_sid:14|safe }} {{ birthday.user.first_name|render_black:14|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
       {% endfor %}
     </ul>
   </div>
