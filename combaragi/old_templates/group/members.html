@@ -1,0 +1,37 @@
+{% extends "group/base.html" %}
+{% block group_title %}회원명부{% endblock %}
+{% block group_head %}회원명부{% endblock %}
+{% block group_external %}
+  <script language="javascript" type="text/javascript" charset="UTF-8" src="{{ STATIC_URL }}js/jquery-lib/jquery.confirm-1.2.js"></script>
+{% endblock %}
+<script>
+{% block group_onload %}
+  {% for member in current_group.members.all %}
+    confirmGo('delete_{{ forloop.counter }}', '', '{% url group_kick current_group.id member.id %}');
+  {% endfor %}
+{% endblock %}
+</script>
+{% block group_content %}
+  <h3>소모임장</h3>
+  <ul class="member_list">
+    <li class="bullet_dot">{{ current_group.owner.get_profile.get_full_name|safe }}</li>
+  </ul>
+  <div class="clear"></div>
+
+  <h3>회원</h3>
+  <ul class="member_list">
+  {% for member in current_group.members.all %}
+    <li class="bullet_dot">{{ member.get_profile.get_full_name|safe }}
+      {% if current_group.owner == user and member != user%}
+        <div class="float_right">
+          <button id="delete_{{ forloop.counter }}" class="btn btn-verysmall btn-red">강퇴</button>
+        </div>
+      {% endif %}
+      <div class="clear"></div>
+    </li>
+  {% empty %}
+    <li>회원이 없습니다.</li>
+  {% endfor %}
+  </ul>
+  <div class="clear"></div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block external %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bbs.css" />
+  {% block board_external %}{% endblock %}
+{% endblock %}
+{% block content_id %}support-details{% endblock %}
+{% block title %}
+  {% if board %}
+  {{ board.title }} |
+  {% endif %}
+  {% block board_title %}{% endblock %}{% endblock %}
+{% block head %}
+  <div class="portlet-header"><h4>
+    {% if board.group_board %}
+      <a href="{% url group %}">소모임</a> &gt;&gt;
+    {% endif %}
+    <a href="{% url board_main board.name %}" rel="tooltip" title='{{ board.desc }}'>{{ board.title|escape }}</a>
+    {% if current_category %}&gt;&gt; [{{ current_category.title }}]{% endif %}
+    {% if board.group_board %}
+      &gt;&gt; 게시판
+    {% endif %}
+    {% block board_head %}{% endblock %}
+  </h4></div>
+{% endblock %}
+{% block content %}
+  {% if board.group_board %}
+    <ul class="top_menu">
+      <li class="bullet_dot"><a href="{% url group_main board.group_board.id %}">{{ board.group_board.title }} 소개</a></li>
+      <li class="bullet_dot"><a {% if board.group_board.is_new %}class="mark_new" {% endif %} href="{% url board_main board.group_board.name %}">게시판</a></li>
+      <li class="bullet_dot"><a href="{% url group_chat board.group_board.id %}">채팅방</a></li>
+      <li class="bullet_dot"><a href="{% url group_members board.group_board.id %}">회원명부</a></li>
+      {% ifequal board.group_board.owner user %}
+        <li class="bullet_dot"><a href="{% url group_invite board.group_board.id %}">초청</a></li>
+        <li class="bullet_dot"><a href="{% url group_manage board.group_board.id %}">관리</a></li>
+      {% endifequal %}
+    </ul>
+    <div class="clear"></div>
+  {% endif %}
+{% block board_content %}{% endblock %}
+{% endblock %}
+

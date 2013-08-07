@@ -1,0 +1,24 @@
+{% extends "group/form_base.html" %}
+{% block group_title %}초대{% endblock %}
+{% block group_head %}초대{% endblock %}
+{% block form_content %}
+<h3>지인 중에 초청</h3>
+{% for known in knowns %}
+<span class="bullet_square" id="known_{{ known.id }}">
+  {% if known.is_member %}
+    <span class="strike" title="가입됨" rel="tooltip">{{ known.first_name }}</span>
+  {% else %}
+    {% if known.is_semi_member %}
+      <span class="strike" title="승인대기" rel="tooltip">{{ known.first_name }}</span>
+    {% else %}
+      <a href="javascript:ajaxReplace('known_{{ known.id }}', '/group/{{ current_group.id }}/invite/{{ known.get_profile.sidHash }}/', '{{ user.get_profile.get_tval }}');">{{ known.first_name }}</a>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+</span>
+<hr />
+<h3>학번으로 초청</h3>
+{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><button type="submit">초대</button></span>
+{% endblock %}

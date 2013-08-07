@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load rendertext %}
+
+{% block title %}Page unavailable{% endblock %}
+{% block breadcrumbs %}<a href="#">{{ "Error!"|render_bread }}</a>{% endblock %}
+
+{% block head %}
+{{ "으악! 문제가 발생했어요! >_<"|render_black:24 }}
+{% endblock %}
+{% block content %}
+
+<p>서버 오류! 해당 오류는 신고되어 관리자가 빠른 시일 내에 처리할 예정입니다.</p>
+
+<p>Our engineers have been notified, so check back later.</p>
+<div class="right">
+  <button type="button" class="btn" onclick="javascript:history.back();"><span>{{ "뒤로가기"|render_button }}</span></button>
+</div>
+{% endblock %}

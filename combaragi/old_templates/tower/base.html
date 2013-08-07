@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}탑 | {% block tower_title %}{% endblock %}{% endblock %}
+{% block external_js %}
+  {% block tower_external_js %}{% endblock %}
+{% endblock %}
+{% block external_css %}
+  {% block tower_external_css %}{% endblock %}
+{% endblock %}
+<script>
+{% block onload %}
+  {% block tower_onload %}{% endblock %}
+{% endblock %}
+</script>
+{% block head %}
+  <div class="portlet-header"><h4>
+      <a href="{% url tower-main %}">탑</a> &gt;&gt;
+      {% block tower_head %}{% endblock %}
+  </h4></div>
+{% endblock %}
+{% block content %}
+  {% block tower_content %}{% endblock %}
+{% endblock %}

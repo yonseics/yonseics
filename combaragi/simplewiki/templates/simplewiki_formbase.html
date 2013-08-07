@@ -1,0 +1,43 @@
+{% extends "simplewiki_base.html" %}
+{% load rendertext %}
+{% block wiki_body %}
+  {% block form_content %}{% endblock %}
+  {{ form.non_field_errors }}
+  <form {% block form_option %}{% endblock %}class="form" method="post" action="." onSubmit="{% block form_onSubmit %}{% endblock %}">
+  {% csrf_token %}
+  <div class="form_table">
+    {% for field in form.visible_fields %}
+    <div id="{{ field.html_name }}_field" class="field">
+        {# Include the hidden fields in the form #}
+        {% if forloop.first %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+          {% endfor %}
+        {% endif %}
+
+        <div class="field_error">{{ field.errors }}</div>
+        <div class="clear"></div>
+        <div>
+          <label for="id_{{ field.html_name }}" class="{% spaceless %}
+          {% if not field.field.widget.attrs.no_overlabel %}
+            overLabel
+          {% endif %}
+          {% endspaceless %}">{{ field.label|render_form|safe }}</label>
+          {% if field.field.widget.attrs.no_overlabel %}
+          <span style="position:relative;">
+            {{ field|safe }}
+          </span>
+          {% else %}
+            {{ field|safe }}
+          {% endif %}
+        </div>
+        <div class="field_help">{{ field.help_text|safe }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="buttonrow">
+    {% block form_buttons %}{% endblock %}
+  </div>
+  {% block form_bottom_content %}{% endblock %}
+  </form>
+{% endblock %}

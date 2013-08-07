@@ -1,0 +1,74 @@
+{% extends "tower/base.html" %}
+{% load linebreaksbrpre %}
+{% block tower_title %}{{ level }}{% endblock %}
+{% block tower_external_js %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.dating.simulation.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.pack.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown-ko.js"></script>
+{% endblock %}
+{% block tower_external_css %}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/dating.simulation.css" />
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.countdown.css" />
+{% endblock %}
+<script>
+{% block tower_onload %}
+  {% if not climb_level_info.is_hint_allowed %}
+  $('#countdown').countdown({until: new Date('{{ climb_level_info.hint_opening_time|date:"Y/m/d H:i:s" }}'),
+                             compact: true,
+                             description: '',
+                             onExpiry: function() {
+                               $('#countdown_box').hide();
+                               $('#reload_box').show();
+                           }});
+  $("#reload_box").click(function() {
+    window.location.href = window.location.href + '?skip=True';
+  });
+  {% endif %}
+  $('#question').hide();
+  $('#hint_box').hide();
+  {% if not form.errors and not skip %}
+  var ds = $.dslib({
+    dsdiv: '#dsdiv',
+    message_set: '{{ msgs|safe }}',
+    AfterFinish: function() {
+      $('#dsdiv').hide();
+      $('#question').show();
+      $('#hint_box').show();
+    },
+    background_img: '{{ tower.image.url }}'
+  });
+  {% else %}
+    $('#dsdiv').hide();
+    $('#question').show();
+    $('#hint_box').show();
+  {% endif %}
+{% endblock %}
+</script>
+{% block tower_head %}<a href="{% url tower-info tower.slug %}">{{ tower }}</a> &gt;&gt; <a href="{% url tower-level tower.slug level.level %}">{{ level.level }}층</a>{% endblock %}
+{% block tower_content %}
+  <div id="dsdiv" class="dsdiv"></div>
+  <div id="hint_box">
+    {% if not climb_level_info.is_hint_allowed %}
+    <div id="countdown_box">
+      <div class="float_right" class="clear">남음</div>
+      <div id="countdown"></div>
+      <div class="float_right">힌트를 보기까지</div>
+    </div>
+    <a id="reload_box" class="float_right" href="javascript:;" style="display:none;">힌트보기</a>
+    {% else %}
+    <div class="float_right">힌트: {{ level.hint }}</div>
+    {% endif %}
+  </div>
+  <div id="question">
+    <p>문제: {{ level.question }}</p>
+    <p>입력: {{ climb_level_info.current_case.input }}</p>
+    <form action="." method="POST">
+      {{ form.as_p }}
+      {% csrf_token %}
+      <div class="right">
+        <span class="btn_pack medium"><button type="submit">제출</button></span>
+      </div>
+    </form>
+  </div>
+  {#{ msgs }#}
+{% endblock %}

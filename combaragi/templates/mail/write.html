@@ -1,0 +1,22 @@
+{% extends "form_base.html" %}
+{% load rendertext %}
+{% block title %}메일 보내기{% endblock %}
+{% block head %}{{ "메일 보내기"|render_head }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url mail %}">{{ "Mail"|render_bread }}</a>{% endblock %}
+{% block external %}
+<!--script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
+<script language="javascript" src="{{ STATIC_URL }}js/setup_tiny_mce.js"></script-->
+{% endblock %}
+<script>
+{% block onload %}
+  $('#SUBJECT').keypress(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+        }
+  });
+{% endblock %}
+</script>
+{% block form_buttons %}
+<button type="submit" class="btn"><span>{{ "전송"|render_button }}</span></button>
+<button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %}멘티 등록{% endblock %}
+{% block mentoring_head %}멘티 등록{% endblock %}
+<script>
+{% block mentoring_external %}
+
+{% endblock %}
+{% block onload %}
+  // Input Clear
+  var i_text = $('.item>.i_label').next('.i_text');
+  $('.item>.i_label').css('position','absolute');
+  i_text
+    .focus(function(){
+      $(this).prev('.i_label').css('visibility','hidden');
+    })
+    .blur(function(){
+      if($(this).val() == ''){
+        $(this).prev('.i_label').css('visibility','visible');
+      } else {
+        $(this).prev('.i_label').css('visibility','hidden');
+      }
+    })
+    .change(function(){
+      if($(this).val() == ''){
+        $(this).prev('.i_label').css('visibility','visible');
+      } else {
+        $(this).prev('.i_label').css('visibility','hidden');
+      }
+    })
+    .blur();
+
+{% endblock %}
+</script>
+{% block mentoring_content %}
+<form method="post" action=".">
+  {% csrf_token %}
+  <div class="form_table">
+  <table border="1" cellspacing="0" summary="멘티 등록">
+    <colgroup>
+      <col width="170" />
+      <col />
+    </colgroup>
+  {% for field in form.visible_fields %}
+    <tr class="fieldWrapper">
+
+      {# Include the hidden fields in the form #}
+      {% if forloop.first %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+      {% endif %}
+
+      <th scope="row">{{ field.label_tag }}</th>
+      <td>
+        <div class="item">
+          {% if field.help_text %}
+          <label for="temp_textarea" class="i_label" style="position:absolute; visibility:visible; ">{{ field.help_text }}</label>
+          {% endif %}
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+    <tr>
+      <td colspan="2">
+        <div class='right'>
+        <span class="btn_pack medium icon">
+          <span class="check"></span><input type="submit" value="신청">
+        </span>
+        </div>
+      </td>
+    </tr>
+  </table>
+  </div>
+</form>
+
+
+{% endblock %}

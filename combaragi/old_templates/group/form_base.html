@@ -1,0 +1,27 @@
+{% extends "group/base.html" %}
+{% block group_content %}
+  {% block form_content %}{% endblock %}
+  {{ form.non_field_errors }}
+  {% csrf_token %}
+  <div class="form_table">
+    {% for field in form.visible_fields %}
+    <div class="field">
+        {# Include the hidden fields in the form #}
+        {% if forloop.first %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+          {% endfor %}
+        {% endif %}
+
+        <label for="{{ field.html_name }}">{{ field.label_tag }}</label>
+        {{ field }}
+        <span class="field_error">{{ field.errors }}</span>
+        <div class="field_help">{{ field.help_text }}</div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+{% block group_menu %}
+{% block form_buttons %}{% endblock %}
+{% endblock %}
+

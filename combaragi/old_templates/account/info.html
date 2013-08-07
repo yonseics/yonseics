@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% block title %}{{target.first_name}}님의 정보{% endblock %}
+{% block head %}{% endblock %}
+{% block content_id %}invoice{% endblock %}
+{% block external %}
+<!--link rel="stylesheet" type="text/css" href="/media/css/bbs.css" />
+<link rel="stylesheet" type="text/css" href="/media/css/thickbox.css" />
+<script type='text/javascript' src='/media/js/jquery-lib/thickbox-compressed.js'></script-->
+{% endblock %}
+
+<script>
+{% block onload %}
+  $('#add_known').click(function() {
+    //window.location.replace("/group/{{ current_group.id }}/enter/");
+    $.ajax({
+      type: "GET",
+      url: "/known/add/{{ target.get_profile.sidHash }}/?tval={{user.get_profile.get_tval}}",
+      dataType: "script",
+      success: function(data){
+        $( "#add_known" ).replaceWith($("<span class='ticket open'>"+data+"</span>"));
+      }
+    });
+    return false;
+  });
+  {% block group_onload %}{% endblock %}
+{% endblock %}
+</script>
+
+{% block side_upper %}
+  {% ifequal target user %}
+    <span class="btn_pack medium"><a href="/account/emblem/">업적 페이지</a></span>
+  {% else %}
+  {% if not is_known and target != user %}
+    <a id="add_known" href="#"><span class="btn_pack medium icon"><span class="check"></span><button type="button">지인등록</button></span></a>
+  {% endif %}
+  {% endifequal %}
+  {% ifnotequal target user %}
+    <span class="btn_pack medium"><a href="#TB_inline?height=300&width=340&inlineId=memoModalWindow" class="thickbox">{{ target.get_profile.get_pure_full_name }}님께 쪽지 쓰기</a></span>
+  {% endifnotequal %}
+{% endblock %}
+
+{% block lower_container %}
+<div class="portlet x12">
+  <div class="portlet-content">
+    <div id="big_stats" class="clearfix">
+      <div class="stat">
+
+        <h4>{{ target.first_name }}님의 글 및 댓글 수</h4>
+        <span class="value">{{ target.my_bulletins.count }}</span>
+
+
+      </div>
+
+      <div class="stat">
+
+        <h4>{{ target.first_name }}님의 총 방문 수</h4>
+        <span class="value">{{ target.get_profile.visitCnt }}</span>
+
+      </div>
+
+      <div class="stat">
+
+
+        <h4>{{ target.first_name }}님의 포인트</h4>
+        <span class="value">{{ target.get_profile.get_point }}</span>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="additional_button">
+    {% ifequal target user %}
+      <span class="btn_pack large"><a href="{% url account_emblem %}">업적</a></span>
+      <span class="btn_pack large"><a href="{% url board_main 'my' %}">내글</a></span>
+      <span class="btn_pack large"><a href="{% url board_main 'likebook' %}">좋아한글</a></span>
+      <span class="btn_pack large"><a href="{% url known_main %}">지인들</a></span>
+      <!--a title="업적" href="/account/emblem/" class="btn-mini btn-orange btn-star"><span></span>업적 페이지</a-->
+      <!--span class="btn_pack medium"><a href="/account/emblem/">업적 페이지</a></span-->
+    {% else %}
+    {% if not is_known and target != user %}
+      <a id="add_known" href="javascript:;"><span class="btn_pack medium icon"><span class="add"></span><button type="button">지인등록</button></span></a>
+      <!--a id="add_known" href="#"><button class="btn-icon btn-blue btn-person"><span></span>지인등록</button></a-->
+      <!--a id="add_known" href="#"><span class="btn_pack medium icon"><span class="check"></span><button type="button">지인등록</button></span></a-->
+    {% endif %}
+    {% endifequal %}
+  </div>
+  <h1>{% ifequal target user %}
+    <a href='/account/emblem/'>
+  {% endifequal %}
+  {% if target.get_profile.currentEmblem %}{{ target.get_profile.currentEmblem }}{% endif %}
+  {% ifequal target user %}
+    </a>
+  {% endifequal %}
+  {{target.get_profile.get_full_name|safe}}님
+  {% if target.emblems.exists %}
+    <div id="info_emblem_list">
+    {% for emblem in target.emblems.all %}
+      {{ emblem.get_icon|safe }}
+    {% endfor %}
+    </div>
+  {% endif %}
+  </h1>
+
+  <a rel="facebox" href="{{ target.get_profile.get_portrait_url }}"><img src="{{ target.get_profile.get_portrait_url }}" class="avatar_img" alt="avatar"></a>
+  <ul class="client_details">
+    <li><strong class="name">{{ target.get_profile.get_pure_sid }} {{ target.first_name }} [{{ target.get_profile.get_gender_display }}]</strong></li>
+    <li>{{ target.email }} {% if target.get_profile.sendmail %}<span class="ticket open">메일수신</span>{% else %}<span class="ticket closed">수신안함</span>{% endif %}</li>
+    <li>{{ target.get_profile.get_status_display }}</li>
+    <li>{{ target.get_profile.jobpos }}</li>
+    <li>{{ target.get_profile.address }}</li>
+  </ul>
+
+  <ul class="invoice_details">
+    <li>생년월일: {{ target.get_profile.birthday }}</li>
+    <li>{{ target.get_profile.phone }}</li>
+    <li><a href="{{ target.get_profile.homepageURL }}" target="_blank">{{ target.get_profile.homepageURL }}</a></li>
+  </ul>
+
+  <div class="xbreak"></div>
+  <hr />
+
+  <h3>자기소개</h3>
+  {% if target.get_profile.introduction %}
+    <p>{{ target.get_profile.introduction|linebreaksbr }}</p>
+  {% else %}
+    <p>자기소개가 없습니다.</p>
+  {% endif %}
+
+  <!--
+  {% ifnotequal target user %}
+    <span class="btn_pack medium"><a href="#TB_inline?height=300&width=340&inlineId=memoModalWindow" class="thickbox">{{ target.get_profile.get_pure_full_name }}님께 쪽지 쓰기</a></span>
+  {% endifnotequal %}
+  -->
+
+  <!-- TODO: 여기에 쪽지함과 쪽지 보내는 것과 방명록과 방명록 쓰는 것을 만듭시다... -->
+
+  <!--table cellpadding="0" cellspacing="0" border="0" >
+
+    <thead>
+      <tr>
+        <th>Qty</th>
+        <th>Unit</th>
+        <th>Description</th>
+        <th class="price">Price</th>
+        <th class="total">Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>23.5</td>
+        <td>Hours</td>
+        <td>Custom Web Design</td>
+        <td class="price">100.00</td>
+        <td class="total">$2350.00</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>Hours</td>
+        <td>Graphic Design</td>
+        <td class="price">75.00</td>
+        <td class="total">$750.00</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Product</td>
+        <td>CMS Install/Setup</td>
+        <td class="price">1000.00</td>
+        <td class="total">$1000.00</td>
+      </tr>
+      <tr>
+        <td class="sub_total" colspan="3"></td>
+        <td class="sub_total">Subtotal:</td>
+        <td class="sub_total">$4100.00</td>
+      </tr>
+      <tr>
+        <td class="grand_total" colspan="3"></td>
+        <td class="grand_total">Total:</td>
+        <td class="grand_total">$4100.00</td>
+      </tr>
+    </tbody>
+  </table-->
+{% endblock %}
+{% block content2 %}
+{# TODO: 사진, 업적, 자기소개 페이지 전부 여기 넣기 #}
+{#% ifnotequal target user %#}
+<div id="personal_info">
+{% if target.get_profile.portrait %}
+  <img class="myImage" src="/media/{{target.get_profile.portrait}}" alt="{{target.get_profile.sid}} {{target.get_profile}}">
+{% else %}
+  <img class="myImage" src="/media/images/nullman.jpg" alt="{{target.get_profile.sid}} {{target.get_profile}}">
+{% endif %}
+<div class="first_info">
+  <p>이름: {{ target.first_name }}</p>
+  <p>학번: {{ target.get_profile.get_pure_sid }}</p>
+  <p>E-mail: {{ target.email }}</p>
+  <p>성별: {{ target.get_profile.get_gender_display }}</p>
+  <p>재학여부: {{ target.get_profile.get_status_display }}</p>
+  <p>연구실/직장명: {{ target.get_profile.jobpos }}</p>
+  <p>주소: {{ target.get_profile.address }}</p>
+  <p>홈페이지: {{ target.get_profile.homepageURL }}</p>
+  <p>생년월일: {{ target.get_profile.birthday }}</p>
+  <p>연락처: {{ target.get_profile.phone }}</p>
+</div>
+<div class="second_info">
+<h2>자기소개</h2>
+<p id="introduction">
+  {{ target.get_profile.introduction|safe }}
+</p>
+</div>
+</div>
+<div class="clear"></div>
+{#% endifnotequal %#}
+<div id="board_list">
+{% ifequal target user %}
+<div class='list_all float_right'><a href='#'>전체보기</a></div>
+<h2>쪽지함</h2>
+<table cellspacing=1 cellpadding=3 width=100% border=0 style="table-layout:fixed">
+  <colgroup>
+    <col>
+    <col width="70">
+    <col width="90">
+  </colgroup>
+  <tr>
+    <th>내용</th>
+    <th>보낸사람</th>
+    <th>날짜</th>
+  </tr>
+{% if memo_list %}
+  {% for memo in memo_list %}
+  <tr>
+    <td><pre>{{memo.content}}</pre></td>
+    <td>{{memo.from_user.get_profile|safe}}</td>
+    <td>{{memo.created|date:"Y/m/d"}}</td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan='3'>받은 쪽지가 없습니다.</td>
+  </tr>
+{% endif %}
+</table>
+{% endifequal %}
+
+<div class='list_all float_right'><a href='#'>전체보기</a></div>
+<h2>방명록</h2>
+<table cellspacing=1 cellpadding=3 width=100% border=0 style="table-layout:fixed">
+  <colgroup>
+    <col>
+    <col width="70">
+    <col width="90">
+  </colgroup>
+  <tr>
+    <th>내용</th>
+    <th>보낸사람</th>
+    <th>날짜</th>
+  </tr>
+{% if guestbook_list %}
+  {% for guestbook in guestbook_list %}
+  <tr>
+    <td><pre>{{guestbook.content}}</pre></td>
+    <td>{{guestbook.from_user.get_profile|safe}}</td>
+    <td>{{guestbook.created|date:"Y/m/d" }}</td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan='3'>내 방명록이 비어 있습니다.</td>
+  </tr>
+{% endif %}
+</table>
+</div>
+
+<div class='right'>
+  <span class="btn_pack medium"><a href="#TB_inline?height=300&width=340&inlineId=guestbookModalWindow" class="thickbox">방명록 쓰기</a></span>
+</div>
+<div class='clear'></div>
+
+<!-- ThickBox용 Division -->
+<div id="guestbookModalWindow" style="display: none;">
+  <p>
+    <label>{{target.first_name}}님에게 한마디,</label>
+    <form method='POST' action='.'>
+      {% csrf_token %}
+      <table class="form_table"><tr><td class="item">{{ form.content }}</td></tr></table>
+      <input name="to_user" type="hidden" value="{{ target.id }}" />
+      <input name="secret" type="hidden" value="False" />
+      <p class='float_right'><span class="btn_pack medium"><input type="submit" value="방명록 쓰기" /></span></p>
+    </form>
+  </p>
+</div>
+<!-- ThickBox용 Division -->
+<div id="memoModalWindow" style="display: none;">
+  <p>
+    <label>{{target.first_name}}님에게 쪽지 쓰기,</label>
+    <form method='POST' action='.'>
+      {% csrf_token %}
+      <table class="form_table"><tr><td class="item">{{ form.content }}</td></tr></table>
+      <input name="to_user" type="hidden" value="{{ target.id }}" />
+      <input name="secret" type="hidden" value="True" />
+      <p class='float_right'><span class="btn_pack medium"><input type="submit" value="쪽지 쓰기" /></span></p>
+    </form>
+  </p>
+</div>
+
+{% if gallery_list %}
+  <!--h2>{{ target.first_name }}가 최근에 올린 갤러리들</h2>
+    {% for gallery in gallery_list %}
+    <div class="photo-gallery">
+        <div class="gallery-photo">
+        {% for photo in gallery.sample|slice:sample_size %}
+            <a href="/board/{{gallery.bulletin.board.name}}/1/read/{{ gallery.bulletin.id }}"><img src="{{ photo.get_thumbnail_url }}" alt="{{ photo.title }}"/></a>
+        {% endfor %}
+        </div>
+        <h2><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></h2>
+    </div>
+    {% endfor %}
+    -->
+{% else %}
+  <!--p>사용자의 개인 갤러리가 없습니다.</p>
+  <p><a>개인 갤러리 추가하기</a></p-->
+{% endif %}
+
+{% if is_paginated %}
+<p>총 {{ hits }} 개의 갤러리가 있습니다.</p>
+<div id="page_controls">
+    <p>{% if has_previous %}<a href="{% url pl-gallery-list previous %}">이전</a> | {% endif %} page {{ page }} of {{ pages }} {% if has_next %}| <a href="{% url pl-gallery-list next %}">다음</a>{% endif %}</p>
+</div>
+{% endif %}
+{% endblock %}
+

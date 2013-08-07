@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load rendertext %}
+{% load static %}
+{% block external_css %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bbs.css" />
+  {% block board_external_css %}{% endblock %}
+{% endblock %}
+{% block external_js %}
+  {% block board_external_js %}{% endblock %}
+{% endblock %}
+{% block title %}
+  {% if board %}
+  {{ board.title }} |
+  {% endif %}
+  {% block board_title %}{% endblock %}
+{% endblock %}
+{% block breadcrumbs %}
+  {% if board.group_board %}
+    <a href="{% url group %}">{{ "소모임"|render_bread }}</a> <span>&raquo;</span>
+    <a href="{% url group_main board.group_board.id %}">{{ board.title|render_bread|safe }}</a> <span>&raquo;</span>
+    <a href="{% url board-list board.name %}">{{ "게시판"|render_bread }}</a>
+  {% else %}
+    <a href="{% url board-list board.name %}">{{ board.title|render_bread|safe }}</a>
+  {% endif %}
+  {% block board_breadcrumbs %}{% endblock %}
+{% endblock %}
+{% block head %}
+  {% block board_head %}{% endblock %}
+{% endblock %}
+{% block after_head %}
+  {% if board.group_board %}
+    <div class="ribbon">
+      <div class="wrapAround"></div>
+      <div class="tab">
+      <span>
+        <a href="/group/{{ board.group_board.id }}">{{ "소개"|render_ribbon_mini }}</a>
+        <a {% if board.is_new %}class="mark_new" {% endif %}href="{% url board-list board.group_board.name %}">{{ "게시판"|render_ribbon_mini }}</a>
+        <a href="{% url group_chat board.group_board.id %}">{{ "채팅방"|render_ribbon_mini }}</a>
+        <a href="{% url group_members board.group_board.id %}">{{ "회원명부"|render_ribbon_mini }}</a>
+        {% ifequal board.group_board.owner user %}
+          <a href="{% url group_invite board.group_board.id %}">{{ "초대"|render_ribbon_mini }}</a>
+          <a href="{% url group_manage board.group_board.id %}">{{ "관리"|render_ribbon_mini }}</a>
+        {% endifequal %}
+      </span>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% block board_content %}{% endblock %}
+{% endblock %}
+

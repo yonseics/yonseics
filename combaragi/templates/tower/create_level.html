@@ -1,0 +1,10 @@
+{% extends "form_base.html" %}
+{% block title %}층 만들기{% endblock %}
+{% block head %}
+<div class="portlet-header"><h4>{{ tower.name }}의 {{ tower.max_level|add:1 }}층 만들기</h4></div>
+{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><button type="submit">만들기</button></span>
+  <span class="btn_pack medium"><a href="{% url tower-info tower.slug %}">취소</a></span>
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends "tower/base.html" %}
+{% block tower_title %}탑 열기{% endblock %}
+<script>
+{% block tower_onload %}{% endblock %}
+</script>
+{% block tower_head %}탑 열기{% endblock %}
+{% block tower_content %}
+  <h2>정말 탑을 여시겠습니까?</h2>
+  <h3>한번 열려진 탑은 다시 닫을 수 없으며 모두가 탑에 입장하여 문제를 풀 수 있게 됩니다.</h3>
+  <h3>탑이 열리면 더 이상 수정할 수 없습니다.</h3>
+  <form method="POST" action=".">
+    {% csrf_token %}
+    <div class="right">
+      <span class="btn_pack medium"><button type="submit">예</button></span>
+      <span class="btn_pack medium"><a href="{% url tower-info tower.slug %}">아니오</a></span>
+    </div>
+  </form>
+{% endblock %}
+

@@ -1,0 +1,53 @@
+.dsdiv {
+  border: 1px solid black;
+  width: 700px;
+  height: 425px;
+  position: relative;
+}
+
+.dsdiv .image-field {
+  position: absolute;
+  left: 0;
+  bottom: 170px;
+  width: 700px;
+  height: 128px;
+}
+
+.dsdiv .image-field img {
+  width: 128px;
+  height: 128px;
+}
+
+.dsdiv .skip-field {
+  color: black;
+  background: white;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.dsdiv .image-field .left_aligned {
+  /*position: absolute;
+  left:0px;*/
+  float: left;
+}
+
+.dsdiv .image-field .right_aligned {
+  /*position: absolute;
+  right:0px;*/
+  float: right;
+}
+
+.dsdiv .text-field {
+  position: absolute;
+  left:0;
+  bottom:0;
+  width: 700px;
+  height: 170px;
+  background: url('/static/images/transparent.png');
+  color: white;
+}
+
+.dsdiv .text-field .text-area {
+  padding: 10px;
+}

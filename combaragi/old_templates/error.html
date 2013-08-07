@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}문제 발생!{% endblock %}
+
+{% block content %}
+<h1>으악! 문제가 발생했어요! &gt;_&lt;</h1>
+
+<p>{{ message }}</p>
+<div class="right">
+  <span class="btn_pack medium"><a href="javascript:history.back();">뒤로가기</a></span>
+</div>
+{% endblock %}

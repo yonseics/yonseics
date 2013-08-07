@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load rendertext %}
+
+{% block title %}공사중!{% endblock %}
+{% block breadcrumbs %}<a href="#">{{ "Under Construction!"|render_bread }}</a>{% endblock %}
+{% block content %}
+<h1>{{ "이 기능이 아직 구현중이에요! >_<"|render_black:24 }}</h1>
+
+<p>현재 기능은 개발자가 열심히 구현중입니다.</p>
+<p>더 자세한 상황을 알고 싶다면 limsungkee<img src="{{ STATIC_URL }}images/at.png" class="at">gmail.com으로 메일 주세요!</p>
+<div class="right">
+  <button type="button" class="btn" onclick="javascript:history.back();"><span>{{ "뒤로가기"|render_button }}</span></button>
+</div>
+{% endblock %}

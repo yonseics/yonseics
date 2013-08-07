@@ -1,0 +1,8 @@
+{% extends "group/base.html" %}
+{% block group_title %}채팅{% endblock %}
+{% block group_head %}채팅{% endblock %}
+{% block group_content %}
+  <embed height="450" width="100%" src="http://www.gagalive.kr/livechat1.swf?chatroom={{ chat_hash }}&user={{ user.get_profile.get_pure_full_name }}&fontlarge=large"></embed>
+  <div class="clear">&nbsp;</div>
+
+{% endblock %}

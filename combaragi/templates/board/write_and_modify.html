@@ -1,0 +1,89 @@
+{% extends "board/form_base.html" %}
+{% load rendertext %}
+{% block board_title %}게시물 {{typeText}}{% endblock %}
+{% block board_head %}{% spaceless %}
+  <a href="{% url board-write board.name %}">
+    {% spaceless %}
+    {{ board.title|render_head|safe}}
+    {% if board.group_board %}
+      {{ "게시판"|render_head }}
+    {% endif %}
+    {% endspaceless %}{{ "에 게시물을 "|render_head }}{{ typeText|render_head|safe }}{{ "합니다"|render_head }}
+  </a>
+{% endspaceless %}{% endblock %}
+{% block board_breadcrumbs %}
+<span>&raquo;</span> <a href="{% url board-write board.name %}">{{ "게시물 쓰기"|render_bread }}</a>
+{% endblock %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+<script>
+{% block onload %}
+  preventReload = false;
+  preventReloading();      // 의도되지 않은 새로고침을 방지하여 줍니다.
+
+  $('#SUBJECT').keypress(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      $('#textareaContent').focus();
+        }
+  });
+  {% ifequal type 'write' %}
+    $('#id_nametype_0').click();
+  {% endifequal %}
+
+  $('#id_nametype_0').click();
+
+  $("#file_field").hide();
+  $("#file_btn").click(function(){
+    $("#file_field").toggle();
+  });
+  {% if form.file.errors %}
+    $("#file_field").toggle();
+  {% endif %}
+  $("#position_field").hide();
+  $("#positionTitle_field").hide();
+  $("#pos_btn").click(function(){
+    $("#position_field").toggle();
+    $("#positionTitle_field").toggle();
+  });
+  $("#gallery_field").hide();
+  $("#gal_btn").click(function(){
+    $("#gallery_field").toggle();
+  });
+
+  $("#id_position").hide();    // 위치정보 저장하고 있는 텍스트 박스 숨기기
+  {% if not bulletin.positions.exists %}
+    $("#pos_del_btn").hide();    // 위치확인, 삭제 버튼 숨기기
+  {% endif %}
+{% endblock %}
+</script>
+{% block form_content %}
+  <form action=".?page={{page}}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+  </form>
+  <div class="float_right">
+    <span class="btn_pack medium"><button type="button" id="file_btn">{{ "파일첨부"|render_button }}</button></span>
+    <span class="btn_pack medium"><button type="button" id="pos_btn">{{ "위치첨부"|render_button }}</button></span>
+    {% ifequal board.name "photo" %}
+      <span class="btn_pack medium"><button type="button" id="gal_btn">{{ "사진첩올리기"|render_button }}</button></span>
+    {% endifequal %}
+  </div>
+  {% if bulletin and bulletin.gallery %}글에 붙여진 사진첩이 있습니다.{% endif %}
+  {% if files %}
+  <p>첨부파일:
+  <br />
+  {% for file in files %}
+    이름: {{ file.name }},
+    용량: {{ file.size|filesizeformat }},
+    <a alt='{{file.name}}' href='{% url board-file-delete board.name file.id %}?page={{page}}'>삭제</a>
+    <br />
+  {% endfor %}
+  </p>
+  {% endif %}
+{% endblock %}
+{% block form_buttons %}
+  <div class="right">
+    <button type="submit" class="btn"><span>{{ "글쓰기"|render_button }}</span></button>
+    <button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load rendertext %}
+{% block title %}업적 정보{% endblock %}
+{% block breadcrumbs %}
+  <a href="{% url account-info user.get_profile.sidHash %}">{{ "Personal Infomation"|render_bread }}</a> <span>&raquo;</span>
+  <a href="{% url account_emblem %}">{{ "Emblems"|render_bread }}</a><!-- <span>&raquo;</span>-->
+{% endblock %}
+{% block head %}
+  {{ "현재 사용중인 업적:"|render_head }}
+  {% if user.get_profile.currentEmblem %}
+    {{ user.get_profile.currentEmblem|render_head|safe }}
+  {% else %}
+    {{ "없음"|render_head }}
+  {% endif %}
+{% endblock %}
+{% block onload %}
+{% endblock %}
+
+{% block content %}
+<div id="emblems">
+  <div id="gainable">
+    <h3>{{ "획득 가능한 업적"|render_headlet }}</h3>
+    {% if availables %}
+      <ul class="bullet-disc-green">
+      {% for emblem_id, emblem in availables.items %}
+        <a href="{% url emblem_obtain emblem_id %}">{{ emblem|safe }}</a>
+      {% endfor %}
+      </ul>
+    {% else %}
+      {{ "획득 가능한 업적이 없습니다."|render_black:13 }}
+    {% endif %}
+  </div>
+  <hr />
+  <div id="usable">
+    <h3>{{ "사용 가능한 업적"|render_headlet }}</h3>
+    {% if taken %}
+      <ul class="bullet-disc-green">
+      {% for emblem in taken %}
+      <a href="{% url emblem_use emblem.id %}">{{ emblem.icon|safe }}</a>
+      {% endfor %}
+      </ul>
+    {% else %}
+      {{ "사용 가능한 업적이 없습니다."|render_black:13 }}
+    {% endif %}
+  </div>
+</div>
+<div class="right">
+  <button type="button" class="btn" onclick="MoveTo('{% url account-info user.get_profile.sidHash %}');"><span>{{ "확인"|render_button }}</span></button>
+</div>
+{% endblock %}
+

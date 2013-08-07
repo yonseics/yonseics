@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load rendertext %}
+{% load static %}
+{% block title %}{{target.first_name}}{% endblock %}
+{% block breadcrumbs %}<a href="{% url account-info target.get_profile.sidHash %}">{{ "Personal Infomation"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block head %}
+  {{ "개인정보"|render_head }} - 
+  {{ target.get_profile.get_pure_sid|render_sid:18|safe }}
+  {{ target.first_name|render_darkgrey:18|safe }}{{ "님"|render_darkgrey:18 }}
+{% endblock %}
+<script>
+{% block onload %}
+  $('#add_known').click(function() {
+    $.ajax({
+      type: "GET",
+      url: "/known/add/{{ target.get_profile.sidHash }}/?tval={{user.get_profile.get_tval}}",
+      dataType: "script",
+      success: function(data){
+        $( "#add_known" ).replaceWith($("<span class='ticket open'>"+data+"</span>"));
+      }
+    });
+    return false;
+  });
+{% endblock %}
+</script>
+
+{% block content %}
+  <!-- Emblem -->
+  <div class="ribbon">
+    <div class="wrapAround"></div>
+    <div class="tab">
+      <span>
+        {% ifequal target user %}
+        <a href="{% url account_emblem %}">
+        {% endifequal %}
+          {% if target.get_profile.currentEmblem %}
+          {{ '업적: '|render_ribbon }}
+          {{ target.get_profile.currentEmblem|render_ribbon|safe }}
+          {% else %}
+          {{ '현재 업적이 없습니다'|render_ribbon }}
+          {% endif %}
+        {% ifequal target user %}
+        </a>
+        {% endifequal %}
+      </span>
+    </div>
+  </div>
+
+  <div id="additional_button">
+    {% if not is_known and target != user %}
+      <!--a id="add_known" href="javascript:;"><span class="btn_pack medium icon"><span class="add"></span><button type="button">지인등록</button></span></a-->
+    {% endif %}
+  </div>
+  {#% if target.emblems.exists %#}
+  {% if False %}
+    <div id="info_emblem_list">
+    {% for emblem in target.emblems.all %}
+      {{ emblem.get_icon|safe }}
+    {% endfor %}
+    </div>
+  {% endif %}
+  </h1>
+
+  <div id="personal_info_box">
+    <img src="{{ target.get_profile.get_portrait_url }}" class="avatar_img" alt="avatar">
+    <ul class="float_right bullet-silver" id="personal_info">
+      <li style="background-image:none;">{{ target.get_profile.get_pure_sid|render_sid:24|safe }} {{ target.first_name|render_black:24|safe }} <img src="{% get_static_prefix %}images/icons/{{ target.get_profile.gender }}.png" width="24" alt="{{ target.get_profile.get_gender_display }}" /></li>
+      <li>{{ target.email|render_black:13|safe }} - {% if target.get_profile.sendmail %}<span class="ticket open">{{ "메일수신"|render_black:13 }}</span>{% else %}<span class="ticket closed">{{ "수신안함"|render_red:13 }}</span>{% endif %}</li>
+      <li>{{ target.get_profile.get_status_display|render_black:13|safe }}
+          {% if target.get_profile.jobpos %}
+            {{ "("|render_black:13 }}{{ target.get_profile.jobpos|render_black:13|safe }}{{ ")"|render_black:13 }}
+          {% endif %}
+      </li>
+      {% if target.get_profile.address %}<li>{{ target.get_profile.address|render_black:13|safe }}</li>{% endif %}
+      {% if target.get_profile.birthday %}<li>{{ target.get_profile.birthday|render_black:13|safe }}</li>{% endif %}
+      {% if target.get_profile.phone %}<li>{{ target.get_profile.phone|render_black:13|safe }}</li>{% endif %}
+      {% if target.get_profile.homepageURL %}<li><a href="{{ target.get_profile.homepageURL }}" target="_blank">{{ target.get_profile.homepageURL|render_cyan:13|safe }}</a></li>{% endif %}
+      <li><span class="btn_pack large"><a href="{% url board-list 'my' %}">{{ "내가 작성한 글 목록"|render_cyan:13 }}</a></span></li>
+      <li><span class="btn_pack large"><a href="{% url board-list 'likebook' %}">{{ "내가 좋아한 글 목록"|render_cyan:13 }}</a></span></li>
+      {% ifequal target user %}
+      <li style="background-image:none;"><span class="btn_pack large"><button type="button" class="btn" onclick="window.location.href='{% url account-modify %}'"><span>{{ "정보수정"|render_button }}</span></button>`</span></li>
+      {% endifequal %}
+    </ul>
+  </div>
+  <div class="hr"></div>
+
+  <!-- Emblem -->
+  <div class="ribbon">
+    <div class="wrapAround"></div>
+    <div class="tab">
+      <span>{{ '자기소개'|render_ribbon }}</span>
+    </div>
+  </div>
+
+  {% if target.get_profile.introduction %}
+    <p>{{ target.get_profile.introduction|linebreaksbr }}</p>
+  {% else %}
+    <p>{{ "자기소개가 없습니다."|render_black:16 }}</p>
+    {% ifequal target user %}
+    <p><a href="{% url account-modify %}">{{ "정보수정"|render_red:20 }}</a> {{ "페이지에 가셔서 멋진 자기소개를 작성해 주세요!"|render_black:20 }}</p>
+    {% endifequal %}
+  {% endif %}
+
+  <div class="hr"></div>
+  <div id="big_stats" class="clearfix">
+    <div class="stat">
+      <h4>{{ target.first_name|render_black:13|safe }}{{ "님의 글 및 댓글 수"|render_black:13 }}</h4>
+      <span class="value">{{ target.my_bulletins.count }}</span>
+    </div>
+    <div class="stat">
+      <h4>{{ target.first_name|render_black:13|safe }}{{ "님의 총 방문 수"|render_black:13 }}</h4>
+      <span class="value">{{ target.get_profile.visitCnt }}</span>
+    </div>
+    <div class="stat">
+      <h4>{{ target.first_name|render_black:13|safe }}{{ "님의 포인트"|render_black:13 }}</h4>
+      <span class="value">{{ target.get_profile.get_point }}</span>
+    </div>
+  </div>
+  <div class="hr"></div>
+{% endblock %}

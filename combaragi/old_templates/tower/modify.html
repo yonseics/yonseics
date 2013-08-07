@@ -1,0 +1,11 @@
+{% extends "form_base.html" %}
+{% block title %}탑 수정{% endblock %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+{% block head %}
+<div class="portlet-header"><h4>탑 수정</h4></div>
+{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><button type="submit">수정</button></span>
+  <span class="btn_pack medium"><a href="{% url tower-info tower.slug %}">뒤로</a></span>
+{% endblock %}
+

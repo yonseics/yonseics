@@ -1,0 +1,389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load static %}
+{% load rendertext %}
+{% load time_filters %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="google" value="notranslate">
+  <meta name="author" content="UNKI" />
+  <meta name="description" content="Yonsei Univ Dept of Computer Science." />
+  <meta name="keywords" content="yonsei, 연세, 연세대, 연세대학교, 모르고리즘" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+  <!--title>{#% if user.get_profile.get_recent_feed_list %}({{user.get_profile.get_recent_feed_list.count}}) {% endif %#}컴바라기 | </title-->
+  <title>컴바라기 | {% block title %}{% endblock %}</title>
+  <link rel="SHORTCUT ICON" href="{% get_static_prefix %}favicon.ico" />
+
+	<!-- Style sheets -->
+	<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/reset.min.css" />
+	<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/menu.min.css" />
+	<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/fancybox.css" />
+	<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/tooltip.min.css" />
+	<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/default.css" />
+  {% block external_css %}{% endblock %}
+  <!--link rel="stylesheet" href="{% get_static_prefix %}css/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/plugin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/custom.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/nav.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/btn_pack.css" type="text/css" media="all" /-->
+  <!-- Web font -->
+  <link href='http://fonts.googleapis.com/earlyaccess/nanumgothic.css' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/earlyaccess/nanumpenscript.css' rel='stylesheet' type='text/css' />
+
+	<!-- jQuery framework and utilities -->
+  <script type="text/javascript" src="{% get_static_prefix %}js/jquery/jquery.1.4.2.min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery-ui-1.7.2.min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.easing.1.3.min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/hoverIntent.min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.bgiframe.min.js"></script>
+	<!-- Drop down menus -->
+	<script type="text/javascript" src="{% get_static_prefix %}js/superfish.min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/supersubs.min.js"></script>
+	<!-- Tooltips -->
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.cluetip.min.js"></script>
+	<!-- Input labels -->
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.overlabel.min.js"></script>
+	<!-- Anchor tag scrolling effects -->
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.scrollTo-min.js"></script>
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.localscroll-min.js"></script>
+	<!-- Inline popups/modal windows -->
+	<script type="text/javascript" src="{% get_static_prefix %}js/jquery.fancybox-1.2.6.pack.js"></script>
+	<!-- Personal global javascript functions -->
+  <script  type="text/javascript" src="{% get_static_prefix %}js/global.js"></script>
+
+  <!-- Slide shows -->
+  <!-- Cycle 	(default) -->
+  <script type="text/javascript" src="{% get_static_prefix %}js/jquery.cycle.all.min.js"></script>
+
+	<script type="text/javascript" src="{% get_static_prefix %}js/source/onLoad.js"></script>
+
+  <!--script type="text/javascript" src="{% get_static_prefix %}js/jquery/jquery.cookie.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/slate/slate.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/slate/slate.portlet.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/plugin.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/global.js"></script-->
+  <script language="javascript" type="text/javascript" charset="UTF-8">
+  //기본 네비게이션 초기화
+  $(document).ready(function(){
+    //bindNav();
+    {% if next or login_failed %}
+      $('a#login').click();
+    {% endif %}
+    {% block onload %}{% endblock %}
+  });
+  </script>
+  {% block external_js %}{% endblock %}
+  {% block external %}{% endblock %}
+  <!-- Functions to initialize after page load -->
+  
+  <!-- Google Analytics -->
+  <script type="text/javascript">
+
+    /*var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31315059-1']);
+    _gaq.push(['_setDomainName', 'yonseics.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();*/
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31320342-1']);
+    _gaq.push(['_setDomainName', 'yonseics.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+</head>
+
+<body>
+
+  
+<!-- Top reveal (slides open, add class "topReveal" to links for open/close toggle ) -->
+<div id="ContentPanel">
+
+	<!-- close button -->
+	<a href="#" class="topReveal closeBtn">Close</a>
+	
+	<div class="contentArea">
+
+		<!-- New member registration -->
+		<div class="right" style="margin:10px 0 0;">
+			<h1>
+        {{ "멤버가 아직 아닌가요?"|render_white:20 }}
+				<span>{{ "연대컴과 학생이라면 지금 등록하세요!"|render_grey:14 }}</span>
+			</h1>
+      <button type="button" onclick="window.location.href='{% url register %}';">{{ "회원가입"|render_button }}</button>
+		</div>
+		
+		<!-- Alternate Login -->				
+		<div>
+      <form class="loginForm" method="post" action="{% url login %}" style="height:auto;">
+        {% csrf_token %}
+				<div id="loginBg"><img src="{% get_static_prefix %}images/icons/lock-and-key-110.png" width="110" height="110" alt="lock and key" /></div>
+				<h2 style="margin-top: 20px;">{{ "컴바라기 로그인"|render_white:24 }}</h2>
+				<fieldset>
+					<legend>컴바라기 로그인</legend>
+					<p class="left" style="margin: 0 8px 0 0;">
+						<label for="RevealUsername" class="overLabel">{{ "아이디"|render_form }}</label>
+						<input id="RevealUsername" name="username" type="text" class="loginInput textInput rounded" />
+					</p>
+					<p class="left" style="margin: 0 5px 0 0;">
+						<label for="RevealPassword" class="overLabel">{{ "비밀번호"|render_form }}</label>
+						<input id="RevealPassword" name="password" type="password" class="loginInput textInput rounded" />
+					</p>
+					<p class="left" style="margin: -7px 0 0;">
+						<button type="submit" class="btn" style="margin:0;"><span>{{ "로그인"|render_button }}</span></button>
+					</p>
+				</fieldset>
+        {% if login_failed %}
+				<p class="left noMargin">
+        {{ "아이디 혹은 패스워드가 틀렸습니다!    "|render_red:14 }}
+				</p>
+        {% endif %}
+				<p class="left noMargin">
+					<a href="mailto:limsungkee@gmail.com">{{ "혹시 패스워드를 분실하셨나요?"|render_cyan:13 }}</a>
+				</p>
+			</form>		
+		</div>
+		
+		<!-- End of Content -->
+		<div class="clear"></div>
+	
+	</div>
+</div>
+
+<!-- Site Container -->
+<div id="Wrapper">
+	<div id="PageWrapper">
+		<div class="pageTop"></div>
+		<div id="Header">
+		
+			<!-- Main Menu -->
+			<div id="MenuWrapper">
+				<div id="MainMenu">
+					<div id="MmLeft"></div>
+					<div id="MmBody">
+						
+						<!-- Main Menu Links -->
+						<ul class="sf-menu">
+              <li class="current"><a href="{% url home %}">홈</a></li>
+              <li>
+								<a href="{% url under_construction %}{#% url memberlist %#}">컴과 사람들</a>
+                <ul>
+                  <li><a href="{% url mail %}">메일보내기</a></li>
+									<!--li><a href="#">Bomb</a></li-->
+                  <li><a href="{% url ranking %}">순위</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="{% url board-list 'all' %}">게시판</a>
+                <ul>
+                  {% for board in all_boards %}
+                  <li{% if board.name == board.slug %} class="currentPage"{% endif %}><a href="{% url board-list board.slug %}">{{ board.name|render_cyan:13|safe }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li>
+								<a href="{% url group %}">소모임</a>
+                <ul>
+                  <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
+                  {% for group in user.member_groups.all %}
+                  <li><a href="/board/{{ group.name }}/">{{ group.title|render_cyan:13|safe }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <!--li>
+								<a href="#">Study</a>
+                <ul>
+                  <li><a href="{% url under_construction %}">Tower</a></li>
+									<li><a href="{% url under_construction %}">Wiki</a></li>
+                </ul>
+              </li>
+              <li>
+								<a href="{% url under_construction %}">Chatting</a>
+              </li-->
+              <!--li>
+								<a href="#">Mobile</a>
+              </li-->
+						</ul>
+						
+						<div class="mmDivider"></div>				
+
+						<!-- Extra Menu Links -->
+						<ul id="MmOtherLinks" class="sf-menu">
+							<li>
+								<a href="#"><span class="mmFeeds">Feeds</span></a>
+								<ul>
+                  <li><a href="{% url feeds 'rss' %}"><span class="mmRSS">RSS</span></a></li>
+									<li><a href="#"><span class="mmFacebook">Facebook</span></a></li>
+									<!--li><a href="#"><span class="mmTwitter">Twitter</span></a></li-->
+								</ul>
+							</li>
+              {% if user.is_authenticated %}
+              <li>
+              <a href="{% url account-info user.get_profile.sidHash %}"><span class="mmLogin">{{ user.first_name|render_grey:14|safe }}{{ "님"|render_grey:14 }}</span></a>
+                <ul>
+                  <li><a href="/account/modify/">Modify</a></li>
+                  <li><a href="{% url logout %}" class="logout">Logout</a></li>
+                </ul>
+              </li>
+              {% else %}
+                {% if is_mobile %}
+                <li><a href="#ContentPanel" class="topReveal" id="login"><span class="mmLogin">Login</span></a></li>
+                {% else %}
+                <li><a href="{% url login-page next login_failed %}" id="login" class="login"><span class="mmLogin">Login</span></a></li>
+                {% endif %}
+              {% endif %}
+            </ul>
+					</div>
+					<div id="MmRight"></div>
+				</div>
+			</div>
+			
+			<!-- Search -->
+			<div class="Search">
+				<form action="{% url board-list 'all' %}" id="SearchForm" method="get">
+          {% csrf_token %}
+					<p style="margin:0;"><input type="text" name="key" class="SearchInput" value="" /></p>
+					<p style="margin:0;"><input type="submit" class="SearchSubmit noStyle" value="" /></p>
+				</form>
+			</div>
+			
+			<!-- Logo -->
+			<div id="Logo">
+        <a href="{% url home %}"></a>
+			</div>
+			
+			<!-- End of Content -->
+			<div class="clear"></div>
+		
+		</div>
+
+    {% block pre_content %}{% endblock %}
+		
+		<div class="pageMain">
+      <!-- Showcase Content -->
+      <div class="contentArea">
+        <div class="two-thirds">
+          {% block content_area %}{% endblock %}
+        </div>
+			  <div class="one-third">
+          {% block side_area %}
+					<!-- Category Menu -->
+					<h1 class="title" style="margin-bottom:0;">
+            {{ "게시판"|render_black:24 }}
+					</h1>
+					<div class="sideNavWrapper">
+						<div class="sideNavBox-1">
+							<div class="sideNavBox-2">
+								<ul class="sideNav">
+                  <!--ygo140, 13, #2FA694-->
+                  {% for board in all_boards %}
+                    <li{% if board.name == board.slug %} class="currentPage"{% endif %}><a href="{% url board-list board.slug %}" {% if board.is_new %}class="mark_new"{% endif %}>{{ board.name|render_cyan:13|safe }}</a></li>
+                  {% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				
+					<!-- Archive Menu -->
+					<h1 class="title" style="margin-bottom:0;">
+            {{ "소모임"|render_black:24 }}
+					</h1>
+					<div class="sideNavWrapper">
+						<div class="sideNavBox-1">
+							<div class="sideNavBox-2">
+								<ul class="sideNav" style="font-size: 9pt;">
+                  {% if user.is_authenticated %}
+                  <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
+                    <li><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid|render_sid:13|safe }}{{ "학번 소모임"|render_cyan:13 }}</a></li>
+                    {% for group in user.member_groups.all %}
+                    <li><a {% if group.is_new %}class="mark_new" {% endif %}href="/board/{{ group.name }}/">{{ group.title|render_cyan:13|safe }}</a></li>
+                    {% endfor %}
+                  {% else %}
+                    <li><a href="javascript:$('a#login').click();">{{ "로그인 해 주세요."|render_cyan:13 }}</a></li>
+                  {% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+          <!-- Archive Menu -->
+					<h1 class="title" style="margin-bottom:0;">
+            {{ "최근 활동한 사람"|render_black:24 }}
+					</h1>
+          <div class="sideNavWrapper">
+            <div class="sideNavBox-1">
+             	<div class="sideNavBox-2">
+            <ul class="bullet-check">
+              {% for recent_member in recent_members %}
+              <li><a href="{% url account-info recent_member.sidHash %}">{{ recent_member.get_pure_sid|render_sid:13|safe }} {{ recent_member.user.first_name|render_sharp_black:13|safe }} - {{ recent_member.recentActed|humanizeTimeDiff|render_sharp_black:13|safe }}</a></li>
+          
+              {% endfor %}
+            </ul>
+              </div>
+            </div>
+          </div>
+					
+					<!-- Testimonial/Quote -->
+					<div class="quote">
+						<div class="quoteBox-1">
+							<div class="quoteBox-2">
+                <!--ygo130, 14, #000-->
+                <p>
+                  컴과 회장님의 말씀이 무언가 들어가면 좋을 것 같은 공간이다. 과연 그러한 공간이다.
+                  컴과 회장님의 말씀이 무언가 들어가면 좋을 것 같은 공간이다. 과연 그러한 공간이다.
+                </p>
+							</div>
+						</div>
+					</div>
+					<div class="quoteAuthor">
+						<p class="name">123대 회장 김갑수</p>
+						<p class="details">Chairman of CS dept. Yonsei Univ.</p>
+					</div>
+          {% endblock %}
+        </div>
+        <!-- End of Content -->
+        <div class="clear"></div> 
+
+      </div>
+		</div>
+		
+		<!-- Footer -->
+		<div id="Footer">
+			<div id="FooterTop"></div>
+			<!--div id="FooterContent">
+				<div class="contentArea">
+				</div>
+			</div-->
+			<div id="FooterBottom"></div>
+			
+		</div>
+		
+		<!-- Copyright/legal text -->
+		<div id="Copyright">
+			<p>
+        컴바라기 V2.0, Copyright &copy; 2011 <a href="javascript:;" title="04 임승기" rel="tooltip">UNKI</a>, all rights reserved. E-mail: limsungkee<img class="at" src="{% get_static_prefix %}images/at.png" alt="at" />gmail.com
+				Conforms to W3C Standard 
+				<a href="http://validator.w3.org/check?uri=referer" onclick="window.open(this.href); return false;">XHTML</a> &amp; 
+				<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3" onclick="window.open(this.href); return false;">CSS</a>
+			</p>
+		</div>
+		
+	</div>
+</div>
+
+</body>
+</html>

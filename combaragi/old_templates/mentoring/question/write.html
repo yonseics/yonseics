@@ -1,0 +1,57 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %} &gt;&gt; {{ ment_type }}{% endblock %}
+{% block mentoring_head %}{{ ment_type }}{% endblock %}
+{% block mentoring_external %}
+<link rel="stylesheet" type="text/css" href="/media/css/bbs.css" />
+<script type="text/javascript" src="/media/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
+<script language="javascript" src="/media/js/setup_tiny_mce.js"></script>
+{% endblock %}
+{% block mentoring_content %}
+
+<form method="post" action=".">
+{% csrf_token %}
+<table class="boardview" width=100% border=0 cellspacing=0 cellpadding=5 style="table-layout:fixed">
+  <colgroup>
+    <col width='80'>
+    <col>
+  </colgroup>
+  <tr><th colspan=2 class="BODYHEAD">
+    멘토링 &gt;&gt; {{ form.mentor.errors }}{{ form.mentor }}에게 질문하기
+  </th></tr>
+{% if parent %}
+  <tr>
+    <th>이전 질문</th><td>{{ parent.title }}</td>
+  </tr>
+  <tr>
+    <th>내용</th><td>{{ parent.content|safe }}</td>
+  </tr>
+  <tr>
+    <th>답변</th><td>{{ parent.reply|safe }}</td>
+  </tr>
+{% endif %}
+  {#{ form.as_table }#}
+  <tr>
+    <th class="fieldName">제목</th>
+    <td>
+      {{ form.title.errors }}
+      {{ form.title }}
+    </td>
+  </tr>
+
+  <tr>
+    <th class="fieldName">본문</th>
+    <td class="textareaCol">
+      <div class="textareaBorder">
+        {{ form.content.errors }}
+        {{ form.content }}
+      </div>
+    </td>
+  </tr>
+</table>
+<div class='float_right'>
+  <span class="btn_pack medium"><button type="submit">질문하기</button></span>
+  <span class="btn_pack medium"><a href="/mentoring/">취소</a></span>
+</div>
+</form>
+<div class="clear"></div>
+{% endblock %}

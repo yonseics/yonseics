@@ -1,0 +1,14 @@
+
+My primary concern is that the text might contain something that is
+   not valid as a filename. My initial thought was that it's a
+   nontrivial problem to come up with an algorithm that produces a
+   unique and still recognizable filename with only a-z, 1-9 and _-.
+   It mustn't be too long either.
+
+The filename also needs to contain size, color and rotation
+   information, but that's a minor problem.
+
+Coming to think of it, one relatively easy way out is to normalize the
+   text, take the first x characters out and append the hash.
+
+http://effbot.python-hosting.com/file/stuff/sandbox/text/unaccent.py?rev=172&format=txt

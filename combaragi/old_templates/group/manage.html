@@ -1,0 +1,21 @@
+{% extends "group/form_base.html" %}
+{% block group_title %}관리{% endblock %}
+{% block group_head %}관리{% endblock %}
+{% block group_external %}
+  <script language="javascript" type="text/javascript" charset="UTF-8" src="{{ STATIC_URL }}js/jquery-lib/jquery.confirm-1.2.js"></script>
+{% endblock %}
+<script>
+{% block onload %}
+  confirmGo('remove',
+  '해체된 소모임은 모든 정보가 삭제되고 모든 회원이 강제 탈퇴되게 됩니다. 정말 해체하시겠습니까?',
+  "{% url group_remove current_group.id %}");
+{% endblock %}
+</script>
+{% block form_content %}
+  <div class="right">
+  <a id="remove" href="javascript:;"><span class="btn_pack medium icon"><span class="delete"></span><button type="button">소모임 해체</button></span></a>
+  </div>
+{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><button type="submit">변경</button></span>
+{% endblock %}

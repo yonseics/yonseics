@@ -1,0 +1,12 @@
+{% extends "form_base.html" %}
+{% block title %}{% endblock %}
+{% block head %}<div class="portlet-header"><h4></h4></div>{% endblock %}
+{% block content_id %}{% endblock %}
+{% block external %}{% endblock %}
+<script>{% block onload %}{% endblock %}</script>
+<form {% block form_option %}{% endblock %}></form>
+<script>{% block form_onSubmit %}{% endblock %}</script>
+{% block form_content %}{% endblock %}
+{% block form_buttons %}
+  <input type="submit" class="btn" value="value">
+{% endblock %}

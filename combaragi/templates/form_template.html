@@ -1,0 +1,23 @@
+{% extends "form_base.html" %}
+{% load static %}
+{% load rendertext %}
+{% block form_option %}{% endblock %}
+{% block form_onSubmit %}{% endblock %}
+{% block external_css %}
+<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/cascade.css" />
+{% endblock %}
+{% block external_js %}
+<script type="text/javascript" src="{% get_static_prefix %}js/javascript.js"></script>
+{% endblock %}
+<script>
+{% block onload %}{% endblock %}
+</script>
+{% block title %}{% endblock %}
+{% block breadcrumbs %}<a href="link">{{ "breadcrumbs"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block head %}{{ "head"|render_head }}{% endblock %}
+{% block form_buttons %}
+<button type="submit" class="btn"><span>{{ "전송"|render_button }}</span></button>
+<button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+{% endblock %}
+{% block form_bottom_content %}
+{% endblock %}

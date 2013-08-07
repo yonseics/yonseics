@@ -1,0 +1,37 @@
+/* group/main.html*/
+ul.group_list {
+	float:left;
+}
+ul.group_list li {
+	margin:10px;
+	float:left;
+	width:130px;
+}
+
+/* group/base.html*/
+ul.top_menu {
+	float:left;
+}
+ul.top_menu li {
+	margin:5px;
+	float:left;
+}
+
+/* group/members.html*/
+ul.member_list {
+	float:left;
+}
+ul.member_list li {
+	margin:10px;
+	float:left;
+	width:140px;
+}
+
+/* group/info.html */
+#group_info {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border:1px solid #999;
+	padding:7px;
+	margin-bottom:30px;
+}

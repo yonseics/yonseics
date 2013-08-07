@@ -1,0 +1,9 @@
+{% extends "group/form_base.html" %}
+{% load rendertext %}
+{% block title %}소모임 생성{% endblock %}
+{% block group_head %}<a href="{% url group_create %}">{{ "소모임 생성"|render_head }}</a>{% endblock %}
+{% block group_breadcrumbs %}<a href="{% url group_create %}">{{ "Create"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block form_buttons %}
+  <button type="submit" class="btn"><span>{{ "생성"|render_button }}</span></button>
+{% endblock %}
+

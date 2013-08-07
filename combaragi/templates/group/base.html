@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load rendertext %}
+{% block external %}
+  <link rel='stylesheet' type="text/css" href='{{ STATIC_URL }}css/group.css'>
+  {% block group_external %}{% endblock %}
+{% endblock %}
+<script>
+{% block onload %}
+  {% if current_group %}
+    ajaxReplace("enter", "{% url group_enter current_group.id %}", {{ user.get_profile.get_tval }})
+  {% endif %}
+  {% block group_onload %}{% endblock %}
+{% endblock %}
+</script>
+{% block title %}소모임 |
+  {% if current_group %}{{ current_group.title }} | {% endif %}
+  {% block group_title %}{% endblock %}{% endblock %}
+{% block breadcrumbs %}
+  <a href="{% url group %}">{{ "Group"|render_bread }}</a> <span>&raquo;</span>
+  {% if current_group %}
+    <a href="{% url group_main current_group.id %}">{{ current_group.title|render_bread|safe }}</a> <span>&raquo;</span>
+  {% endif %}
+  {% block group_breadcrumbs %}{% endblock %}
+{% endblock %}
+
+{% block head %}
+  {% if current_group %}
+    {{ current_group.title|render_head|safe }}
+  {% endif %}
+  {% block group_head %}{% endblock %}
+{% endblock %}
+
+{% block after_head %}
+  {% if current_group %}
+    <div class="ribbon">
+      <div class="wrapAround"></div>
+      <div class="tab">
+      <span>
+        <a href="/group/{{ current_group.id }}">{{ "소개"|render_ribbon_mini }}</a>
+        {% if is_member %}<a {% if current_group.is_new %}class="mark_new" {% endif %}href="{% url board-list current_group.name %}">{{ "게시판"|render_ribbon_mini }}</a>{% else %}{{ "게시판"|render_ribbon_mini }}{% endif %}
+        {% if is_member %}<a href="{% url group_chat current_group.id %}">{{ "채팅방"|render_ribbon_mini }}</a>{% else %}{{ "채팅방"|render_ribbon_mini }}{% endif %}
+        <a href="{% url group_members current_group.id %}">{{ "회원명부"|render_ribbon_mini }}</a>
+        {% ifequal current_group.owner user %}
+          <a href="{% url group_invite current_group.id %}">{{ "초대"|render_ribbon_mini }}</a>
+          <a{% if current_group.semi_members.exists %} class="mark_new"{% endif %} href="{% url group_manage current_group.id %}">{{ "관리"|render_ribbon_mini }}<span></span></a>
+        {% endifequal %}
+      </span>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <form {% block form_option %}{% endblock %}class="form label-inline" method="post" action="." onSubmit="{% block form_onSubmit %}{% endblock %}">
+    {% csrf_token %}
+    {% if current_group %}
+      <div class="float_right">{{ "소모임장: "|render_black:13 }}{{ current_group.owner.get_profile.get_pure_sid|render_sid:13|safe }} {{ current_group.owner.first_name|render_black:13|safe }}</div>
+    {% endif %}
+    <div class="clear"></div>
+  {% block group_content %}{% endblock %}
+  <div class='right'>
+    {% block group_menu %}{% endblock %}
+    {% if current_group and not is_member and not is_semi_member %}
+      <button id="enter" type="button" class="btn"><span>{{ "가입요청"|render_button }}</span></button>
+    {% endif %}
+    <button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+  </div>
+  </form>
+{% endblock %}
+

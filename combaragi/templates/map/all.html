@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}동문의 위치 확인{% endblock %}
+{% block external %}
+<script language="JavaScript" src="http://map.naver.com/js/naverMap.naver?key={{ naver_map_key }}"></script>
+{% endblock %}
+{% block onload %}
+{% endblock %}
+{% block head %}{% endblock %}
+{% block content %}
+<h1>동문의 위치 확인</h1>
+<form method="post" action=".">
+  {% csrf_token %}
+  <div id='mapContainer' style='width:{{width}}px;height:{{height}}px;border:1px solid gray;'></div>
+  <SCRIPT LANGUAGE="JavaScript">
+  <!--
+  var infoHeader = '<div class="nmap_lay_htype1" style="width: 171px; "><div class="nmap_lay_c"><span>';
+  var infoFooter = '</span></div><div class="nmap_lay_r"></div></div>';
+    function createMarker(pos, content, sidHash) {
+      var iconUrl = '{{ MEDIA_URL }}images/map/marker.png';    // 현재 마커 아이콘
+      var marker = new NMark(pos, new NIcon(iconUrl, new NSize(20, 34), new NSize(10, 34)));    // 마커를 만듭니다.
+      marker.setOverAmt(0,0);
+      NEvent.addListener(marker, "mouseover", function(pos) {
+          infowin.set(pos, infoHeader + content + infoFooter);
+          infowin.showWindow()
+      });
+      NEvent.addListener(marker, "mouseout", function() {
+          infowin.hideWindow();
+      });
+      NEvent.addListener(marker, "click", function(pos) {
+          //openWindow(URL, name, width, height);
+          openWindow("/account/info/"+sidHash+"/", sidHash, 980, 800);
+      });
+
+      return marker;
+    }
+
+    var mapObj = new NMap(document.getElementById('mapContainer'),{{width}},{{height}});
+    var infowin = new NInfoWindow();
+    infowin.setPos(new NInner(1.3,-2));
+    //mapObj.setCenterAndZoom(new NPoint(306405,551954),3);    // 학교앞
+    mapObj.setCenterAndZoom(new NPoint(310292,547628),7);    // 서울 중앙
+    //mapObj.setCenterAndZoom(new NPoint(418235,352877),11);  // 전국구
+    mapObj.addOverlay(infowin);
+    mapObj.enableWheelZoom();
+    {% for user in user_list %}
+    mapObj.addOverlay(createMarker(new NPoint({{ user.position }}), '{{ user|safe }}', '{{ user.sidHash }}'));      // 현재 마커를 등록
+    {% endfor %}
+
+    /* 지도 컨트롤 생성 (축척 수준, 미니맵) */
+    var zoom = new NZoomControl();
+    zoom.setAlign("left");
+    zoom.setValign("bottom");
+    mapObj.addControl(zoom);
+    var svb = new NMapBtns();
+    mapObj.addControl(svb);
+  //-->
+  </SCRIPT>
+
+</form>
+{% endblock %}

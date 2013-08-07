@@ -1,0 +1,95 @@
+{% extends "mentoring/base.html" %}
+{# 이 페이지는 아직 수정중입니다. #}
+{% block mentoring_title %}목록{% endblock %}
+{% block mentoring_head %}{{ list_type_name }}목록{% if form.key.data %} (검색어: {{form.key.data}}){% endif %}{% endblock %}
+{% block mentoring_external %}
+<link rel='stylesheet' type="text/css" href='/media/css/jquery.autocomplete.css'>
+<link rel="stylesheet" type="text/css" href="/media/css/bbs.css" />
+<script type="text/javascript" src="/media/js/jquery-lib/jquery.js"></script>
+<script type='text/javascript' src='/media/js/jquery-lib/jquery.bgiframe.min.js'></script>
+<script type='text/javascript' src='/media/js/jquery-lib/jquery.ajaxQueue.js'></script>
+<!--link rel="stylesheet" type="text/css" href="/media/css/thickbox.css" /--> 
+<!--script type='text/javascript' src='/media/js/jquery-lib/thickbox-compressed.js'></script-->
+<script type='text/javascript' src='/media/js/jquery-lib/jquery.autocomplete.js'></script>
+{% endblock %}
+{% block mentoring_content %}
+
+<div id="board_list">
+<table cellspacing=1 cellpadding=3 width=100% border=0 style="table-layout:fixed">
+  <colgroup>
+    <col width="35">
+    <col>
+    <col width="175">
+    <col width="76">
+    <col width="40">
+    </col>
+  </colgroup>
+  <tr>
+    <th>번호</th>
+    <th>제목</th>
+    <th>멘토/멘티</th>
+    <th>작성일시</th>
+    <th>답변</th>
+  </tr>
+  {% if question_list %}
+    {% for question in question_list %}
+    <tr class="{% cycle 'odd' 'even' %}" >
+      <td class='col_num'>{{ question.no }}</td>
+      <td class='col_title'>
+        <a href="/mentoring/question/read/{{question.id}}/?listtype={{list_type}}&page={{page}}">
+          {{question.title}}{% if not question.read %} <img src="/media/images/mentoring/mark_new.gif" />{% endif %}
+        </a>
+      </td>
+      <td>{{ question.mentor.user.get_profile|safe }} / {{ question.mentee.get_profile|safe }}</td>
+      <td>{{ question.created|date:"Y/m/d" }}</td>
+      <td>{% if question.reply %}*{% endif %}</td>
+    </tr>
+    {% endfor %}
+  {% else %}
+  <tr>
+    <td colspan=5>질문이 없습니다.</td>
+  </tr>
+  {% endif %}
+</table>
+
+
+<p align="center">
+<table cellspacing=0 cellpadding=3 width=90%  style="table-layout:fixed"><tr><td width="20%">
+</td><td align=center width="60%">
+{% if page > 1 %}
+<a href="/mentoring/list/{{list_type}}/{{page_before}}/">&lt;&lt;</a>
+{% endif %}
+{% if page_before >= 1 %}
+<a href="/mentoring/list/{{list_type}}/{{page_before}}/">&lt;</a>
+{% endif %}
+{% for pg in page_list %}
+{% if pg == page %}
+[{{pg}}]
+{% else %}
+<a href="/mentoring/list/{{list_type}}/{{pg}}/">{{pg}}</a>
+{% endif %}
+{% endfor %}
+{% if page_after <= total_page %}
+<a href="/mentoring/list/{{list_type}}/{{page_after}}/">&gt;</a>
+{% endif %}
+{% if page < total_page %}
+<a href="/mentoring/list/{{list_type}}/{{total_page}}/">&gt;&gt;</a>
+{% endif %}
+{% if total_page %}
+... 총 {{ total_page }} 페이지
+{% endif %}
+</td><td align=right width="20%">
+</td></tr></table>
+</p>
+</div>
+
+<div class='float_right'><span class="btn_pack medium"><a href="/mentoring/question/write/">질문하기</a></span></div>
+<form action="/mentoring/list/{{list_type}}/" method="GET">
+  <div class='center'>
+  {{ form.key|safe }}
+  <span class="btn_pack medium"><button type="submit">검색</button></span>
+  <span class="btn_pack medium"><a href="/mentoring/list/{{list_type}}/">전체</a></span>
+  </div>
+</form>
+<div class="clear"></div>
+{% endblock %}

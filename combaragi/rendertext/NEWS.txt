@@ -1,0 +1,4 @@
+New in version 0.1:
+
+GIF support
+Fixed rotation to be faster for common cases (90, 180 and 270 degrees)

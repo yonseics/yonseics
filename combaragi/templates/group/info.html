@@ -1,0 +1,8 @@
+{% extends "group/base.html" %}
+{% load rendertext %}
+{% block group_title %}소개{% endblock %}
+{% block group_head %}<a href="{% url group_main current_group.id %}">{{ "소개"|render_head }}</a>{% endblock %}
+{% block group_breadcrumbs %}<a href="{% url group_main current_group.id %}">{{ "Introduction"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block group_content %}
+  <div id="group_info">{{ current_group.desc|safe|linebreaksbr }}</div>
+{% endblock %}

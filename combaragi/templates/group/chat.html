@@ -1,0 +1,10 @@
+{% extends "group/base.html" %}
+{% load rendertext %}
+{% block group_title %}채팅{% endblock %}
+{% block group_head %}<a href="{% url group_chat current_group.id %}">{{ "채팅방"|render_head }}</a>{% endblock %}
+{% block group_breadcrumbs %}<a href="{% url group_chat current_group.id %}">{{ "Chat"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block group_content %}
+  <embed height="450" width="100%" src="http://www.gagalive.kr/livechat1.swf?chatroom={{ chat_hash }}&user={{ user.get_profile.get_pure_full_name }}&fontlarge=large"></embed>
+  <div class="clear">&nbsp;</div>
+
+{% endblock %}

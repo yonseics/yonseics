@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}업적 정보{% endblock %}
+{% block head %}<div class="portlet-header"><h4><button class="btn btn-small btn-icon btn-comment btn-maroon" title="습득하기 어려운 난이도 순으로 빨간색 > 주황색 > 초록색 순이며 그 외의 색은 특수업적입니다." rel="tooltip"><span></span>업적이란?</button></h4></div>{% endblock %}
+{% block onload %}
+{% endblock %}
+
+{% block content %}
+<div id="emblems">
+  <h1>현재 사용중인 업적:
+    {% if user.get_profile.currentEmblem %}{{ user.get_profile.currentEmblem.get_icon|safe }}{% else %}없음{% endif %}</h1>
+  <hr />
+  <div id="gainable">
+    <h3>획득 가능한 업적</h3>
+    {% if availables %}
+      {% for emblem_id, emblem in availables.items %}
+        <a href="{% url emblem_obtain emblem_id %}">{{ emblem|safe }}</a>
+      {% endfor %}
+    {% else %}
+      획득 가능한 업적이 없습니다.
+    {% endif %}
+  </div>
+  <hr />
+  <div id="usable">
+    <h3>사용 가능한 업적</h3>
+    {% if taken %}
+      {% for emblem in taken %}
+      <a href="{% url emblem_use emblem.id %}">{{ emblem.icon|safe }}</a>
+      {% endfor %}
+    {% else %}
+      사용 가능한 업적이 없습니다.
+    {% endif %}
+  </div>
+</div>
+<div class="right">
+  <span class="btn_pack medium"><a href="{% url account_info user.get_profile.sidHash %}">확인</a></span>
+</div>
+{% endblock %}
+

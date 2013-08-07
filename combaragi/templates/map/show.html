@@ -1,0 +1,42 @@
+{% extends "baseNoHeader.html" %}
+{% block title %}({{params.x}}, {{params.y}}) 확인{% endblock %}
+{% block external %}
+<script language="JavaScript" src="http://map.naver.com/js/naverMap.naver?key={{ naver_map_key }}"></script>
+{% endblock %}
+{% block onload %}
+{% endblock %}
+{% block content %}
+<form method="post" action=".">
+  {% csrf_token %}
+  <div id='mapContainer' style='width:600px;height:400px'></div>
+  <SCRIPT LANGUAGE="JavaScript">
+  <!--
+    function createMarker(pos) {
+      var iconUrl = '{{ STATIC_URL }}images/map/marker.png';    // 현재 마커 아이콘
+      var marker = new NMark(pos, new NIcon(iconUrl, new NSize(20, 34), new NSize(10, 34)));    // 마커를 만듭니다.
+      marker.setOverAmt(0,0);
+      return marker;
+    }
+
+    var mapObj = new NMap(document.getElementById('mapContainer'),600,400);
+    mapObj.setCenterAndZoom(new NPoint({{params.x}},{{params.y}}),3);
+    mapObj.enableWheelZoom();
+    mapObj.addOverlay(createMarker(new NPoint({{params.x}}, {{params.y}})));      // 현재 마커를 등록
+
+
+    /* 지도 컨트롤 생성 (축척 수준, 미니맵) */
+    var zoom = new NZoomControl();
+    zoom.setAlign("left");
+    zoom.setValign("bottom");
+    mapObj.addControl(zoom);
+    var svb = new NMapBtns();
+    mapObj.addControl(svb);
+  //-->
+  </SCRIPT>
+  <div id="confirm" style="width: 600px; height: 40px" align="center">
+    <input type="button" align="center" value="확인" class="BODYBUTTON" onclick="self.close();">
+    </p></td>
+  </div>
+
+</form>
+{% endblock %}

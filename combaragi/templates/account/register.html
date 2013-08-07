@@ -1,0 +1,14 @@
+{% extends "form_base.html" %}
+{% load static %}
+{% load rendertext %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+{% block title %}회원가입{% endblock %}
+{% block breadcrumbs %}<a href="{% url register %}">{{ "Register"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block head %}{{ "회원가입"|render_head }}{% endblock %}
+{% block form_buttons %}
+<button type="submit" class="btn"><span>{{ "가입"|render_button }}</span></button>
+<button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+{% endblock %}
+{% block form_bottom_content %}
+{% endblock %}
+

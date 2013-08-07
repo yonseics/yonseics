@@ -1,0 +1,82 @@
+{% extends "baseNoHeader.html" %}
+{% block title %}태그 추가{% endblock %}
+{% block external %}
+<script language="JavaScript" src="{{ STATIC_URL }}js/jquery-lib/jquery.imgareaselect.min.js"></script>
+<link rel='stylesheet' type="text/css" href='{{ STATIC_URL }}css/jquery.imageareaselect.css' />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/imgareaselect-animated.css" type="text/css" />
+<script type='text/javascript' src='{{ STATIC_URL }}js/jquery-lib/jquery.autocomplete.min.js'></script>
+<link rel='stylesheet' type="text/css" href='{{ STATIC_URL }}css/jquery.autocomplete.css'>
+<style>
+input.input_text { width:130px; background:white; }
+</style>
+{% endblock %}
+<script type="text/javascript"> 
+{% block onload %}
+function preview(img, selection) {
+    if (!selection.width || !selection.height)
+        return;
+    
+    var scaleX = 150 / selection.width;
+    var scaleY = 150 / selection.height;
+ 
+    $('#preview img').css({
+        width: Math.round(scaleX * img.width),
+        height: Math.round(scaleY * img.height),
+        marginLeft: -Math.round(scaleX * selection.x1),
+        marginTop: -Math.round(scaleY * selection.y1)
+    });
+ 
+    $('#x').val(selection.x1);
+    $('#y').val(selection.y1);
+    $('#w').val(selection.width);
+    $('#h').val(selection.height);    
+}
+ 
+$(function () {
+    $('#photo').imgAreaSelect({ aspectRatio: '1:1', handles: true,
+        fadeSpeed: 200, onSelectChange: preview });
+});
+{% endblock %}
+</script> 
+{% block content %}
+<form method="post" class="form" action=".">
+  {% csrf_token %}
+<div class="container demo"> 
+    <p class="instructions"> 
+    이미지에서 태그를 달기 원하는 부분을 드래그 하세요.
+    </p> 
+  <div style="float: left; margin:5px;"> 
+ 
+    <div class="frame" style="margin: 0 0.3em;"> 
+      <img id="photo" src="{{ photo.get_display_url }}" style=""/> 
+      <!--img id="photo" src="{{ STATIC_URL }}images/nullman.jpg" /--> 
+    </div> 
+  </div> 
+ 
+  <div style="float: left; margin:5px;"> 
+    <p style="font-size: 110%; font-weight: bold; padding-left: 0.1em;"> 
+      미리보기
+    </p> 
+  
+    <div class="frame" 
+      style="margin: 0 1em; width: 150px; height: 150px;"> 
+      <div id="preview" style="width: 150px; height: 150px; overflow: hidden;"> 
+        <img src="{{ photo.image.url }}" style="width: 150px; height: 150px;" /> 
+      </div> 
+    </div>
+  <div class='field'>
+  <p style="font-size: 110%; font-weight: bold; padding-left: 0.1em;">
+      태그이름: {{ userSearchForm.key|safe }}
+    </p>
+  </div>
+  <p class="center">
+    <button class="btn btn-plus btn-orange" type="submit">태그달기</button>
+  </p>
+  </div> 
+</div>
+<input type="hidden" name="x" id="x" value="-" />
+<input type="hidden" name="y" id="y" value="-" />
+<input type="hidden" name="w" id="w" value="-" />
+<input type="hidden" name="h" id="h" value="-" />
+</form>
+{% endblock %}

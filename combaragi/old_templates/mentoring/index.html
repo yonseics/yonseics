@@ -1,0 +1,81 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %}메인{% endblock %}
+{% block mentoring_head %}독수리 멘토링(가제){% endblock %}
+{% block mentoring_external %}
+{% endblock %}
+{% block mentoring_content %}
+<div id="mentor_board_list_box">
+  {% for list_name, question_list in question_list_list.items %}
+  <div class="mentor_board_list">
+  {{ list_name }}<div class='list_all float_right'><a href='list/{{question_list.list_type}}/'>전체보기</a></div>
+  <table cellspacing=1 cellpadding=3 width=50% border=0 style="table-layout:fixed">
+    <colgroup>
+      <col />
+      <col width="115" />
+      <col width="35" />
+    </colgroup>
+    <tr>
+      <th>질문</th>
+      <th>쓴시간</th>
+      <th>답변</th>
+    </tr>
+    {% if question_list %}
+      {% for question in question_list %}
+      <tr class="{% cycle 'odd' 'even' %}" >
+        <td class='col_title'><a href="/mentoring/question/read/{{question.id}}/">{{ question.title }}</a>{% if not question.read %} <img src="/media/images/mentoring/mark_new.gif" />{% endif %}</td>
+        <td>{{ question.created|date:"Y/m/d" }}</td>
+        <td class='col_num'>{% if question.reply %}*{% endif %}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+    <tr>
+      <td colspan=3>질문이 없습니다.</td>
+    </tr>
+    {% endif %}
+  </table>
+  </div>
+  {% if forloop.counter == 2 %}
+    <div class='clear'></div>
+  {% endif %}
+  {% endfor %}
+  <div class='float_right'><span class="btn_pack medium"><a href="/mentoring/question/write">질문하기</a></span></div>
+</div>
+<div id="mentor_ranking_list_box">
+  <div class="mentor_ranking_list">
+  <h3>이달의 멘토 랭킹</h3>
+  <table>
+    {% if mom %}
+      {% for q in mom %}
+      <tr><td>{{ forloop.counter }}위</td><td>{{ q.mentor__name|safe }}</td><td>{{ q.mentor__count }}점</td></tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="3">랭킹이 없습니다.</td></tr>
+    {% endif %}
+  </table>
+  </div>
+  <div class="mentor_ranking_list">
+  <h3>올해의 멘토 랭킹</h3>
+  <table>
+    {% if moy %}
+      {% for q in moy %}
+      <tr><td>{{ forloop.counter }}위</td><td>{{ q.mentor__name|safe }}</td><td>{{ q.mentor__count }}점</td></tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="3">랭킹이 없습니다.</td></tr>
+    {% endif %}
+  </table>
+  </div>
+</div>
+<div class="clear"></div>
+
+<div class="clear"></div>
+<!--p><a href="#TB_inline?height=155&width=400&inlineId=modalWindow" class="thickbox">thickbox</a></p-->
+<!-- ThickBox용 Division -->
+<!--div id="modalWindow" style="display: none;"> 
+  <p>
+    <label>E-Mail (local):</label>
+    <input type="text" id="thickboxEmail" />
+    <input type="button" value="Get Value" />
+  </p>
+</div--> 
+{% endblock %}

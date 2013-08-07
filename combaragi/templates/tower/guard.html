@@ -1,0 +1,25 @@
+{% extends "tower/base.html" %}
+{% block tower_title %}탑 지킴이 상세보기{% endblock %}
+{% block tower_external_js %}{% endblock %}
+{% block tower_external_css %}{% endblock %}
+<script>
+{% block tower_onload %}{% endblock %}
+</script>
+{% block tower_head %}<a href="{% url tower-guards %}">탑 지킴이 목록</a> &gt;&gt; 탑 지킴이 상세보기 ({{ guard }}){% endblock %}
+{% block tower_content %}
+  {% for action_image in guard.images.all %}
+    <div class="left action_image">
+      <div class="left">
+        <img src="{{ action_image.get_thumbnail_url }}">
+        <div class="action_text">{{ action_image }}</div>
+      </div>
+    </div>
+  {% empty %}
+    액션 이미지가 없습니다. 액션 이미지를 추가해 주세요!
+  {% endfor %}
+  <div class="clear"></div>
+  <div class="right">
+    <span class="btn_pack medium icon"><span class="add"></span><a href="{% url tower-create-action-image guard.id %}">액션 이미지 추가</a></span>
+    <span class="btn_pack medium"><a href="{% url tower-guards %}">뒤로</a></span>
+  </div>
+{% endblock %}

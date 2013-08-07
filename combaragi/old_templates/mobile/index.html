@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load linebreaksbrpre %}
+{% block title %}메인화면{% endblock %}
+{% block external %}
+  <link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.lightbox-0.5.css" />
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-lib/jquery.lightbox-0.5.min.js"></script>
+  <script>
+    function moreContent(id) {
+      $("#inbox_content_"+id).removeAttr("style");
+      $("#more_"+id).hide();
+      $.ajax({
+        type: "GET",
+        url: "/feed/more/content/"+id,
+        dataType: "html",
+        success: function(data){
+          $("#inbox_content_"+id).html(data);
+          $('#inbox_content_'+id+' a[rel*=lightbox]').lightBox({containerResizeSpeed: 0});
+          $("#inbox_content_"+id+" *[rel=tooltip]").tipsy ({ gravity: 's', html: true });
+        }
+      });
+    }
+    function moreComments(id, cnt) {
+      $("#more_comments_"+id).html('<img src="{{ MEDIA_URL }}images/loading.gif">');
+      $.ajax({
+        type: "GET",
+        url: "/feed/more/comments/"+id+"/"+cnt+"/",
+        dataType: "html",
+        success: function(data){
+          $("#more_comments_"+id).hide();
+          $("#inbox_comments_"+id).prepend(data);
+          $("#inbox_comments_"+id+" *[rel=tooltip]").tipsy ({ gravity: 's', html: true });
+        }
+      });
+    }
+
+    function moreRecentComments(bulletin_id, last_comment_id) {
+      $.ajax({
+        type: "GET",
+        url: "/feed/more/recent_comments/"+bulletin_id+"/"+last_comment_id+"/",
+        dataType: "html",
+        success: function(data){
+          $("#inbox_comments_"+bulletin_id).append(data);
+          new_last_comment_id = $($("#inbox_comments_"+bulletin_id+" .inbox_content")[$("#inbox_comments_"+bulletin_id+" .inbox_content").size()-1]).attr('id').split('_')[1];
+          $("#comment-input_"+bulletin_id+"_"+last_comment_id).show();
+          $("#comment-input_"+bulletin_id+"_"+last_comment_id).siblings("img").remove();
+          $("#comment-input_"+bulletin_id+"_"+last_comment_id).attr("id", "comment-input_"+bulletin_id+"_"+new_last_comment_id);
+          $("#inbox_comments_"+bulletin_id+" *[rel=tooltip]").tipsy ({ gravity: 's', html: true });
+        }
+      });
+    }
+
+
+  </script>
+{% endblock %}
+<script>
+{% block onload %}
+  var SCROLL_PADDING = 200;
+  $(window).scroll(function(){
+    if ($(window).scrollTop() >= $(document).height() - $(window).height() - SCROLL_PADDING){
+      $('#get_more_feed').click();
+    }
+  });
+  {% for feed in user.feed_list.all %}
+  $('#feed_del_index_{{ feed.id }}').click(function() {
+    $.ajax({
+      type: "GET",
+      url: "/feed/del/{{ feed.id }}/?tval={{user.get_profile.get_tval}}",
+      dataType: "script",
+      success: function(data){
+        $( "#feed_index_{{ feed.id }}" ).hide();
+      }
+    });
+    return false;
+  });
+  {% endfor %}
+  var page = 0;
+  var more_clicked = false;
+  function setGetMoreFeed() {
+    $("#get_more_feed").unbind("click");
+    $('#get_more_feed').click(function() {
+      if (more_clicked) return false;
+      more_clicked = true;
+      //$('#get_more_feed').html('<img src="{{ MEDIA_URL }}images/loading.gif" style="width:15px; height:15px;">');
+      $('#get_more_feed').html('Loading...');
+      $.ajax({
+        type: "GET",
+        url: "/feed/more/"+page,
+        dataType: "html",
+        timeout:5000,
+        success: function(data){
+          if (data) {
+            $("#inbox_table #inbox_body").append(data);
+            $("#inbox_table #inbox_body .comment_input").focus(function() {
+              if ($(this).val() == "댓글을 입력하세요...") {
+                $(this).parent().parent().find(".comment_picture").show();
+                $(this).val("")
+                .removeClass("comment_help");
+                $(this).parent()
+                .removeClass("comment_box_full")
+                .addClass("comment_box_no_full");
+              }
+            }).blur(function() {
+              if (!$(this).val()) {
+                $(this).val("댓글을 입력하세요...")
+                .addClass("comment_help");
+                $(this).parent()
+                .removeClass("comment_box_no_full")
+                .addClass("comment_box_full");
+                $(this).parent().parent().find(".comment_picture").hide();
+              }
+            }).keydown(function(event) {
+              if (event.keyCode == '13') {
+                // 엔터쳤음.
+                // 여기서 ajax메시지를 보내주고 만약 성공하면 현재 댓글 수를 넣어서 보내준다.
+                // 일단 댓글다는 폼 자체를 없애고 그곳에 loading아이콘을 넣자.
+                if (!$(this).val()) return;
+                $(this).hide();
+                $(this).parent().append($('<img src="{{MEDIA_URL}}images/loading.gif">'));
+                splited = $(this).attr("id").split("_");
+                bulletin_id = splited[1];
+                last_comment_id = splited[2];
+                $.ajax({
+                  type: "POST",
+                  url: "/board/comment/"+bulletin_id+"/ajax_append/",
+                  data: {content:$(this).val()},
+                  dataType: "html",
+                  timeout:5000,
+                  success: function(data){
+                    moreRecentComments(bulletin_id, last_comment_id);
+                  },
+                  error: function() {
+                    // Error!
+                    // 하지만 사용자는 반응을 기다릴 것이므로...걱정 안해도 됨.
+                  }
+                });
+                $(this).val("");
+              }
+            });
+            $("#inbox_table #inbox_body .who *[rel=tooltip]").tipsy ({ gravity: 's', html: true });
+            $('#get_more_feed').html('다음 글 보기');
+            page++;
+          }
+          else {
+            $("#get_more_feed").html("더 이상 글이 없습니다.")
+              .unbind("click");
+          }
+          more_clicked = false;
+        },
+        error: function() {
+          //alert("연결 상태가 좋지 않습니다. 조금 뒤에 다시 시도해 주세요.");
+          $('#get_more_feed').html('연결 상태가 좋지 않습니다. 다음 글 보기');
+        }
+      });
+      return false;
+    });
+  }
+  setGetMoreFeed();
+  $('#get_new_feed').click(function() {
+    page = 0;
+    $("#inbox_table tbody").html("");
+    setGetMoreFeed();
+    $('#get_more_feed').click();
+  });
+  $('#get_new_feed2').click(function(){
+    $('#get_new_feed').click();
+  });
+  $('#get_more_feed').click();
+{% endblock %}
+</script>
+{% block head %}
+  <div class="portlet-header"><h4>
+  {% if user.is_authenticated %}
+    <div class="float_right">
+      <a href="/feed/rss/" title="RSS" rel="tooltip" class="rss btn-mini btn-orange btn-rss"><span></span>RSS Feed</a>
+      <a href="/feed/rss/" title="ATOM" rel="tooltip" class="rss rss-right btn-mini btn-orange btn-rss"><span></span>Atom Feed</a>
+    </div>
+    전체글 보기 <a id="get_new_feed2" href="javascript:;" title="새로고침" rel="tooltip" class="rss btn-mini btn-teal btn-refresh"><span></span>Refresh</a>
+  {% else %}
+    {% if notice %}
+      <div{% if notice.is_new %} class="left mark_new"{% endif %}>최근 공지사항: {{ notice.title }} - {{ notice.get_writerName|safe }}&nbsp;</div>
+    {% else %}
+    로그인 해 주세요
+    {% endif %}
+  {% endif %}
+  </h4></div>
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+  <!--여기에 js로 새로운 글들을 5개 받아오는 걸 하고
+  아래에 다음글 보기를 ajax로 받아오게 하자.-->
+
+  <table cellspacing="0" id="inbox_table" class="inbox_table">
+    <tbody id="inbox_body"></tbody>
+  </table>
+  <div class="center"><span class="btn_pack large"><a id="get_more_feed" href="javascript:;">다음 글 보기</a></span>
+    <span class="btn_pack large"><a id="get_new_feed" href="javascript:;">최근 글 보기</a></span></div>
+
+{% else %}
+  {% if notice %}
+    {{ notice.content|linebreaksbrpre|safe }}
+  {% else %}
+    로그인 해 주세요
+  {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "simplewiki_formbase.html" %}
+{% load i18n simplewiki_utils rendertext %}
+{% block wiki_page_title %}
+  {{ "새로운 위키 페이지 작성:"|render_head }}
+  {% if wiki_title %}
+    {{ wiki_title|render_head|safe }}
+  {% else %}
+    {{ "루트 페이지"|render_head }}
+  {% endif %}
+{% endblock %}
+{% block form_buttons %}
+  <button type="submit" class="btn"><span>{{ "생성"|render_button }}</span></button>
+  <button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+{% endblock %}

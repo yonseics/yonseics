@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load rendertext %}
+
+{% block title %}Page not found{% endblock %}
+{% block breadcrumbs %}<a href="#">{{ "Page Not Found!"|render_bread }}</a>{% endblock %}
+
+{% block head %}
+{{ "아이쿠! 페이지가 없어요! >.<"|render_black:24 }}
+{% endblock %}
+{% block content %}
+
+<p>그런 페이지는 없습니다. 뒤로 가서 다시 탐색해 보세요.</p>
+<p>Sorry, but the requested page could not be found.</p>
+<p>깨진 링크를 발견하였다면 limsungkee<img src="{{ STATIC_URL }}images/at.png" class="at">gmail.com으로 메일 주세요!</p>
+<div class="right">
+  <button type="button" class="btn" onclick="javascript:history.back();"><span>{{ "뒤로가기"|render_button }}</span></button>
+</div>
+{% endblock %}

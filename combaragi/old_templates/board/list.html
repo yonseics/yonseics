@@ -1,0 +1,72 @@
+{% extends "board/base.html" %}
+{% block board_title %}목록{% endblock %}
+{% block board_head %}
+  {% if form.key.data %}(검색어: {{form.key.data}}){% endif %}{% endblock %}
+<script type="text/javascript">
+{% block onload %}
+  $('#id_categories').change(function(e){
+    var target = null;
+    if ($(this).val() > 0)
+      target = "{% url board_main board.name %}?category="+$(this).val();
+    else
+      target = "{% url board_main board.name %}";
+    window.location.replace(target);
+  });
+  $('#id_categories').val("{{ cid }}");
+{% endblock %}
+</script>
+{% block board_content %}
+{% if categories %}
+  <div class="right">
+    <label for="id_categories">카테고리: </label>
+    <select id="id_categories" class="medium">
+      <option value="0">전체보기</option>
+      {% for category in categories %}
+        <option value="{{ category.id }}" >{{ category.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+{% endif %}
+<div id="board_list">
+{% block list_content %}{% endblock %}
+
+<!-- UI Object -->
+<div class="paginate_simple">
+  {% if page > 1 %}
+    <a href="{{baseURL}}" class="direction"> ‹‹ <span>First</span></a>
+  {% endif %}
+  {% if page_before >= 1 %}
+    <a href="{{baseURL}}/?page={{page_before}}&category={{ cid }}" class="direction"> ‹ <span>Prev</span></a>
+  {% endif %}
+  {% for pg in page_list %}
+  {% if pg == page %}
+    <strong>{{pg}}</strong>
+  {% else %}
+  <a href="{{baseURL}}/?page={{pg}}&category={{ cid }}">{{pg}}</a>
+  {% endif %}
+  {% endfor %}
+{% if page_after <= total_page %}
+  <a href="{{baseURL}}/?page={{page_after}}&category={{ cid }}" class="direction"><span>Next</span> › </a>
+{% endif %}
+{% if page < total_page %}
+  <a href="{{baseURL}}/?page={{total_page}}&category={{ cid }}" class="direction"><span>Last</span> ›› </a>
+{% endif %}
+{% if total_page %}
+... 총 {{ total_page }} 페이지
+{% endif %}
+</div>
+<!-- //UI Object -->
+</div>
+
+<div class='float_right'>
+  {% if supportWrite %}<span class="btn_pack icon medium"><span class="add"></span><a href="{% url board_write board.name %}?category={{ cid }}">글쓰기</a></span>{% endif %}
+  <span class="btn_pack icon medium"><span class="calendar"></span><a href="{{ baseURL }}">목록</a></span>
+</div>
+<form class="form" id="searchForm" action="{{baseURL}}/" method="GET">
+  <div class='center field'>
+  {{ form.key|safe }}
+  <span class="btn_pack medium"><a href="javascript:;" onclick="$('#searchForm').submit()">검색</a></span>
+  </div>
+</form>
+<div class="clear"></div>
+{% endblock %}

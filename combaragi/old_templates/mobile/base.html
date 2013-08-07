@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+  <title>컴바라기 | {% block title %}{% endblock %}</title>
+
+  <link rel="SHORTCUT ICON" href="/static/favicon.ico" />
+  <link rel="stylesheet" href="/static/css/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="/static/css/plugin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="/static/css/custom.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="/static/css/nav.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="/static/css/btn_pack.css" type="text/css" media="all" />
+
+  <script type="text/javascript" src="/static/js/jquery/jquery.1.3.2.min.js"></script>{# Jquery 1.3.2 #}
+  <script type="text/javascript" src="/static/js/jquery/jquery.cookie.js"></script>
+  <!--script language="javascript" src="/static/js/boxover.js" type="text/javascript" charset="UTF-8"></script-->{# 파란박스를 띄워준다 #}
+  <script  type="text/javascript" src="/static/js/slate/slate.js"></script>
+  <script  type="text/javascript" src="/static/js/slate/slate.portlet.js"></script>
+  <script  type="text/javascript" src="/static/js/plugin.js"></script>
+  <script  type="text/javascript" src="/static/js/global.js"></script>
+  <script language="javascript" type="text/javascript" charset="UTF-8">
+  //기본 네비게이션 초기화
+  $(function(){
+    {% for feed in user.feed_list.all %}
+    $('#feed_del_{{ feed.id }}').click(function() {
+      $.ajax({
+        type: "GET",
+        url: "/feed/del/{{ feed.id }}/?tval={{user.get_profile.get_tval}}",
+        dataType: "script",
+        success: function(data){
+          $( "#feed_{{ feed.id }}" ).hide();
+          // 여기서 새로운 feed 3번째를 받아온다.
+          $.ajax({
+            type: "GET",
+            url: "/feed/third/?tval={{user.get_profile.get_tval}}",
+            dataType: "script",
+            success: function(data){
+              // 여기서 새로운 feed 3번째를 받아온다.
+              $( "#nav_feed_list" ).append(data);
+            }
+          });
+        }
+      });
+      return false;
+    });
+    {% endfor %}
+
+    $(document).ajaxSend(function(event, xhr, settings) {
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+          (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+          // or any other URL that isn't scheme relative or absolute i.e relative.
+          !(/^(\/\/|http:|https:).*/.test(url));
+      }
+      function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+
+      if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+      }
+    });
+
+    {% block onload %}{% endblock %}
+  });
+  </script>
+  {% block external %}{% endblock %}
+</head>
+
+<body>
+
+<div id="wrapper">
+
+  <div id="header">
+    <h1><a href="/">컴바라기</a></h1>
+
+    <div id="info">
+      {% if user.is_authenticated %}
+      <div id="logout"><a href="/account/modify/">정보수정</a> <a href="/logout/">로그아웃</a></div><h4>{{ user.get_profile.get_full_name_with_emblem|safe }}님&nbsp;</h4>
+
+      <p>
+        <ul id="nav_feed_list">
+          {% if user %}{% for feed in user.get_profile.get_recent_feed_list %}
+            <li class="feed" id="feed_{{ feed.id }}">{{ feed|safe }} <a id='feed_del_{{ feed.id }}' href='#'>삭제</a></li>
+          {% empty %}
+            <li>새로운 알림이 없습니다.</li>
+          {% endfor %}{% endif %}
+        </ul>
+      </p>
+        <a rel="facebox" href="{{ user.get_profile.get_portrait_url }}"><img src="{{ user.get_profile.get_portrait_url }}" alt="avatar" /></a>
+      {% else %}
+        <h4><a href="/login/">Login</a> <a href="/account/register/">회원가입</a></h4>
+        <p>로그인 해 주세요</p>
+        <img src="/static/images/avatar.jpg" alt="avatar" />
+      {% endif %}
+
+    </div> <!-- #info -->
+
+  </div> <!-- #header -->
+
+  <div id="nav">
+
+    <ul class="mega-container mega-grey">
+
+      <li class="mega">
+        <a href="/" class="mega-link">뉴스피드</a>
+      </li>
+
+      <!--li class="mega">
+        <a href="/mentoring/" class="mega-link">멘토링</a>
+      </li-->
+
+      <li class="mega">
+        <a href="/group/" class="mega-link">소모임</a>
+      </li>
+
+      <!--li class="mega">
+        <a href="/scrapbook/" class="mega-link">스크랩북</a>
+      </li-->
+
+      <!--li class="mega">
+        <a href="/board/my/" class="mega-link">내글</a>
+      </li>
+
+      <li class="mega">
+        <a href="/known/" class="mega-link">지인목록</a>
+      </li-->
+
+      <li class="mega">
+        <a href="/mail/" class="mega-link">편지</a>
+      </li>
+
+      <li class="mega">
+        <a href="/gcalendar/" class="mega-link">행사일정</a>
+      </li>
+
+      <li class="mega">
+        <a href="/account/list/" class="mega-link">회원명부</a>
+      </li>
+
+      <li class="mega">
+        <a href="/map/all/" class="mega-link">지도</a>
+      </li>
+
+      <li class="mega">
+        <a href="/ranking/" class="mega-link">순위</a>
+      </li>
+    </ul>
+  </div> <!-- #nav -->
+
+
+
+
+  <div id="content" class="xfluid">
+    {% block upper_container %}{% endblock %}
+
+    <div id="side_board_list" class="portlet x2">
+      <div class="portlet-header"><h4>게시판</h4></div>
+
+      <ul class="portlet-content">
+        {% block additional_link %}{% endblock %}
+        {% if user.is_authenticated %}
+        <li class="bullet_dot"><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid }}학번</a></li>
+        <li><hr /></li>
+        {% endif %}
+        <li class="bullet_dot"><a {% if user.get_profile.check_notice %}class="mark_new" {% endif %}href="/board/notice/">공지사항</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_freeboard %}class="mark_new" {% endif %}href="/board/freeboard/">자유게시판</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_intro %}class="mark_new" {% endif %}href="/board/self_introduction/">소개</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_photo %}class="mark_new" {% endif %}href="/board/photo/">사진첩</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_subjects %}class="mark_new" {% endif %}href="/board/subjects/">과목</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_qna %}class="mark_new" {% endif %}href="/board/qna/">질문/답변</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_information %}class="mark_new" {% endif %}href="/board/information/">정보</a></li>
+        {% if user.member_groups.exists %}
+        <li><hr /></li>
+        {% for group in user.member_groups.all %}
+        <li class="bullet_dot"><a {% if group.is_new %}class="mark_new" {% endif %}href="/board/{{ group.name }}/">{{ group.title }}</a></li>
+        {% endfor %}
+        {% endif %}
+      </ul> <!-- .portlet-content -->
+    </div> <!-- .portlet -->
+
+    <div id="{% block content_id %}{% endblock %}" class="portlet x10">
+
+      {% block head %}{% endblock %}
+      <div class="portlet-content">
+        {% block content %}{% endblock %}
+      </div> <!-- .portlet-content -->
+    </div> <!-- .portlet -->
+
+    {% block lower_container %}{% endblock %}
+  </div> <!-- #content -->
+
+
+  <div id="footer">
+
+    <p>컴바라기 V1.0, Copyright &copy; 2011 <a href="javascript:;" title="04 임승기" rel="tooltip">UNKI</a>, all rights reserved.</p>
+
+  </div> <!-- #footer -->
+
+</div> <!-- #wrapper -->
+
+{% if user.is_authenticated %}
+<!--div id="chat_area" class="chat_area{% if chat_disabled == "1" %} chat_area_disabled{% endif %}{% if chat_maximized == "1" %} chat_area_maximized{% endif %}">
+  <a href="javascript:;" id="toogle_chat_enable" class="float_right">{% if chat_disabled == "1" %}보이기{% else %}숨기기{% endif %}</a>
+  <a href="javascript:;" id="toogle_chat_size" class="float_right">{% if chat_maximized == "1" %}작게{% else %}크게{% endif %}</a>
+  <h1 id="chat_title">채팅방</h1>
+  <embed height="140" width="270" class="chat{% if chat_disabled == "1" %} chat_disabled{% endif %}{% if chat_maximized == "1" %} chat_maximized{% endif %}" src="http://www.gagalive.kr/livechat1.swf?chatroom=yonseics&user={{ user.get_profile.get_pure_full_name }}&fontlarge="></embed>
+</div-->
+<div id="chat_area">
+  <a href="javascript:;" id="toogle_chat_enable" class="float_right">숨기기</a>
+  <a href="javascript:;" id="toogle_chat_size" class="float_right">크게</a>
+  <h1 id="chat_title">채팅방</h1>
+  <embed height="140" width="300" src="http://www.gagalive.kr/livechat1.swf?chatroom=yonseics&user={{ user.get_profile.get_pure_full_name }}&fontlarge="></embed>
+</div>
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+$(function ()
+{
+  slate.init ();
+  //slate.portlet.init ();
+});
+</script>
+
+</body>
+
+</html>

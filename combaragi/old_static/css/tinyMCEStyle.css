@@ -1,0 +1,18 @@
+/*@import url("syntaxHighlighter/shCoreDefault.css");*/
+
+body { 
+	font-family: "Dotum", "Lucida Grande","Lucida Sans Unicode", helvetica, verdana, arial, sans-serif;
+	font-size:78%;
+/*	font-size-adjust:none;
+	font-stretch:normal;*/
+	color: #333;
+	letter-spacing:normal;
+	/*background: #EDEDED url(img/body.gif);*/
+	background:white;
+	/*text-align: center;*/
+	/*margin: 40px 0 20px 0;*/
+}
+p {
+	margin: 0px;
+	padding: 0px;
+}

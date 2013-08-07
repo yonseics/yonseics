@@ -1,0 +1,53 @@
+{% extends "tower/base.html" %}
+{% load time_filters %}
+{% block tower_title %}메인{% endblock %}
+{% block tower_external_js %}{% endblock %}
+{% block tower_external_css %}{% endblock %}
+<script>
+{% block tower_onload %}{% endblock %}
+</script>
+{% block tower_head %}메인{% endblock %}
+{% block tower_content %}
+  <div id='tower_left'>
+  <h2>정복된 탑</h2>
+  {% for tower in cleared_towers %}
+  <a href="{% url tower-info tower.slug %}">
+    <img src="{{ MEDIA_URL }}{{ tower.image }}" height=80 rel="tooltip" title="{{ tower.name }}">
+  </a>
+  {% empty %}
+    개설된 탑이 없습니다.
+  {% endfor %}
+  <hr />
+  <h2>정복되지 못한 탑</h2>
+  {% for tower in uncleared_towers %}
+  <a href="{% url tower-info tower.slug %}">
+    <img src="{{ MEDIA_URL }}{{ tower.image }}" height=80 rel="tooltip" title="{{ tower.name }}">
+  </a>
+  {% empty %}
+    개설된 탑이 없습니다.
+  {% endfor %}
+  <hr />
+  <h2>내가 건설중인 탑</h2>
+  {% for tower in building_towers %}
+  <a href="{% url tower-info tower.slug %}">
+    <img src="{{ MEDIA_URL }}{{ tower.image }}" height=80 rel="tooltip" title="{{ tower.name }}">
+  </a>
+  {% empty %}
+    건설중인 탑이 없습니다.
+  {% endfor %}
+  </div>
+  <div id='tower_right'>
+  <h2>최근에는...</h2>
+  {% for climb_info in climb_infos %}
+    <p title='{{ climb_info.updated|humanizeTimeDiff }}' rel='tooltip'><a href="{% url tower-info climb_info.tower.slug %}" >{{ climb_info }}</a></p>
+  {% empty %}
+    <p>활동이 없습니다.</p>
+  {% endfor %}
+  </div>
+  <div class="clear"></div>
+  <div class='right'>
+    <span class="btn_pack medium icon"><span class="add"></span><a href="{% url tower-create-tower %}">탑 만들기</a></span>
+    <span class="btn_pack medium"><a href="{% url tower-guards %}">탑 지킴이 보기</a></span>
+  </div>
+{% endblock %}
+

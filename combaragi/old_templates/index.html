@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load linebreaksbrpre %}
+{% block title %}메인화면{% endblock %}
+{% block external %}
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.lightbox-0.5.css" />
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-lib/jquery.lightbox-0.5.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/freeboard_ajax.js"></script>
+{% endblock %}
+<script>
+{% block onload %}
+  ajax_board = $.ajax_board({
+    more_button: '#get_more_feed',
+    board_slug: ''
+  });
+{% endblock %}
+</script>
+{% block head %}
+{% if must_notice %}
+  <div class="portlet-header"><h4>
+      <div{% if must_notice.is_new %} class="left mark_new"{% endif %}>중요공지사항: <a href="/board/notice/read/{{ must_notice.id }}/">{{ must_notice.title }}</a>&nbsp;</div>
+  </h4></div>
+</div>
+<div id="{% block content_id %}{% endblock %}" class="portlet x10">
+{% endif %}
+  <div class="portlet-header"><h4>
+  {% if user.is_authenticated %}
+    <div class="float_right">
+      <a href="/feed/rss/" title="RSS" rel="tooltip" class="rss btn-mini btn-orange btn-rss"><span></span>RSS Feed</a>
+      <a href="/feed/rss/" title="ATOM" rel="tooltip" class="rss rss-right btn-mini btn-orange btn-rss"><span></span>Atom Feed</a>
+    </div>
+    전체글 보기 <a id="get_new_feed2" href="javascript:;" title="새로고침" rel="tooltip" class="rss btn-mini btn-teal btn-refresh"><span></span>Refresh</a> <a href="{% url board_write 'freeboard' %}" title="자유게시판에 글 쓰기" rel="tooltip" class="rss btn-mini btn-green btn-plus"><span></span>Write</a>
+  {% else %}
+    {% if notice %}
+      <div{% if notice.is_new %} class="left mark_new"{% endif %}>최근 공지사항: {{ notice.title }} - {{ notice.get_writerName|safe }}&nbsp;</div>
+    {% else %}
+    로그인 해 주세요
+    {% endif %}
+  {% endif %}
+  </h4></div>
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+  <!--여기에 js로 새로운 글들을 5개 받아오는 걸 하고
+  아래에 다음글 보기를 ajax로 받아오게 하자.-->
+
+  <table cellspacing="0" id="inbox_table" class="inbox_table">
+    <tbody id="inbox_body"></tbody>
+  </table>
+  <div class="center"><span class="btn_pack large"><a id="get_more_feed" href="javascript:;">다음 글 보기</a></span>
+    <span class="btn_pack large"><a id="get_new_feed" href="javascript:;">최근 글 보기</a></span></div>
+
+{% else %}
+  {% if notice %}
+    {{ notice.content|linebreaksbrpre|safe }}
+  {% else %}
+    로그인 해 주세요
+  {% endif %}
+{% endif %}
+{% endblock %}

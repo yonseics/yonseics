@@ -1,0 +1,49 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %} &gt;&gt; 답변하기{% endblock %}
+{% block mentoring_head %}답변하기{% endblock %}
+{% block mentoring_external %}
+<link rel="stylesheet" type="text/css" href="/media/css/bbs.css" />
+<script type="text/javascript" src="/media/js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
+<script language="javascript" src="/media/js/setup_tiny_mce.js"></script>
+{% endblock %}
+{% block mentoring_content %}
+
+<form method="post" action=".">
+{% csrf_token %}
+<table class="boardview" width=100% border=0 cellspacing=0 cellpadding=5 style="table-layout:fixed">
+  <colgroup>
+    <col width='80'>
+    <col>
+  </colgroup>
+  <tr>
+    <th class="fieldName">제목</th>
+    <td>
+      {{ question.title }}
+    </td>
+  </tr>
+
+  <tr>
+    <th class="fieldName">질문내용</th>
+    <td class="textareaCol">
+      <div class="textareaBorder">
+        {{ question.content|safe }}
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <th class="fieldName">답변</th>
+    <td class="textareaCol">
+      <div class="textareaBorder">
+        {{ form.reply.errors }}
+        {{ form.reply }}
+      </div>
+    </td>
+  </tr>
+</table>
+<div class='float_right'>
+  <span class="btn_pack medium"><button type="submit">답변</button></span>
+  <span class="btn_pack medium"><a href="/mentoring/question/read/{{ question.id }}/">취소</a></span>
+</div>
+</form>
+<div class="clear"></div>
+{% endblock %}

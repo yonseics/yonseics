@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load static %}
+{% load rendertext %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+  <title>{#% if user.get_profile.get_recent_feed_list %}({{user.get_profile.get_recent_feed_list.count}}) {% endif %#}컴바라기 | {% block title %}{% endblock %}</title>
+
+  <link rel="SHORTCUT ICON" href="{% get_static_prefix %}favicon.ico" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/plugin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/custom.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/nav.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+  <link rel="stylesheet" href="{% get_static_prefix %}css/btn_pack.css" type="text/css" media="all" />
+  {% block external_css %}{% endblock %}
+
+  <script type="text/javascript" src="{% get_static_prefix %}js/jquery/jquery.1.4.2.min.js"></script>{# Jquery 1.4.2 #}
+  <script type="text/javascript" src="{% get_static_prefix %}js/jquery/jquery.cookie.js"></script>
+  <!--script language="javascript" src="{% get_static_prefix %}js/boxover.js" type="text/javascript" charset="UTF-8"></script-->{# 파란박스를 띄워준다 #}
+  <script  type="text/javascript" src="{% get_static_prefix %}js/slate/slate.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/slate/slate.portlet.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/plugin.js"></script>
+  <script  type="text/javascript" src="{% get_static_prefix %}js/global.js"></script>
+  <script language="javascript" type="text/javascript" charset="UTF-8">
+  //기본 네비게이션 초기화
+  $(document).ready(function(){
+    //bindNav();
+    {% block onload %}{% endblock %}
+  });
+  </script>
+  {% block external_js %}{% endblock %}
+  {% block external %}{% endblock %}
+</head>
+
+<body>
+
+<div id="wrapper">
+
+  <div id="header">
+    <h1><a href="/">컴바라기</a></h1>
+
+    <div id="info">
+      {% if user.is_authenticated %}
+      <div id="logout">
+        <a href="/account/modify/">정보수정</a> <a href="/logout/">로그아웃</a>
+      </div>
+      <h4>{{ user.get_profile.get_full_name_with_emblem|safe }}님&nbsp;</h4>
+
+      <div id="nav_icon_list">
+        <!--img src="{% get_static_prefix %}images/top_icon/judge.png" width="32" rel="tooltip" title="온라인 저지"-->
+        <!--img src="{% get_static_prefix %}images/top_icon/wiki.png" width="32" rel="tooltip" title="위키">
+        <img src="{% get_static_prefix %}images/top_icon/bomb.png" width="32" rel="tooltip" title="폭탄"-->
+        <a href="{% url tower-main %}"><img src="{% get_static_prefix %}images/top_icon/tower.png" width="32" rel="tooltip" title="탑"></a>
+        <a href="/ranking/"><img src="{% get_static_prefix %}images/top_icon/chart.png" width="32" rel="tooltip" title="랭킹"></a>
+        <a href="/mail/"><img src="{% get_static_prefix %}images/top_icon/mail.png" width="32" rel="tooltip" title="메일"></a>
+        <a href="/account/list/"><img src="{% get_static_prefix %}images/top_icon/user_list.png" width="32" rel="tooltip" title="회원명부"></a>
+      </div>
+      <a rel="facebox" href="{{ user.get_profile.get_portrait_url }}"><img src="{{ user.get_profile.get_portrait_url }}" alt="avatar" class="avatar" /></a>
+      {% else %}
+        <h4><a href="/login/">{{ "Login"|render1 }}</a> <a href="/account/register/">{{ "회원가입"|render1 }}</a></h4>
+        <p>로그인 해 주세요</p>
+        <img src="{% get_static_prefix %}images/avatar.jpg" alt="avatar" class="avatar" />
+      {% endif %}
+
+    </div> <!-- #info -->
+
+  </div> <!-- #header -->
+
+  <!--div id="nav">
+
+    <ul class="mega-container mega-grey">
+
+      <li class="mega">
+        <a href="/" class="mega-link">뉴스피드</a>
+      </li>
+
+      <!--li class="mega">
+        <a href="/mentoring/" class="mega-link">멘토링</a>
+      </li->
+
+      <li class="mega">
+        <a href="/group/" class="mega-link">소모임</a>
+      </li>
+
+      <!--li class="mega">
+        <a href="/scrapbook/" class="mega-link">스크랩북</a>
+      </li-->
+
+      <!--li class="mega">
+        <a href="/board/my/" class="mega-link">내글</a>
+      </li>
+
+      <li class="mega">
+        <a href="/known/" class="mega-link">지인목록</a>
+      </li->
+
+      <li class="mega">
+        <a href="/mail/" class="mega-link">편지</a>
+      </li>
+
+      <li class="mega">
+        <a href="/gcalendar/" class="mega-link">행사일정</a>
+      </li>
+
+      <li class="mega">
+        <a href="/account/list/" class="mega-link">회원명부</a>
+      </li>
+
+      <!--li class="mega">
+        <a href="/map/all/" class="mega-link">지도</a>
+      </li->
+
+      <li class="mega">
+        <a href="/ranking/" class="mega-link">순위</a>
+      </li>
+    </ul>
+  </div> <!-- #nav -->
+
+  <div id="content" class="xfluid">
+    {% block upper_container %}{% endblock %}
+
+    <div id="side_board_list" class="portlet x2">
+      <!--div class="portlet-header"><h4>게시판</h4></div-->
+
+      <ul class="portlet-content">
+        {% block additional_link %}{% endblock %}
+        <li class="bullet_dot"><a {% if user.get_profile.check_notice %}class="mark_new" {% endif %}href="/board/notice/">공지사항</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_freeboard %}class="mark_new" {% endif %}href="/board/freeboard/">자유게시판</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_intro %}class="mark_new" {% endif %}href="/board/self_introduction/">소개</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_subjects %}class="mark_new" {% endif %}href="/board/subjects/">과목</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_qna %}class="mark_new" {% endif %}href="/board/qna/">질문</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_information %}class="mark_new" {% endif %}href="/board/information/">정보</a></li>
+        <li class="bullet_dot"><a {% if user.get_profile.check_photo %}class="mark_new" {% endif %}href="/board/photo/">사진첩</a></li>
+        {% if user.is_authenticated %}
+          <li><hr /></li>
+          <li class="bullet_dot"><a href="/group/">소모임 목록</a></li>
+          <li class="bullet_dot"><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid }}학번 소모임</a></li>
+          {% for group in user.member_groups.all %}
+          <li class="bullet_dot"><a {% if group.is_new %}class="mark_new" {% endif %}href="/board/{{ group.name }}/">{{ group.title }}</a></li>
+          {% endfor %}
+        {% endif %}
+      </ul> <!-- .portlet-content -->
+    </div> <!-- .portlet -->
+
+    <div id="{% block content_id %}{% endblock %}" class="portlet x10">
+
+      {% block head %}{% endblock %}
+      <div class="portlet-content">
+        {% block content %}{% endblock %}
+      </div> <!-- .portlet-content -->
+    </div> <!-- .portlet -->
+
+    {% block lower_container %}{% endblock %}
+  </div> <!-- #content -->
+
+
+  <div id="footer">
+
+    <p>컴바라기 V1.0, Copyright &copy; 2011 <a href="javascript:;" title="04 임승기" rel="tooltip">UNKI</a>, all rights reserved. E-mail: limsungkee<img class="at" src="{% get_static_prefix %}images/at.png">gmail.com</p>
+
+  </div> <!-- #footer -->
+
+</div> <!-- #wrapper -->
+
+<script type="text/javascript" charset="utf-8">
+$(function ()
+{
+  slate.init ();
+});
+</script>
+
+</body>
+
+</html>

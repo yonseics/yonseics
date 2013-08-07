@@ -1,0 +1,115 @@
+{% extends "doublebase.html" %}
+{% load linebreaksbrpre %}
+{% load static %}
+{% load linebreaksbrpre %}
+{% load rendertext %}
+{% block title %}메인화면{% endblock %}
+{% block external_js %}
+  <script type="text/javascript">
+    // initialize slideshow (Cycle)
+    var firstCycle = true;
+    $(document).ready(function($) {
+      if ($('#Slides').length > 0) {
+        $('#Slides').cycle({ 
+          fx: 'scrollHorz',
+          speed: 750,
+          timeout: 6000, 
+          randomizeEffects: false, 
+          easing: 'easeOutCubic',
+          next:   '.slideNext', 
+          prev:   '.slidePrev',
+          pager:  '#slidePager',
+          cleartypeNoBg: true,
+          after: function(curr, next, opts) {
+            // reset the overlay for the next slide
+            jQuery('#SlideRepeat').css('cursor','default').unbind('click');
+            // get the link and apply it to the overlay
+            toGet = (firstCycle) ?  $('#Slides').children(':eq(0)') : next;
+            var linkURL = jQuery(toGet).attr('href') || jQuery(toGet).children('a').attr('href') || false;
+            if (linkURL) {
+              jQuery('#SlideRepeat').css('cursor','pointer').click( function() {
+                document.location.href = linkURL;
+              });
+            } 
+            firstCycle = false;
+          }
+        });
+      }
+    });
+  </script>
+  <!--link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.lightbox-0.5.css" />
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-lib/jquery.lightbox-0.5.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/freeboard_ajax.js"></script-->
+{% endblock %}
+<script>
+{% block onload %}
+  /*ajax_board = $.ajax_board({
+    more_button: '#get_more_feed',
+    board_slug: ''
+  });*/
+{% endblock %}
+</script>
+{% block pre_content %}
+<!-- Slide show: jQuery Cycle (default) -->
+<div id="Slideshow">
+  <div id="SlideTop"></div>
+  <div id="SlideRepeat"></div>
+  <div id="SlideBottom"></div>
+  <div id="Slides">
+    <a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-1.png" width="948" height="341" alt="Slide 1" /></a>
+    <img src="{% get_static_prefix %}images/slideshow/slide-2.png" width="948" height="341" alt="Slide 2" />
+    <!--a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-3.png" width="948" height="341" alt="Slide 3" /></a>
+    <img src="{% get_static_prefix %}images/slideshow/slide-4.png" width="948" height="341" alt="Slide 4" />
+    <a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-5.png" width="948" height="341" alt="Slide 5" /></a>
+    <img src="{% get_static_prefix %}images/slideshow/slide-6.png" width="948" height="341" alt="Slide 6" /-->
+  </div>
+  <a href="#" class="slidePrev"></a>
+  <a href="#" class="slideNext"></a>
+  <div id="slidePager"></div>
+</div>
+{% endblock %}
+{% block content_area %}
+
+  <div>
+    <img src="{% get_static_prefix %}images/icons/board.png" width="85" height="75" alt="computer monitor" style="float:right; margin: -2px 30px 0 15px;" /> 
+    {% if must_notice %}
+      <h1><a{% if must_notice.is_new %} class="mark_new"{% endif %} href="{% url board-read must_notice.board.name must_notice.id %}">{{ must_notice.title|render_black:24|safe }}</a> - {{ must_notice.get_writerName|safe }}</h1>
+      <hr />
+      <p>
+        {{ must_notice.content|safe|urlize|linebreaksbrpre|safe }}
+      </p>
+    {% else %}
+    <h1>{{ "최근 공지사항이 없습니다."|render_black:24 }}</h1>
+    {% endif %}
+  </div>
+
+  <div class="hr"></div>
+  {% if birthday_left or birthday_right %}
+  <!-- birthday -->
+  <div class="ribbon">
+    <div class="wrapAround"></div>
+    <div class="tab">
+      <span>{{ "이번달 생일을 맞은 학우들"|render_ribbon }}</span>
+    </div>
+  </div>
+  {% if birthday_left %}
+  <div class="two-thirds-half">
+    <ul class="bullet-disc-blue">
+      {% for birthday in birthday_left %}
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.get_pure_sid|render_sid:14|safe }} {{ birthday.user.first_name|render_black:14|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if birthday_right %}
+  <div class="two-thirds-half">
+    <ul class="bullet-disc-blue">
+      {% for birthday in birthday_right %}
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.get_pure_sid|render_sid:14|safe }} {{ birthday.user.first_name|render_black:14|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% endif %}
+
+{% endblock %}

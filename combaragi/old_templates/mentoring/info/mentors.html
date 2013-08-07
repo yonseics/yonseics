@@ -1,0 +1,87 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %}{{ type }} 멘토 리스트{% endblock %}
+{% block mentoring_head %}{{ type }} 멘토 리스트{% if search_form.key.data %} (검색어: {{search_form.key.data}}){% endif %}{% endblock %}
+{% block mentoring_external %}
+<link rel='stylesheet' type="text/css" href='/media/css/jquery.autocomplete.css'>
+<script type='text/javascript' src='/media/js/jquery-lib/jquery.autocomplete.js'></script>
+{% endblock %}
+{% block mentoring_content %}
+
+<div id="board_list">
+<table cellspacing=1 cellpadding=3 width=100% border=0 style="table-layout:fixed">
+  <colgroup>
+    <col width="35"></col>
+    <col width="70"></col>
+    <col></col>
+    <col width="76"></col>
+    <col width="52"></col>
+    <col width="52"></col>
+    <col width="52"></col>
+  </colgroup>
+  <tr>
+    <th>번호</th>
+    <th>이름</th>
+    <th>분야</th>
+    <th>멘티수</th>
+    <th>응답수</th>
+{% if allMentor %}
+    <th>상태</th>
+{% else %}
+    <th>승낙여부</th>
+{% endif %}
+    <th>질문하기</th>
+    </tr>
+  {% for mentor in mentorList %}
+    <tr class="{% cycle 'odd' 'even' %}" >
+      <td class='col_num'>{{ forloop.counter }}</td>
+      <td class='col_title'>
+        {{ mentor.user.get_profile|safe }}
+      </td>
+      <td>
+        {% for tag in mentor.tags %}
+          <a href="?key={{tag}}">{{tag}}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+      <td>{{ mentor.menteeCnt }}</td>
+      <td>{{ mentor.replyCnt }}</td>
+{% if allMentor %}
+      <td>{% if mentor.related %}{{ mentor.related }}{% else %}<a href="/mentoring/register/mentee/{{ mentor.id }}/">신청</a>{% endif %}</td>
+{% else %}
+      <td>{% if mentor.relation.accepted %}예{% else %}아니오{% endif %}</td>
+{% endif %}
+      {% if allMentor %}
+        <td>{% if mentor.related and mentor.related == "Yes" %}<a href="/mentoring/question/write/?mentor_id={{ mentor.id }}">질문하기</a>{% endif %}</td>
+      {% else %}
+        <td>{% if mentor.relation.accepted %}<a href="/mentoring/question/write/?mentor_id={{ mentor.id }}">질문하기</a>{% endif %}</td>
+      {% endif %}
+    </tr>
+  {% empty %}
+    <tr>
+      <td colspan=7>{{type}} 멘토 리스트가 없습니다.</td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% if allMentor %}
+  <form action="/mentoring/info/mentors/" method="GET">
+{% else %}
+  <form action="/mentoring/myinfo/mentors/" method="GET">
+{% endif %}
+  <div class='center'>
+  {{ search_form.key|safe }}
+  <span class="btn_pack medium"><button type="submit">검색</button></span>
+  <span class="btn_pack medium"><a href="/mentoring/{% if not allMentor %}my{% endif %}info/mentors">전체</a></span>
+  </div>
+</form>
+
+<div class="clear"></div>
+<!--p><a href="#TB_inline?height=155&width=400&inlineId=modalWindow" class="thickbox">thickbox</a></p-->
+<!-- ThickBox용 Division -->
+<!--div id="modalWindow" style="display: none;"> 
+  <p>
+    <label>E-Mail (local):</label>
+    <input type="text" id="thickboxEmail" />
+    <input type="button" value="Get Value" />
+  </p>
+</div--> 
+{% endblock %}

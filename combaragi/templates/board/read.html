@@ -1,0 +1,686 @@
+{% extends "board/base.html" %}
+{% load time_filters %}
+{% load rendertext %}
+{% load linebreaksbrpre %}
+{% block board_title %}{{ bulletin.title }}{% endblock %}
+{% block board_breadcrumbs %}
+  {% if board.name == 'all' %}
+  <span>&raquo;</span> <a href="{% url board-list bulletin.board.name %}">{{ bulletin.board.title|render_bread|safe }}</a>
+  {% endif %}
+  <span>&raquo;</span> <a href="{% url board-read board.name bulletin.id %}">{{ bulletin.title|render_bread|safe }}</a>
+{% endblock %}
+{% block board_head %}
+ <div id="time_diff" title="{{ bulletin.created|date:'Y년 n월 j일 A g시 i분 s초' }}">{{ bulletin.created|humanizeTimeDiff }}에 작성됨</div>
+  {{ bulletin.title|render_head|safe }}
+{% endblock %}
+{% block content_id %}support-details{% endblock %}
+{% block board_external_js %}
+<script language="javascript" type="text/javascript" charset="UTF-8" src="{{ STATIC_URL }}js/jquery/jquery.confirm-1.3.js"></script>
+<!-- SyntaxHighlighter -->
+<script  type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.scrollTo.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.lightbox-0.5.min.js"></script>
+{% if relatedPosition %}
+<script type="text/javascript" language="JavaScript" src="http://map.naver.com/js/naverMap.naver?key={{ naver_map_key }}"></script>
+{% endif %}
+{% if bulletin.gallery %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.galleriffic.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.opacityrollover.js"></script>
+  <!-- We only want the thunbnails to display when javascript is disabled -->
+  <script type="text/javascript">
+    document.write('<style>.noscript { display: none; }</style>');
+  </script>
+{% endif %}
+
+<!--script type="text/javascript " src="{{ STATIC_URL }}js/jquery-lib/jquery.rating.pack.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-lib/jquery.MetaData.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.rating.css"/-->
+
+{% endblock %}
+{% block board_external_css %}
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/syntaxHighlighter/shCoreDefault.css" />
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.lightbox-0.5.css" />
+  {% if bulletin.gallery %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/galleriffic.css" type="text/css" />
+  {% endif %}
+{% endblock %}
+<script type="text/javascript">
+{% block onload %}
+  preventReloading();      // 의도되지 않은 새로고침을 방지하여 줍니다.
+{% if relatedPosition %}
+  var infoHeader = '<div class="nmap_lay_htype1" style="width: 171px; "><div class="nmap_lay_c"><span>';
+  var infoFooter = '</span></div><div class="nmap_lay_r"></div></div>';
+  function createMarker(pos, content) {
+    if (!content) {
+      content = "설명이 없습니다";
+    }
+    var iconUrl = '{{ STATIC_URL }}images/map/marker.png';    // 현재 마커 아이콘
+    var marker = new NMark(pos, new NIcon(iconUrl, new NSize(20, 34), new NSize(10, 34)));    // 마커를 만듭니다.
+    marker.setOverAmt(0,0);
+    /*NEvent.addListener(marker, "mouseover", function(pos) {
+        infowin.set(pos, infoHeader + content + infoFooter);
+        infowin.showWindow()
+    });
+    NEvent.addListener(marker, "mouseout", function() {
+        infowin.hideWindow();
+    });*/
+    infowin.set(pos, infoHeader + content + infoFooter);
+    infowin.showWindow()
+    return marker;
+  }
+
+  var mapObj = new NMap(document.getElementById('mapContainer'),680,500);
+  var infowin = new NInfoWindow();
+  infowin.setPos(new NInner(1.3,-2));
+  mapObj.setCenterAndZoom(new NPoint({{relatedPosition.position}}),3);
+  mapObj.addOverlay(infowin);
+  //mapObj.enableWheelZoom();
+  mapObj.addOverlay(createMarker(new NPoint({{relatedPosition.position}}), "{{relatedPosition.title}}"));      // 현재 마커를 등록
+
+
+  /* 지도 컨트롤 생성 (축척 수준, 미니맵) */
+  var zoom = new NZoomControl();
+  zoom.setAlign("left");
+  zoom.setValign("bottom");
+  mapObj.addControl(zoom);
+  var svb = new NMapBtns();
+  mapObj.addControl(svb);
+{% endif %}
+{% if bulletin.gallery %}
+  // We only want these styles applied when javascript is enabled
+  $('div.navigation').css({'width' : '100%', 'float' : 'left'});
+  $('div.content').css('display', 'block');
+
+  // Initially set opacity on thumbs and add
+  // additional styling for hover effect on thumbs
+  var onMouseOutOpacity = 0.67;
+  $('#thumbs ul.thumbs li').opacityrollover({
+    mouseOutOpacity:   onMouseOutOpacity,
+    mouseOverOpacity:  1.0,
+    fadeSpeed:         'fast',
+    exemptionSelector: '.selected'
+  });
+
+  // Enable toggling of the caption
+  var captionOpacity = 0.0;
+  $('#captionToggle a').click(function(e) {
+    var link = $(this);
+
+    var isOff = link.hasClass('off');
+    var removeClass = isOff ? 'off' : 'on';
+    var addClass = isOff ? 'on' : 'off';
+    var linkText = isOff ? '캡션 숨기기' : '캡션 보이기';
+    captionOpacity = isOff ? 0.7 : 0.0;
+
+    link.removeClass(removeClass).addClass(addClass).text(linkText).attr('title', linkText);
+    $('#caption span.image-caption').fadeTo(1000, captionOpacity);
+
+    e.preventDefault();
+  });
+  // Enable toggling of the caption
+  var tagOpacity = 0.0;
+  $('#tagToggle a').click(function(e) {
+    var link = $(this);
+
+    var isOff = link.hasClass('off');
+    var removeClass = isOff ? 'off' : 'on';
+    var addClass = isOff ? 'on' : 'off';
+    var linkText = isOff ? '태그 숨기기' : '태그 보이기';
+    tagOpacity = isOff ? 0.9 : 0.0;
+
+    link.removeClass(removeClass).addClass(addClass).text(linkText).attr('title', linkText);
+    $('#tag span.image-tag').fadeTo(1000, tagOpacity);
+
+    e.preventDefault();
+  });
+
+
+  // Initialize Advanced Galleriffic Gallery
+  var gallery = $('#thumbs').galleriffic({
+    delay:                     2500,
+    numThumbs:                 12,
+    preloadAhead:              5,
+    enableTopPager:            true,
+    enableBottomPager:         true,
+    maxPagesToShow:            15,
+    imageContainerSel:         '#slideshow',
+    controlsContainerSel:      '#controls',
+    captionContainerSel:       '#caption',
+    tagContainerSel:           '#tag',
+    loadingContainerSel:       '#loading',
+    renderSSControls:          true,
+    renderNavControls:         true,
+    playLinkText:              '슬라이드쇼 시작',
+    pauseLinkText:             '슬라이드쇼 중지',
+    prevLinkText:              '&lsaquo; 이전 사진',
+    nextLinkText:              '다음 사진 &rsaquo;',
+    nextPageLinkText:          '다음 &rsaquo;',
+    prevPageLinkText:          '&lsaquo; 이전',
+    enableHistory:             false,
+    autoStart:                 false,
+    syncTransitions:           true,
+    defaultTransitionDuration: 900,
+    enableKeyboardNavigation:  false,
+    onSlideChange:             function(prevIndex, nextIndex) {
+      // 'this' refers to the gallery, which is an extension of $('#thumbs')
+      this.find('ul.thumbs').children()
+        .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
+        .eq(nextIndex).fadeTo('fast', 1.0);
+    },
+    onTransitionOut:           function(slide, caption, tag, isSync, callback) {
+      slide.fadeTo(this.getDefaultTransitionDuration(isSync), 0.0, callback);
+      caption.fadeTo(this.getDefaultTransitionDuration(isSync), 0.0);
+      tag.fadeTo(this.getDefaultTransitionDuration(isSync), 0.0);
+    },
+    onTransitionIn:            function(slide, caption, tag, isSync) {
+      var duration = this.getDefaultTransitionDuration(isSync);
+      slide.fadeTo(duration, 1.0);
+
+      // Position the caption at the bottom of the image and set its opacity
+      var slideImage = slide.find('img');
+      caption.fadeTo(duration, captionOpacity);
+      tag.width(slideImage.width())
+        .height(slideImage.height())
+        .css({
+          'top' : Math.floor((slide.height() - slideImage.outerHeight()) / 2)+2,    // 왜 2픽셀이 부족하지??
+          'left' : Math.floor((slide.width() - slideImage.width()) / 2) + slideImage.outerWidth() - slideImage.width()
+        })
+        .fadeTo(duration, tagOpacity);
+    },
+    onPageTransitionOut:       function(callback) {
+      this.fadeTo('fast', 0.0, callback);
+    },
+    onPageTransitionIn:        function() {
+      this.fadeTo('fast', 1.0);
+    }
+  });
+  $('#captionToggle a').click().remove();
+  $('#tagToggle a').click().remove();
+  /**** Functions to support integration of galleriffic with the jquery.history plugin ****
+
+  // PageLoad function
+  // This function is called when:
+  // 1. after calling $.historyInit();
+  // 2. after calling $.historyLoad();
+  // 3. after pushing "Go Back" button of a browser
+  function pageload(hash) {
+    // alert("pageload: " + hash);
+    // hash doesn't contain the first # character.
+    if(hash) {
+      $.galleriffic.gotoImage(hash);
+    } else {
+      gallery.gotoIndex(0);
+    }
+  }
+
+  // Initialize history plugin.
+  // The callback is called at once by present location.hash.
+  $.historyInit(pageload, "advanced.html");
+
+  // set onlick event for buttons using the jQuery 1.3 live method
+  $("a[rel='history']").live('click', function(e) {
+    if (e.button != 0) return true;
+
+    var hash = this.href;
+    hash = hash.replace(/^.*#/, '');
+
+    // moves to a new page.
+    // pageload is called at once.
+    // hash don't contain "#", "?"
+    $.historyLoad(hash);
+
+    return false;
+  });
+
+  /****************************************************************************************/
+{% if gotoIndex %}
+  gallery.gotoIndex({{ gotoIndex }});
+{% endif %}
+{% endif %}
+//TODO: pretty photo쓸거면 주석해제하고...
+//$("a[rel^='prettyPhoto']").prettyPhoto({theme: 'facebook',slideshow:5000, autoplay_slideshow:true});
+//$("a[rel^='prettyPhoto']").prettyPhoto({slideshow:5000, autoplay_slideshow:true});
+$('a[rel*=lightbox]').lightBox({
+  containerResizeSpeed: 0
+   });
+confirmGo('delete', '정말 삭제하시겠습니까?', "{% url board-delete board.name bulletin.id %}?page={{page}}&category={{ cid }}");
+{% if bulletin.notice %}
+  {% if bulletin.writer == user or user.is_staff %}
+  ajaxConfirmReplace('notice_out', "{% url notice-out-ajax bulletin.id %}", "이 글을 공지에서 내리시겠습니까?", {{ user.get_profile.get_tval }});
+  {% endif %}
+{% endif %}
+{% if not bulletin.notice and bulletin.writer == user %}
+ajaxConfirmReplace('notice_in', "{% url notice-in-ajax bulletin.id %}", "이 글을 공지로 올리시겠습니까?", {{ user.get_profile.get_tval }});
+{% endif %}
+{% if not scraped %}ajaxConfirmReplace('scrap','{% url board-scrap-ajax bulletin.id %}','이 글을 스크랩 하시겠습니까?', {{ user.get_profile.get_tval }});{% endif %}
+{% if not liked %}ajaxReplace('like','{% url board-like-ajax bulletin.id %}', {{ user.get_profile.get_tval }});{% endif %}
+{% for comment in commentList %}
+confirmGo('delete_comment_{{ comment.id }}', '정말 삭제하시겠습니까?', "{% url board-comment-delete board.name bulletin.id comment.id %}?page={{page}}&category={{ cid }}");
+{% endfor %}
+
+{% if toComment %}
+  $.scrollTo ( '#comment-{{ toComment }}' , 0);
+  $('#comment-{{ toComment }} td').css("backgroundColor", "#fee");
+{% endif %}
+
+pastSrc = "{{ STATIC_URL }}images/avatar.jpg";
+$("#id_nametype").click(function(){
+  var tmp = $("#my_avatar").attr("src");
+  $("#my_avatar").attr("src", pastSrc);
+  pastSrc = tmp;
+});
+$("#my_avatar").click(function(){
+  $("#id_nametype").click();
+});
+
+{% endblock %}
+</script>
+
+{% block board_content %}
+
+  <div id="board_content" class="entry content">
+    {{ bulletin.content|safe|urlize|linebreaksbrpre|safe }}
+    <br />
+    <br />
+
+    <div id="read_footer">
+
+      <h2>{{ "글쓴이"|render_bold_black:18 }}</h2>
+      <div id="about_the_author">
+        <div class="author_content">
+          <div class="gravatar">
+            <a class="cboxElement" rel="lightbox" href="{{ bulletin.writer.get_profile.get_portrait_url }}">
+              <img alt="{{ bulletin.get_pure_writer_name }}" src="{{ bulletin.writer.get_profile.get_portrait_thumbnail }}" height="60" width="60">
+            </a>
+          </div>
+          <div class="author_info">
+            <div class="author_name">{{ bulletin.get_writerName|safe }}</div>
+            <div class="author_desc">{{ bulletin.get_writer_introduction|linebreaksbr }}</div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      {% if image_files %}
+        <h2>{{ "첨부이미지"|render_bold_black:18 }}</h2>
+        {% for file in image_files %}
+        <a title="첨부{{ forloop.counter }}. {{ file.name }}" rel="lightbox[attached]" href="{{ file.file.url }}">
+        <img src="{{ file.file.url }}" alt="{{ file.name }}" style="max-width:580px;">
+        </a>
+        <h5></h5>
+        {% endfor %}
+      {% endif %}
+      {% if files %}
+        <h2>{{ "첨부파일"|render_bold_black:18 }}:
+        {% for file in files %}
+          <a href='{{ file.file.url }}'><img src="{{ STATIC_URL }}images/board/file_icon.gif" alt="{{ file.name }}" title='이름: {{ file.name }}, 용량: {{ file.size|filesizeformat }}' rel="tooltip"></a>
+        {% endfor %}
+        </h2>
+      {% endif %}
+      {% if bulletin.gallery %}
+      <h2>{{ "덧붙임 갤러리"|render_bold_black:18 }}</h2>
+
+      <div id="page">
+        <div id="container">
+          <h1>{{ object.title }}</h1>
+          {% if bulletin.gallery.description %}<p>{{ bulletin.gallery.description }}</p>{% endif %}
+          <!-- Start Advanced Gallery Html Containers -->
+          <div id="gallery" class="content">
+            <div id="controls" class="controls"></div>
+            <div class="slideshow-container">
+              <div id="loading" class="loader"></div>
+              <div id="slideshow" class="slideshow"></div>
+              <div id="tag" class="tag-container"></div>
+            </div>
+            <div id="caption" class="caption-container"></div>
+            <div id="captionToggle">
+              <a href="#toggleCaption" class="off" title="캡션 보기">캡션 보기</a>
+            </div>
+            <div id="tagToggle">
+              <a href="#toggleTag" class="off" title="태그 보기">태그 보기</a>
+            </div>
+          </div>
+
+          <div style="clear: both;"></div>
+        </div>
+      </div>
+      <div id="thumbs" class="navigation">
+        <ul class="thumbs noscript">
+        {% for photo in bulletin.photos %}
+          <li>
+            <a class="thumb" name="leaf" href="{{ photo.get_display_url }}" title="{{ photo.title }}">
+              <img src="{{ photo.get_thumbnail_url }}" alt="{{ photo.title }}" />
+            </a>
+            <div class="caption">
+              <div class="download">
+                <a href="#" onclick="openWindow('{% url board-tag-add board.name bulletin.id photo.id forloop.counter %}?page={{page}}&category={{ cid }}', 'addTag', 929, 628)">태그 추가</a> |
+                <a href="{{ photo.image.url }}" target="_blank">원본 사진</a>
+              </div>
+              <div class="image-title">{{ photo.title }}</div>
+            </div>
+            <div class="tag">
+              <div id="tag-message"></div>
+              <div id="tag-pending"></div>
+              {% for tag in photo.tags %}
+              <img src="{{STATIC_URL}}images/transparent.gif" id="{{ tag.id }}" style="position:absolute;width:{{tag.w}};height:{{tag.h}}px;top:{{tag.y}}px;left:{{tag.x}}px;" alt="{{tag.title}}" />
+              {% endfor %}
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="clear"></div>
+      <br />
+      {% endif %}
+
+
+      {% if commentList.count > 1 %}
+      <div class="right">
+        <button type="button" class="btn" onclick="MoveTo('{% url board-list board.name %}?page={{ page }}');"><span>{{ "목록"|render_button }}</span></button>
+      </div>
+      {% endif %}
+      <div class="clear"></div>
+
+      <div id="comments">
+
+        {% if commentList %}
+          <h2>{{ "댓글"|render_bold_black:18 }}</h2>
+
+          <ul class="commentlist">
+
+            {% for comment in commentList %}
+            <li id="comment-{{ bulletin.id }}-{{ comment.id }}" class="comment">
+              <div id="comment-{{ comment.id }}" class="comment_wrap">
+                <div class="gravatar">
+                  <a class="cboxElement" rel="lightbox" href="{{ comment.get_portrait_url }}">
+                    <img alt="{{ comment.get_pure_writer_name }}" src="{{ comment.get_portrait_thumbnail }}" height="60" width="60">
+                  </a>
+                </div>
+                <div class="comment_content">
+                  <div class="comment_meta">
+                    <div class="comment_time float_right">{{ comment.created|humanizeTimeDiff }}에 작성됨</div>
+                    <div class="comment_author"><span></span>{% spaceless %}
+                    {% if not comment.isHiddenUser %}
+                      {{ comment.get_writerName|safe }}
+                    {% else %}
+                      {{ comment.hiddenUser }}
+                    {% endif %}
+                    {% endspaceless %}
+                    {% if comment.is_my_comment and comment.can_modify %}
+                      <a href="{% url board-comment-delete board.name bulletin.id comment.id %}"><img src="{{ STATIC_URL }}images/board/delete.png"></a>
+                    {% endif %}
+                    </div>
+                  </div>
+                  <div class="comment_text">
+                    {{ comment.content|urlize|linebreaksbr }}
+                  </div>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <div class="right">
+          {% if like_list %}
+            <a href="javascript:;" rel="tooltip" title="{% for like in like_list %}{% if not forloop.first %}, {% endif %}{{ like.user.get_profile.get_pure_full_name }}{% endfor %}">{{ like_list|length }}명</a>이 이 글을 좋아합니다.
+          {% endif %}
+          {% if not bulletin.deleted and not scraped and bulletin.notice %}
+            {% if bulletin.writer == user or user.is_staff %}
+            <button id="notice_out" type="button" class="btn"><span>{{ "공지내리기"|render_button }}</span></button>
+            {% endif %}
+          {% endif %}
+          {% if not bulletin.deleted and not scraped and bulletin.writer == user and not bulletin.notice %}
+            <button id="notice_in" type="button" class="btn"><span>{{ "공지올리기"|render_button }}</span></button>
+          {% endif %}
+          {% if isMyBulletin and not bulletin.deleted %}
+            {% if can_modify %}
+              <button type="button" class="btn" onclick="MoveTo('{% url board-modify board.name bulletin.id %}?page={{page}}');"><span>{{ "수정"|render_button }}</span></button>
+              <button id="delete" type="button" class="btn"><span>{{ "삭제"|render_button }}</span></button>
+            {% else %}
+            작성한지 {{ modify_days }}일 이상 지난 글은 수정/삭제할 수 없습니다.
+            {% endif %}
+          {% endif %}
+          {% if not bulletin.deleted and not liked and bulletin.writer != user %}
+            <button id="like" type="button" class="btn"><span>{{ "좋아요"|render_button }}</span></button>
+          {% endif %}
+          <button type="button" class="btn" onclick="MoveTo('{% url board-list board.name %}?page={{ page }}');"><span>{{ "목록"|render_button }}</span></button>
+        </div>
+        <div class="clear"></div>
+
+        <div id="respond">
+
+          <form action="." method="post">
+          <p>
+            {{ "댓글달기"|render_bold_black:18 }}
+            {% if board.allowAnom %}
+                {{ form.nametype.label_tag }}
+                {{ form.nametype }}
+            {% else %}
+              <input type="hidden" name="nametype" value="0" />
+            {% endif %}
+          </p>
+
+            {% csrf_token %}
+
+
+            <input type="hidden" name="re" value="{{ reply_id }}">
+            {{ form.non_field_errors }}
+
+            <div class="field">
+              {{ form.content }}
+            </div>
+            <div class="right">
+              <button type="submit" class="btn"><span>{{ "댓글달기"|render_button }}</span></button>
+            </div>
+            <div class="clear"></div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+    <div class="clearboth"></div>
+{% endblock %}
+
+{% block board_content_ %}
+<div id="board_content" class="portlet-content">
+
+  <!--h1>{{ bulletin.title }}</h1-->
+
+  <div class="request-info">
+    <ul>
+      <li><strong>글쓴이:</strong> {{ bulletin.get_writerName|safe }}</li>
+      <li><strong>언제:</strong> {{ bulletin.created|humanizeTimeDiff }}</li>
+      <li><strong>첨부:</strong>
+        {% for file in files %}
+        {% if file.isImage %}
+        <a href="{{ file.file.url }}"><img src="{{ STATIC_URL }}images/board/image_icon.png" alt="{{ file.name }}" title="{{ file.name }}" rel="tooltip"></a>
+        {% else %}
+        <a href='{{ file.file.url }}'><img src="{{ STATIC_URL }}images/board/file_icon.gif" alt="{{ file.name }}" title='이름: {{ file.name }}, 용량: {{ file.size|filesizeformat }}' rel="tooltip"></a>
+        {% endif %}
+        {% empty %}
+          없음
+        {% endfor %}
+      </li>
+    </ul>
+
+
+  </div>
+
+  {{ bulletin.content|safe|urlize|linebreaksbrpre|safe }}
+
+  {% if files %}
+  <hr />
+  <h2>첨부이미지</h2>
+  {% endif %}
+  {% for file in files %}
+  {% if file.isImage %}
+  <a title="클릭하면 크게 보입니다." rel="lightbox" href="{{ file.file.url }}">
+  <img src="{{ file.file.url }}" alt="{{ file.name }}" style="max-width:680px;">
+  </a>
+  <h5>첨부{{ forloop.counter }}. {{ file.name }}</h5>
+  {% endif %}
+  {% endfor %}
+
+  <div class="clear"></div>
+
+  <div class="right">
+    {% if like_list %}
+      <a href="javascript:;" rel="tooltip" title="{% for like in like_list %}{% if not forloop.first %}, {% endif %}{{ like.user.get_profile.get_pure_full_name }}{% endfor %}">{{ like_list|length }}명</a>이 이 글을 좋아합니다.
+    {% endif %}
+    {% if not bulletin.deleted and not scraped and bulletin.notice %}
+      {% if bulletin.writer == user or user.is_staff %}
+      <a id="notice_out" href="javascript:;"><span class="btn_pack medium icon"><span class="delete"></span><button type="button">공지내리기</button></span></a>
+      {% endif %}
+    {% endif %}
+    {% if not bulletin.deleted and not scraped and bulletin.writer == user and not bulletin.notice %}
+      <a id="notice_in" href="javascript:;"><span class="btn_pack medium icon"><span class="check"></span><button type="button">공지로올리기</button></span></a>
+    {% endif %}
+    {% if not bulletin.deleted and not liked and bulletin.writer != user %}
+      <a id="like" href="javascript:;"><span class="btn_pack medium icon"><span class="check"></span><button type="button">좋아요</button></span></a>
+    {% endif %}
+    {% if isMyBulletin and not bulletin.deleted %}
+      {% if can_modify %}
+        <span class="btn_pack icon medium"><span class="check"></span><a href="{% url board-modify board.name bulletin.id %}?page={{page}}&category={{ cid }}">수정</a></span>
+        <a id="delete" href="javascript:;"><span class="btn_pack medium icon"><span class="delete"></span><button type="button">삭제</button></span></a>
+      {% else %}
+      작성한지 {{ modify_days }}일 이상 지난 글은 수정/삭제할 수 없습니다.
+      {% endif %}
+    {% endif %}
+    <span class="btn_pack icon medium"><span class="calendar"></span><a href="{% url board-list board.name %}?page={{ page }}&category={{ cid }}">목록</a></span>
+  </div>
+
+{% if relatedPosition %}
+  <hr />
+  <h2>덧붙임 위치정보  <span class="btn_pack medium"><button type="submit" onclick="printMap();">인쇄</button></span></h2>
+  <div id='mapContainer' style='margin:0 auto;width:680px;height:500px'></div>
+{% endif %}
+{% if bulletin.gallery %}
+  <hr />
+  <h2>덧붙임 갤러리</h2>
+
+  <div id="page">
+    <div id="container">
+      <h1>{{ object.title }}</h1>
+      {% if bulletin.gallery.description %}<p>{{ bulletin.gallery.description }}</p>{% endif %}
+      <!-- Start Advanced Gallery Html Containers -->
+      <div id="gallery" class="content">
+        <div id="controls" class="controls"></div>
+        <div class="slideshow-container">
+          <div id="loading" class="loader"></div>
+          <div id="slideshow" class="slideshow"></div>
+          <div id="tag" class="tag-container"></div>
+        </div>
+        <div id="caption" class="caption-container"></div>
+        <div id="captionToggle">
+          <a href="#toggleCaption" class="off" title="캡션 보기">캡션 보기</a>
+        </div>
+        <div id="tagToggle">
+          <a href="#toggleTag" class="off" title="태그 보기">태그 보기</a>
+        </div>
+      </div>
+
+      <div style="clear: both;"></div>
+    </div>
+  </div>
+  <div id="thumbs" class="navigation">
+    <ul class="thumbs noscript">
+    {% for photo in bulletin.photos %}
+      <li>
+        <a class="thumb" name="leaf" href="{{ photo.get_display_url }}" title="{{ photo.title }}">
+          <img src="{{ photo.get_thumbnail_url }}" alt="{{ photo.title }}" />
+        </a>
+        <div class="caption">
+          <div class="download">
+            <a href="#" onclick="openWindow('{% url board-tag-add board.name bulletin.id photo.id forloop.counter %}?page={{page}}&category={{ cid }}', 'addTag', 959, 628)">태그 추가</a> |
+            <a href="{{ photo.image.url }}" target="_blank">원본 사진</a>
+          </div>
+          <div class="image-title">{{ photo.title }}</div>
+        </div>
+        <div class="tag">
+          <div id="tag-message"></div>
+          <div id="tag-pending"></div>
+          {% for tag in photo.tags %}
+          <img src="{{STATIC_URL}}images/transparent.gif" id="{{ tag.id }}" style="position:absolute;width:{{tag.w}};height:{{tag.h}}px;top:{{tag.y}}px;left:{{tag.x}}px;" alt="{{tag.title}}" />
+          {% endfor %}
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div class="clear"></div>
+  {% endif %}
+
+  <hr />
+
+  <h3>댓글</h3>
+
+  <form action="." method="post">
+  {% csrf_token %}
+  <table>
+
+    <tbody>
+    {% for comment in commentList %}
+    <tr id="comment-{{ comment.id }}">
+      <td width="64">
+        <a rel="facebox" href="{% if not comment.isHiddenUser and not comment.secret %}{{ comment.writer.get_profile.get_portrait_url }}{% else %}{{ STATIC_URL }}images/avatar.jpg{% endif %}"><img src="{% if not comment.isHiddenUser and not comment.secret %}{{ comment.writer.get_profile.get_portrait_url }}{% else %}{{ STATIC_URL }}images/avatar.jpg{% endif %}" class="avatar_img" alt=""></a>
+      </td>
+      <td>
+        <div class="float_right">
+          <a href="{% url board-read board.name bulletin.id %}?page={{ page }}&category={{ cid }}&to={{ comment.id }}" class="btn-mini btn-orange btn-refresh" rel="tooltip" title="이 댓글의 Permalink"><span></span></a>
+        {% if comment.is_my_comment and comment.can_modify %}
+          <span id="delete_comment_{{ comment.id }}" class="btn-mini btn-red btn-cross" rel="tooltip" title="이 댓글을 삭제합니다."><span></span></span>
+        {% endif %}
+        </div>
+        <p><strong>
+          <img src="{{ STATIC_URL }}images/bullet/bullet_dot.gif" alt="bullet">
+            {% if not comment.isHiddenUser %}
+              {{ comment.get_writerName|safe }}
+            {% else %}
+              {{ comment.hiddenUser }}
+            {% endif %}
+            님,{% if comment.secret %} <img src="{{ STATIC_URL }}images/board/protected_icon.gif" alt="비밀댓글">{% endif %}
+          </strong> {{ comment.created|humanizeTimeDiff }}에 작성됨</p>
+        {{ comment.content|urlize|linebreaksbr }}
+      </td>
+    </tr>
+    {% endfor %}
+
+{% if not bulletin.deleted %}
+    <tr>
+      <td>
+        {% if board.allowAnom %}
+        <div rel="tooltip" title="{{ form.nametype.help_text }}" style="width:50px;">
+        {{ form.nametype.label_tag }}
+        {{ form.nametype }}
+        </div>
+        {% else %}
+        <input type="hidden" name="nametype" value="0" />
+        {% endif %}
+        <img id="my_avatar" src="{{ user.get_profile.get_portrait_url }}" class="avatar_img" alt="">
+      </td>
+      <td class="form">
+        <input type="hidden" name="re" value="{{ reply_id }}">
+        {{ form.non_field_errors }}
+
+        <div class="field">
+          {{ form.content }}
+        </div>
+
+
+        <div class="float_right">
+
+          <span class="btn_pack medium icon"><span class="add"></span><input type="submit" value="댓글달기"></span>
+        </div>
+      </td>
+    </tr>
+{% endif %}
+
+  </tbody></table>
+  </form>
+
+  <div class="right">
+    <span class="btn_pack icon medium"><span class="calendar"></span><a href="{% url board-list board.name %}?page={{ page }}&category={{ cid }}">목록</a></span>
+  </div>
+</div>
+{% endblock %}
+

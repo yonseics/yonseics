@@ -1,0 +1,10 @@
+{% extends "simplewiki_formbase.html" %}
+{% load i18n simplewiki_utils rendertext %}
+{% block wiki_page_title %}
+	{{ "'"|render_head }}{{ wiki_article.title|render_head|safe }}{{ "'"|render_head }}{{ "의 수정"|render_head }}
+{% endblock %}
+{% block form_buttons %}
+  <button type="submit" class="btn"><span>{{ "수정"|render_button }}</span></button>
+  <button type="button" class="btn" onclick="history.back(-1);"><span>{{ "뒤로"|render_button }}</span></button>
+{% endblock %}
+

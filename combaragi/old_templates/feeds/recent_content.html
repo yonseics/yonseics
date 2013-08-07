@@ -1,0 +1,18 @@
+{% load linebreaksbrpre %}
+{{ content|safe|urlize|linebreaksbrpre|safe }}
+{% if files %}
+<hr />
+첨부파일: 
+{% endif %}
+{% for file in files %}
+{% if file.isImage %}
+  <br>
+  <a title="클릭하면 크게 보입니다." rel="lightbox" href="{{ file.file.url }}">
+    <img src="{{ file.file.url }}" alt="{{ file.name }}">
+  </a>
+{% else %}
+  <a href="{{ file.file.url }}">
+    <img rel="tooltip" title="{{ file.get_name }}" src="{{ STATIC_URL }}images/board/file_icon.gif">
+  </a>
+{% endif %}
+{% endfor %}

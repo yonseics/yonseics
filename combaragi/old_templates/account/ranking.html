@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}순위{% endblock %}
+{% block head %}<div class="portlet-header"><h4>포인트 순위</h4></div>{% endblock %}
+{% block content %}
+  <h3 id="my_score" class="bullet_dot">내 점수: 이번달 {{ my_monthly_point.point|default:0 }}점, 총 {{ my_total_point.point|default:0 }}점</h3>
+  {% for name, each_top10 in top10.items %}
+  <hr />
+  <h2>{{ name }}</h2>
+  <table cellpadding="0" cellspacing="0" border="0" class="display">
+    <colgroup>
+      <col width="135">
+      <col>
+    </colgroup>
+    <tbody>
+    {% for user in each_top10 %}
+      <tr class="{% cycle "even" "odd" %}"><td>{{ forloop.counter }}. {{ user.get_profile|safe }}: {{ user.point }}점</td><td><a href="javascript:;"><img rel="tooltip" title="{{ user.point }}점" src="{{ STATIC_URL }}images/bullet/bullet_square.gif" width="{{ user.sz }}" height="10px"></a></td></tr>
+    {% empty %}
+      <tr><td colspan="2">순위가 없습니다.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+{% endblock %}

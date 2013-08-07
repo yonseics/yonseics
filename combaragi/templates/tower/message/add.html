@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}현재 층에서 지킴이가 나누는 대화{% endblock %}
+<script>
+  {% block onload %}
+    //$('#id_action_image_0').parent().parent().parent().parent().css('display', 'none');
+    $('.action_image').click(function() {
+      var img = $(this).find('img');
+      $('#speech_picture').attr('src', img.attr('src'));
+      $('#id_action_image_idx').val(img.attr('alt'));
+    });
+  {% endblock %}
+</script>
+{% block head %}
+<div class="portlet-header"><h4>{{ level }}에서 지킴이가 나누는 대화</h4></div>
+{% endblock %}
+
+{% block content %}
+  <form enctype="multipart/form-data" class="form label-inline" method="post" action="." onSubmit="">
+    {% csrf_token %}
+    {{ form.errors }}
+    {% for guard in tower.guards.all %}
+      {% for action_image in guard.images.all %}
+        <div class="left action_image">
+          <label for="id_action_image_{{ forloop.counter }}">
+            <div class="left action_image">
+              <div class="avatar_picture">
+                <img src="{{ action_image.get_thumbnail_url }}" alt="{{ action_image.id }}" title="{{ action_image }}">
+              </div>
+              <div class="action_text">{{ action_image }}</div>
+            </div>
+          </label>
+        </div>
+      {% empty %}
+        액션 이미지가 없습니다. 액션 이미지를 추가해 주세요!
+      {% endfor %}
+    {% endfor %}
+    {{ form.action_image_idx }}
+    <div class="clear"></div>
+    <img id="speech_picture" class="avatar_picture" src="{{ STATIC_URL }}images/avatar.jpg">
+    <div class="speech_balloon">
+      {{ form.message }}
+    </div>
+    <span class="btn_pack large icon speech_location"><span class="add"></span><button type="submit">대화 추가</button></span>
+    <div class="clear"></div>
+    <div class="right">
+      <span class="btn_pack medium"><a href="{% url tower-info tower.slug %}">뒤로</a></span>
+    </div>
+  </form>
+  <div class="clear"></div>
+  <hr />
+  <div class="right">
+    <span class="btn_pack medium"><a href="{% url tower-add-message tower.slug level.level %}">순서대로 보기</a></span>
+    <span class="btn_pack medium"><a href="{% url tower-add-message-reverse tower.slug level.level 'reverse' %}">역순으로 보기</a></span>
+  </div>
+  {% for message in level_messages %}
+    <img id="speech_picture" class="avatar_picture" src="{{ message.action_image.get_url }}">
+    <div class="speech_balloon">
+      <div class="action_text">{{ message.message|safe }}</div>
+    </div>
+    <div class="clear"></div>
+  {% empty %}
+    <h1>현재 대화가 없습니다.</h1>
+  {% endfor %}
+{% endblock %}

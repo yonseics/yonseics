@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block external %}
+  <link rel='stylesheet' type="text/css" href='{{ STATIC_URL }}css/group.css'>
+  {% block group_external %}{% endblock %}
+{% endblock %}
+{% block content_id %}support-details{% endblock %}
+<script>
+{% block onload %}
+  {% if current_group %}
+    ajaxReplace("enter", "{% url group_enter current_group.id %}", {{ user.get_profile.get_tval }})
+  {% endif %}
+  {% block group_onload %}{% endblock %}
+{% endblock %}
+</script>
+{% block title %}소모임 |
+  {% if current_group %}{{ current_group.title }} | {% endif %}
+  {% block group_title %}{% endblock %}{% endblock %}
+{% block head %}<div class="portlet-header"><h4><a href="{% url group %}">소모임</a> &gt;&gt;
+  {% if current_group %}<a href="{% url group_main current_group.id %}">{{ current_group.title }}</a> &gt;&gt; {% endif %}
+  {% block group_head %}{% endblock %}</h4></div>{% endblock %}
+{% block content %}
+  <form {% block form_option %}{% endblock %}class="form label-inline" method="post" action="." onSubmit="{% block form_onSubmit %}{% endblock %}">
+    {% csrf_token %}
+  {% if current_group %}
+  <ul class="top_menu">
+  <li class="bullet_dot"><a href="/group/{{ current_group.id }}">{{ current_group.title }} 소개</a></li>
+  <li class="bullet_dot">{% if is_member %}<a {% if current_group.is_new %}class="mark_new" {% endif %}href="{% url board_main current_group.name %}">게시판</a>{% else %}게시판{% endif %}</li>
+  <li class="bullet_dot">{% if is_member %}<a href="{% url group_chat current_group.id %}">채팅방</a>{% else %}채팅방{% endif %}</li>
+  <li class="bullet_dot"><a href="{% url group_members current_group.id %}">회원명부</a></li>
+  {% ifequal current_group.owner user %}
+    <li class="bullet_dot">{% if is_member %}<a href="{% url group_invite current_group.id %}">초청</a>{% else %}초청{% endif %}</li>
+    <li class="bullet_dot"><a href="{% url group_manage current_group.id %}">관리</a></li>
+  {% endifequal %}
+  </ul>
+  <div class="float_right">소모임장: {{ current_group.owner.get_profile|safe }}</div>
+  <div class="clear"></div>
+  {% endif %}
+
+  {% block group_content %}{% endblock %}
+  <div class='right'>
+    {% block group_menu %}{% endblock %}
+    {% if current_group and not is_member and not is_semi_member %}
+      <a id="enter" href="javascript:;"><span class="btn_pack icon medium"><span class="check"></span><button>가입요청</button></span></a>
+    {% endif %}
+    <span class="btn_pack icon medium"><span class="calendar"></span><a href="/group/">목록</a></span>
+  </div>
+  </form>
+{% endblock %}
+

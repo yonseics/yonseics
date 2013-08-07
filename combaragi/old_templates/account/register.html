@@ -1,0 +1,19 @@
+{% extends "form_base.html" %}
+{% block title %}회원가입{% endblock %}
+{% block head %}<div class="portlet-header"><h4>회원가입</h4></div>{% endblock %}
+{% block content_id %}register{% endblock %}
+{% block external %}{% endblock %}
+<script>
+{% block onload %}
+//$("#id_position").hide();    // 위치정보 저장하고 있는 텍스트 박스 숨기기
+{% if not user.get_profile.position %}
+//  $("#pos_del_btn").hide();    // 위치확인, 삭제 버튼 숨기기
+{% endif %}
+{% endblock %}
+</script>
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+<script>{% block form_onSubmit %}{% endblock %}</script>
+{% block form_content %}{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><input type="submit" value="가입하기"></span>
+{% endblock %}

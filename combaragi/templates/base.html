@@ -1,0 +1,12 @@
+{% extends 'doublebase.html' %}
+{% load rendertext %}
+{% block content_area %}
+  <!-- Breadcrumbs -->
+  <p class="breadcrumbs">
+  <a href="{% url home %}">{{ "Home"|render_bread }}</a> <span>&raquo;</span> {% block breadcrumbs %}{% endblock %}
+  </p>
+  <h1 class="headline">{% block head %}{% endblock %}</h1>
+  {% block after_head %}{% endblock %}
+  <div class="hr"></div>
+  {% block content %}{% endblock %}
+{% endblock %}

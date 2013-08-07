@@ -1,0 +1,56 @@
+{% extends "board/base.html" %}
+{% load rendertext %}
+{% block board_title %}목록{% endblock %}
+{% block board_head %}
+  <a href="{% url board-list board.name %}">
+    {{ board.title|render_head|safe}}
+    {% if board.group_board %}
+      {{ "게시판"|render_head }}
+    {% endif %}
+  </a>
+  {% if form.key.data %}
+    {{ "(검색어: "|render_head }}{{ form.key.data|render_head|safe }}{{ ")"|render_head }}
+  {% endif %}
+{% endblock %}
+{% block board_content %}
+<div id="board_list">
+{% block list_content %}{% endblock %}
+
+<!-- UI Object -->
+<div class="paginate_simple">
+  {% if page > 1 %}
+    <a href="{% url board-list board.name %}" class="direction"> ‹‹ <span>First</span></a>
+  {% endif %}
+  {% if page_before >= 1 %}
+    <a href="{% url board-list board.name %}?page={{page_before}}" class="direction"> ‹ <span>Prev</span></a>
+  {% endif %}
+  {% for pg in page_list %}
+  {% if pg == page %}
+    <strong>{{pg}}</strong>
+  {% else %}
+  <a href="{% url board-list board.name %}?page={{pg}}">{{pg}}</a>
+  {% endif %}
+  {% endfor %}
+{% if page_after <= total_page %}
+  <a href="{% url board-list board.name %}?page={{page_after}}" class="direction"><span>Next</span> › </a>
+{% endif %}
+{% if page < total_page %}
+  <a href="{% url board-list board.name %}?page={{total_page}}" class="direction"><span>Last</span> ›› </a>
+{% endif %}
+{% if total_page %}
+... 총 {{ total_page }} 페이지
+{% endif %}
+</div>
+<!-- //UI Object -->
+</div>
+
+<div class='float_right'>
+  {% if supportWrite %}
+  <button type="button" class="btn" onclick="MoveTo('{% url board-write board.name %}');"><span>{{ "글쓰기"|render_button }}</span></button>
+  {% endif %}
+  <button type="button" class="btn" onclick="MoveTo('{% url board-list board.name %}');"><span>{{ "목록"|render_button }}</span></button>
+</div>
+<div class="clear"></div>
+
+<div class="clear"></div>
+{% endblock %}

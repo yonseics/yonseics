@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block external %}
+<!--link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mentoring.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bbs.css" /-->
+
+{% block mentoring_external %}{% endblock %}
+{% endblock %}
+{% block head %}{% block mentoring_head %}{% endblock %} - <span class="btn_pack medium"><a href="/mentoring/question/write">질문하기</a></span>{% endblock %}
+{% block title %}멘토링 | {% block mentoring_title %}{% endblock %}{% endblock %}
+{% block content %}
+<ul class="mentoring_list">
+<li><a href="/mentoring/">메인으로</a></li>
+<li>{% if info.mentor %}<a href="/account/info/{{ user.get_profile.sidHash }}">내정보</a>{% else %}<a href="/mentoring/register/mentor/">멘토등록</a>{% endif %}</li>
+<li><a href="/mentoring/info/mentors/">멘토찾기</a></li>
+<li><a href="/mentoring/myinfo/mentors/" title="(수락대기중인멘토수/수락된멘토수)">내멘토</a>{%if info.mentor_cnt or info.wait_mentor_cnt %} <span class="new_cnt">({{ info.wait_mentor_cnt }}/{{ info.mentor_cnt }})</span>{%endif%}</li>
+{% if info.mentor %}
+<li><a href="/mentoring/myinfo/mentees/">내멘티</a>{%if info.wait_mentee_cnt %} <img src="/media/images/mentoring/mark_new.gif" />{% endif %} <span class="new_cnt">({{ info.mentee_cnt }})</span></li>
+{% endif %}
+<!--li><a href="#">전체질문</a> <span class="new_cnt">({{ info.total_recent_cnt }}/{{ info.total_total_cnt }})</span></li-->
+<li><a href="/mentoring/list/my/" title="(최근질문수/전체질문수)">내질문</a>{%if info.my_question_recent_cnt %} <span class="new_cnt">({{ info.my_question_recent_cnt }}/{{ info.my_question_total_cnt }})</span>{% endif %}</li>
+{% if info.mentor %}
+<li><a href="/mentoring/list/solved/" title="(최근답변수/전체답변수)">내답변</a>{%if info.my_reply_total_cnt %} <span class="new_cnt">({{ info.my_reply_recent_cnt}}/{{ info.my_reply_total_cnt }})</span>{%endif%}</li>
+<li>나의 Point: {% if info.mentor %}{{ info.mentor.kernels }}{% else %}x{% endif %}점</li>
+{% endif %}
+</ul>
+{% block mentoring_content %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "board/form_base.html" %}
+{% block board_title %}게시물 {{typeText}}{% endblock %}
+{% block board_head %}&gt;&gt; 게시물을 {{typeText}}합니다.{% endblock %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+<script>
+{% block onload %}
+  preventReload = false;
+  preventReloading();      // 의도되지 않은 새로고침을 방지하여 줍니다.
+
+  $('#SUBJECT').keypress(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      $('#textareaContent').focus();
+        }
+  });
+  {% ifequal type 'write' %}
+    $('#id_nametype_0').click();
+  {% endifequal %}
+
+  {% if current_category %}
+    $('#id_category').val("{{ cid }}");
+  {% endif %}
+  {% if bulletin.category.id %}
+    $('#id_category').val('{{ bulletin.category.id }}');
+  {% endif %}
+  $('#id_nametype_0').click();
+
+  $("#file_field").hide();
+  $("#file_btn").click(function(){
+    $("#file_field").toggle();
+  });
+  {% if form.file.errors %}
+    $("#file_field").toggle();
+  {% endif %}
+  $("#position_field").hide();
+  $("#positionTitle_field").hide();
+  $("#pos_btn").click(function(){
+    $("#position_field").toggle();
+    $("#positionTitle_field").toggle();
+  });
+  $("#gallery_field").hide();
+  $("#gal_btn").click(function(){
+    $("#gallery_field").toggle();
+  });
+
+  $("#id_position").hide();    // 위치정보 저장하고 있는 텍스트 박스 숨기기
+  {% if not bulletin.positions.exists %}
+    $("#pos_del_btn").hide();    // 위치확인, 삭제 버튼 숨기기
+  {% endif %}
+{% endblock %}
+</script>
+{% block form_content %}
+  <form action=".?page={{page}}&category={{ cid }}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+  </form>
+  <div class="float_right">
+    <span class="btn_pack medium"><button type="button" id="file_btn">파일첨부</button></span>
+    <span class="btn_pack medium"><button type="button" id="pos_btn">위치첨부</button></span>
+    {% ifequal board.name "photo" %}
+      <span class="btn_pack medium"><button type="button" id="gal_btn">사진첩올리기</button></span>
+    {% endifequal %}
+  </div>
+  {% if bulletin and bulletin.gallery %}글에 붙여진 사진첩이 있습니다.{% endif %}
+  {% if files %}
+  <div>첨부파일:
+  {% for file in files %}
+    <p>이름: {{ file.name }}, 용량: {{ file.size|filesizeformat }}, 삭제: <a alt='{{file.name}}' href='{% url file_delete board.name file.id %}?page={{page}}&category={{ cid }}'>삭제</a></p>
+  {% endfor %}
+  </div>
+  {% endif %}
+{% endblock %}
+{% block form_buttons %}
+  <div class="right">
+    <span class="btn_pack large"><button type="submit">글쓰기</button></span>
+  </div>
+{% endblock %}
+{% block board_content_ %}
+  {{ form.errors }}
+  <form id="writeAndModifyForm" name="bbsform" action=".?page={{page}}&category={{ cid }}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="boardview" width=100% border=0 cellspacing=0 cellpadding=5 style="table-layout:fixed">
+    <colgroup>
+      <col width='80'>
+      <col>
+    </colgroup>
+    <tr><th>카테고리</th>
+      <td class="BODYHEAD">
+      {{ form.category }}
+      <div class="float_right">
+        <a href="javascript:;" id="file_btn">파일첨부</a>
+        <a href="javascript:;" id="pos_btn">위치첨부</a>
+        {% ifequal board.name "photo" %}
+        <a href="javascript:;" id="gal_btn">*갤러리첨부*</a>
+        {% endifequal %}
+        {% if board.allowAnom %}
+        {{ form.nametype.label }}: {{ form.nametype }}
+        {% else %}
+        {# 실명만 허용 #}
+        <input type="hidden" name="nametype" value="0" />
+        {% endif %}
+        {#{ form.secret.label }}: {{ form.secret }#}
+        {{ form.notice.label }}: {{ form.notice }}
+      </div>
+    </td></tr>
+    <tr id="file_area">
+      <th class="fieldName">파일첨부</th>
+      <td>파일 첨부는 각각 {{ MAX_A_FILE_SIZE|filesizeformat }}까지, 총 {{ MAX_TOTAL_FILE_SIZE|filesizeformat }}까지 첨부 가능합니다.{{ form.file|safe }}</td>
+    </tr>
+    <tr id="pos_area">
+      <th>위치첨부</th>
+      <td class="fieldName">{{ form.position }}{{ form.position.help_text|safe }} {{ form.positionTitle.label }}: {{ form.positionTitle }}</td>
+    </tr>
+    <tr id="gal_area">
+      <th>갤러리첨부</th>
+      <td class="fieldName">{% if bulletin and bulletin.gallery %}글에 붙여진 갤러리가 있습니다.{% endif %}{{ form.gallery.label }}: {{ form.gallery }} {#{ form.gallery_is_not_public }#}{#{ form.gallery_is_not_public.label }#}</td>
+    </tr>
+    {% if form.title.errors %}
+    <tr><td colspan=2>{{ form.title.errors }}</td></tr>
+    {% endif %}
+    <tr>
+      <th class="fieldName">제목</th>
+      <td>
+        {{ form.title }}
+      </td>
+    </tr>
+
+    {% if form.content.errors %}
+    <tr><td colspan=2>{{ form.content.errors }}</td></tr>
+    {% endif %}
+    <tr>
+      <th class="fieldName">본문</th>
+      <td class="textareaCol">
+        <div class="textareaBorder">
+          {{ form.content }}
+        </div>
+      </td>
+    </tr>
+    {% if files %}
+    <tr>
+      <td colspan="2" class="contents">
+        첨부파일:
+        {% for file in files %}
+        <p>이름: {{ file.name }}, 용량: {{ file.size|filesizeformat }}, 삭제: <a alt='{{file.name}}' href='/board/{{ board.name }}/file/delete/{{ file.id }}/?page={{page}}&category={{ cid }}'>삭제</a></p>
+        {% endfor %}
+      </td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td colspan="2" align="right" valign="bottom">
+      <div class='float_right'><span class="btn_pack medium"><input type="submit" value="{{typeText}}"></span></div>
+      </td>
+    </tr>
+    </table>
+  </form>
+{% endblock %}

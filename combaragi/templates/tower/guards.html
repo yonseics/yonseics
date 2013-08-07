@@ -1,0 +1,27 @@
+{% extends "tower/base.html" %}
+{% block tower_title %}탑 지킴이 보기{% endblock %}
+{% block tower_external_js %}{% endblock %}
+{% block tower_external_css %}{% endblock %}
+<script>
+{% block tower_onload %}{% endblock %}
+</script>
+{% block tower_head %}탑 지킴이 목록{% endblock %}
+{% block tower_content %}
+  {% for guard in guards %}
+    <div class="left action_image">
+      <div class="left">
+        <a href="{% url tower-info-guard guard.id %}">
+          <img src="{{ guard.get_action_image }}">
+          <div class="action_text">{{ guard }}</div>
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    지킴이가 없습니다. 지킴이를 추가해 주세요!
+  {% endfor %}
+  <div class="clear"></div>
+  <div class="right">
+    <span class="btn_pack medium icon"><span class="add"></span><a href="{% url tower-create-guard %}">추가</a></span>
+    <span class="btn_pack medium"><a href="{% url tower-main %}">뒤로</a></span>
+  </div>
+{% endblock %}

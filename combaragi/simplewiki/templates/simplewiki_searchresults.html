@@ -1,0 +1,21 @@
+{% extends "simplewiki_base.html" %}
+{% load i18n simplewiki_utils rendertext %}
+{% block wiki_page_title %}
+    {% if wiki_search_query %}
+      {{ "'"|render_head }}{{ wiki_search_query|render_head|safe }}{{ "'"|render_head }}{{ "에 대한 검색결과"|render_head }}
+    {% else %}
+      {{ "모든 문서 목록"|render_head }}
+    {% endif %}
+{% endblock %}
+
+{% block wiki_body %}
+    {% for article in wiki_search_results %}
+        {% if article.get_url %}
+            <a href="{% url wiki_view article.get_url %}">{{ article.get_url }}</a><br/>
+        {% else %}
+            <a href="{% url wiki_view 'home' %}">/</a><br/>
+        {% endif %}
+    {% empty %}
+      {{ "검색 결과가 없습니다."|render_black:14 }}
+    {% endfor %}
+{% endblock %}

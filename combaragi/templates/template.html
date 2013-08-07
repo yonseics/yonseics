@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load rendertext %}
+{% load static %}
+{% block external_css %}
+<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/cascade.css" />
+{% endblock %}
+{% block external_js %}
+<script type="text/javascript" src="{% get_static_prefix %}js/javascript.js"></script>
+{% endblock %}
+<script>
+{% block onload %}{% endblock %}
+</script>
+{% block title %}{% endblock %}
+{% block breadcrumbs %}<a href="link">{{ "breadcrumbs"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block head %}{{ "head"|render_head }}{% endblock %}
+{% block content %}
+{% endblock %}

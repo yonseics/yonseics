@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}달력{% endblock %}
+{% block head %}
+  <div class="portlet-header"><h4>
+    행사일정
+  </h4></div>
+{% endblock %}
+{% block content %}
+  <div align="center">
+    <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=yonseics.net%40gmail.com&amp;color=%23182C57&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%23B1365F&amp;ctz=Asia%2FSeoul" style=" border-width:0 " width="710" height="600" frameborder="0" scrolling="no"></iframe>
+    <p>아래 버튼을 누르시면 모든 일정을 담아갈 수 있습니다.</p><a href="http://www.google.com/calendar/render?cid=https%3A%2F%2Fwww.google.com%2Fcalendar%2Ffeeds%2Fyonseics.net%2540gmail.com%2Fpublic%2Fbasic" target="_blank"><img src="http://www.google.com/calendar/images/ext/gc_button6_ko.gif" border=0></a>
+  </div>
+{% endblock %}

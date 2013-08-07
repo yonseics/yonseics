@@ -1,0 +1,11 @@
+{% extends "form_base.html" %}
+{% block title %}액션 이미지 추가{% endblock %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+{% block head %}
+<div class="portlet-header"><h4>액션 이미지 추가</h4></div>
+{% endblock %}
+{% block form_buttons %}
+  <span class="btn_pack medium"><button type="submit">추가</button></span>
+  <span class="btn_pack medium"><a href="{% url tower-info-guard guard.id %}">취소</a></span>
+{% endblock %}
+

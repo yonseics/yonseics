@@ -1,0 +1,47 @@
+{% load rendertext %}
+<a href="#" class="loginClose" onclick="$.fn.fancybox.close(); return false;">Close</a>
+<form class="loginForm" method="post" action="{% url login %}?next={{ params.next }}">
+  {% csrf_token %}
+  <div id="loginBg"><img src="{{ STATIC_URL }}images/icons/lock-and-key.png" width="128" height="128" alt="lock and key" /></div>
+	<div class="loginContainer">
+		<h1>
+      {{ "컴바라기 로그인"|render_black:24 }}
+      {% if params.login_failed == "True" %}
+        <span>{{ "아이디 혹은 패스워드가 틀렸습니다!"|render_red:14 }}</span>
+      {% else %}
+        <span>{{ "계정으로 로그인 하세요"|render_grey:14 }}</span>
+      {% endif %}
+		</h1>
+		<fieldset>
+			<legend>컴바라기 로그인</legend>
+			<p>
+        <label for="ModalUsername" class="overlabel">{{ "아이디"|render_form }}</label>
+				<input id="ModalUsername" name="username" type="text" class="loginInput textInput rounded" />
+			</p>
+			<p>
+        <label for="ModalPassword" class="overlabel">{{ "비밀번호"|render_form }}</label>
+        <input id="ModalPassword" name="password" type="password" class="loginInput textInput rounded" />
+			</p>
+		</fieldset>
+	</div>
+	<div class="hr" style="margin-bottom: 3px;"></div>
+	<p class="right noMargin">
+  <button type="submit" class="btn signInButton"><span>{{ "로그인"|render_button }}</span></button>
+  <button type="button" class="btn" onclick="$.fn.fancybox.close(); window.location.href='{% url register %}'"><span>{{ "회원가입"|render_button }}</span></button>
+		<!--button type="button" class="btn" onclick="$.fn.fancybox.close(); return false;"><span>Cancel</span></button-->
+	</p>
+	<p class="left" style="margin: 8px 0 0 15px">
+  <a href="mailto:limsungeke@gmail.com">{{ "패스워드를"|render_cyan:14 }}<br />{{ "분실하셨나요?"|render_cyan:14 }}</a>
+	</p>
+  <input type="hidden" name="next" value="{{ params.next }}">
+</form>
+<script type="text/javascript">
+	$("label.overlabel").overlabel();
+	buttonStyles();
+	roundCorners();
+</script>
+<!--[if lt IE 7]>
+	<script type="text/javascript"> 
+		$('#fancy_content').supersleight();
+	</script> 
+<![endif]-->

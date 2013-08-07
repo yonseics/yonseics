@@ -1,0 +1,71 @@
+{% extends "mentoring/base.html" %}
+{% block mentoring_title %}멘티 리스트{% endblock %}
+{% block mentoring_head %}멘티 리스트{% endblock %}
+{% block mentoring_external %}
+<link rel='stylesheet' type="text/css" href='/media/css/jquery.autocomplete.css'>
+<script type='text/javascript' src='/media/js/jquery-lib/jquery.autocomplete.js'></script>
+{% endblock %}
+{% block mentoring_content %}
+
+<div id="board_list">
+<table cellspacing=1 cellpadding=3 width=100% border=0 style="table-layout:fixed">
+  <colgroup>
+    <col width="35">
+    <col width="70">
+    <col>
+    <col width="76">
+    <col width="100">
+    </col>
+  </colgroup>
+  <tr>
+    <th>번호</th>
+    <th>이름</th>
+    <th>멘토링을 요청하는 글</th>
+    <th>질문수</th>
+    <th>관계</th>
+  </tr>
+  {% if menteeRelationList %}
+    {% for relation in menteeRelationList %}
+    <tr class="{% cycle 'odd' 'even' %}" >
+      <td class='col_num'>{{ forloop.counter }}</td>
+      <td class='col_title'>
+        {{ relation.mentee.get_profile|safe }}
+      </td>
+      <td>{{ relation.request_msg }}</td>
+      <td>{{ relation.question_cnt }}</td>
+      <td>
+{% if relation.accepted %}
+      수락됨
+{% else %}
+      <a href="/mentoring/register/accept/mentee/{{ relation.id }}/">수락</a>
+      / <a href="/mentoring/register/deny/mentee/{{ relation.id }}/">거절</a>
+{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  {% else %}
+  <tr>
+    <td colspan=5>멘티 리스트가 없습니다.</td>
+  </tr>
+  {% endif %}
+</table>
+
+<form action="/mentoring/myinfo/mentees/" method="GET">
+  <div class='center'>
+  {{ search_form.key|safe }}
+  <span class="btn_pack medium"><button type="submit">검색</button></span>
+  <span class="btn_pack medium"><a href="/mentoring/myinfo/mentees">전체</a></span>
+  </div>
+</form>
+
+<div class="clear"></div>
+<!--p><a href="#TB_inline?height=155&width=400&inlineId=modalWindow" class="thickbox">thickbox</a></p-->
+<!-- ThickBox용 Division -->
+<!--div id="modalWindow" style="display: none;"> 
+  <p>
+    <label>E-Mail (local):</label>
+    <input type="text" id="thickboxEmail" />
+    <input type="button" value="Get Value" />
+  </p>
+</div--> 
+{% endblock %}

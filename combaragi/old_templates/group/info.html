@@ -1,0 +1,7 @@
+{% extends "group/base.html" %}
+{% block group_title %}소개{% endblock %}
+{% block group_head %}소개{% endblock %}
+{% block group_content %}
+  <h2>{{ current_group.title }} 소개</h2>
+  <div id="group_info">{{ current_group.desc|safe|linebreaksbr }}</div>
+{% endblock %}

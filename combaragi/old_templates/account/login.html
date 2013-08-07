@@ -1,0 +1,20 @@
+{% extends "form_base.html" %}
+{% block title %}로그인{% endblock %}
+{% block head %}
+  <div class="portlet-header"><h4>
+  사용자 로그인
+  </h4></div>
+{% endblock %}
+{% block content_id %}login{% endblock %}
+
+{% block form_content %}
+  <h3>로그인 할 경우 Form Data는 64bit-RSA로 암호화 되어 전송됩니다.</h3>
+{% endblock %}
+{% block form_bottom_content %}
+  <input type="hidden" name="next" value="{{ next }}" />
+{% endblock %}
+
+{% block form_buttons %}
+  <span class="btn_pack medium"><input type="submit" value="로그인"></span>
+{% endblock %}
+

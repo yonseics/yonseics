@@ -1,0 +1,19 @@
+{% load linebreaksbrpre %}
+{% load time_filters %}
+{% for comment in comment_list %}
+  <div id="inbox-comment_{{ comment.id }}" class="inbox_content" style="position:relative;">
+    {% ifequal comment.writer user %}
+    <div class="comment_delete_x">
+      <a title="이 댓글을 삭제합니다." href="javascript:ajax_board.delete_comment({{ comment.parent.id }}, {{ comment.id }});">X</a>
+    </div>
+    {% endifequal %}
+    <div class="left" style="width:34px;">
+      <img src="{{ comment.get_portrait_url }}" alt="avatar" class="left mini_avatar_img">
+    </div>
+    <div class="left" style="margin-left:7px;">
+      <div class="left commentBody">{{ comment.get_writerName|safe }} {{ comment.content|urlize|linebreaksbr }}</div><br>
+      <div class="left timeDiff">{{ comment.created|humanizeTimeDiff }}</div>
+    </div>
+  </div>
+  <div class="clear"></div>
+{% endfor %}

@@ -1,0 +1,48 @@
+{% extends "board/list.html" %}
+
+{% block list_content %}
+<table cellspacing="1" cellpadding="3" width="100%" border="0" style="table-layout:fixed">
+  <colgroup>
+    <col width="45">
+    <col width="90">
+    <col width="80">
+    <col>
+    <col width="82">
+  </colgroup>
+  <tr>
+    <th>번호</th>
+    <th>게시판</th>
+    <th>분류</th>
+    <th>제목</th>
+    <th>작성일시</th>
+  </tr>
+
+  {% for bulletin in bulletinList %}
+    <tr class="{% cycle 'odd' 'even' %}" >
+      <td class='col_num'>{{ forloop.revcounter|add:no_seq }}</td>
+      <td>{{ bulletin.board.title }}</td>
+      <td><span class="category"><span class="category_content">{% if bulletin.category %}{{ bulletin.category.title }}{% else %}미분류{% endif %}</span></span></td>
+      <td class='col_title{% if bulletin.deleted %} deleted{% endif %}'>
+        <a href="{% url board_read board.name bulletin.id %}?page={{page}}&category={{ cid }}" rel="tooltip" title="{% if bulletin.deleted %}{% else %}{{bulletin.content|truncatewords:10}}{#striptags#}{% endif %}">
+          {% if bulletin.deleted %}
+            삭제된 글입니다.
+          {% else %}
+            {{bulletin.title}}
+          {% endif %}
+          {% if bulletin.gallery %} <img height="15px" src="{{ STATIC_URL }}images/board/image_icon.png">{% endif %}
+        </a>{% if bulletin.secret %} <img src="{{ STATIC_URL }}images/board/protected_icon.gif">{% endif %}
+        <span class="commentCnt{% if bulletin.is_new %} mark_new{% endif %}">[{{bulletin.commentCnt}}]</span>
+          {% if bulletin.files.count %}{% for file in bulletin.files.all %} <a href="{{ file.file.url }}"><img height="15px" src="{{ STATIC_URL }}images/board/file_icon.gif" alt="{{ file }}" rel="tooltip" title="{% if file.isImage %}<img src='{{ MEDIA_URL }}{{file.file}}' width='100px' height='100px'>{% else %}{{ file }}<br>({{ file.size|filesizeformat }}){% endif %}"></a>
+          {% endfor %}
+          [총 {{ bulletin.get_total_filesize|filesizeformat }}]{% endif %}
+      </td>
+      <td>{{ bulletin.created|date:"Y/m/d" }}</td>
+    </tr>
+  {% empty %}
+  <tr>
+    <td colspan="5">게시물이 없습니다.</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
+

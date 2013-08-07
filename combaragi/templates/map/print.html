@@ -1,0 +1,12 @@
+{% extends "baseNoHeader.html" %}
+{% block title %}지도 출력{% endblock %}
+{% block external %}
+{% endblock %}
+{% block onload %}
+var contents = window.opener.document.getElementById("mapContainer");
+document.getElementById("mapContainer").innerHTML = contents.innerHTML;
+setTimeout("window.print();", 1000);
+{% endblock %}
+{% block content %}
+<div id="mapContainer" style="overflow-x: hidden; overflow-y: hidden; position: relative; width: 800px; height: 600px;"></div>
+{% endblock %}

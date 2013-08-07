@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>컴바라기 | {% block title %}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/screen.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+    {% block external_css %}{% endblock %}
+    <script type="text/javascript" src="{{ STATIC_URL}}js/jquery/jquery.1.5.0.min.js"></script>{# Jquery 1.5.0 #}
+    <script  type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+    <script language="javascript" type="text/javascript" charset="UTF-8">
+    //기본 네비게이션 초기화
+    $(document).ready(function(){
+      {% block onload %}{% endblock %}
+    });
+    </script>
+    {% block external_js %}{% endblock %}
+    {% block external %}{% endblock %}
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+</html>

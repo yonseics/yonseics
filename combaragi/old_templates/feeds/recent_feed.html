@@ -1,0 +1,62 @@
+{% load linebreaksbrpre %}
+{% load time_filters %}
+{% for bulletin in bulletin_list %}
+<tr>
+  <td class="avatar"><img src="{{ bulletin.get_portrait_url }}" width="55" alt="avatar" class="avatar_img"></td>
+  <td class="full">
+    <a href="{% url board_main bulletin.board.name %}">{{ bulletin.board.title }}</a>
+     | <a href="{% url board_read bulletin.board.name bulletin.id %}">
+      {% if bulletin.category %}[{{ bulletin.category.title }}]{% endif %}
+      {{ bulletin.title }}
+    </a>
+    <a href="javascript:;">[{{ bulletin.commentCnt }}]</a>
+     - <span class="timeDiff">{{ bulletin.created|humanizeTimeDiff }}</span>
+    <br>
+    <div id="inbox_content_{{ bulletin.id }}" class="inbox_content_box">
+      {{ bulletin.content|urlize|linebreaksbr }}
+      {% if bulletin.truncated or bulletin.files.exists %}
+      ...<a href="javascript:ajax_board.moreContent('{{ bulletin.id }}');">
+        더보기
+        {% if bulletin.files.exists %}
+          <b>이 글에는 파일이 첨부되어 있습니다.</b>
+        {% endif %}
+        </a>
+      {% endif %}
+    </div>
+    {% if bulletin.remain_comment_cnt > 0 %}
+    <div id="more_comments_{{ bulletin.id }}" class="inbox_content">
+      &nbsp;<a class="bullet_dot" href="javascript:ajax_board.moreComments('{{ bulletin.id }}', {{ bulletin.remain_comment_cnt }});">{{ bulletin.my_comments.count }}개의 댓글 모두 보기</a>
+    </div>
+    {% endif %}
+    <div id="inbox_comments_{{ bulletin.id }}">
+      {% for comment in bulletin.get_recent_comments.all %}
+      <div id="inbox-comment_{{ comment.id }}" class="inbox_content" style="position:relative;">
+        {% ifequal comment.writer user %}
+        <div class="comment_delete_x">
+          <a title="이 댓글을 삭제합니다." href="javascript:ajax_board.delete_comment({{ comment.parent.id }}, {{ comment.id }});">X</a>
+        </div>
+        {% endifequal %}
+        <div class="left" style="width:34px;">
+          <img src="{{ comment.get_portrait_url }}" alt="avatar" class="left mini_avatar_img">
+        </div>
+        <div class="left" style="margin-left:7px;">
+          <div class="left commentBody">{{ comment.get_writerName|safe }} {{ comment.content|urlize|linebreaksbr }}</div><br>
+          <div class="left timeDiff">{{ comment.created|humanizeTimeDiff }}</div>
+        </div>
+      </div>
+      <div class="clear"></div>
+      {% endfor %}
+    </div>
+    <div class="inbox_content">
+      <div class="left comment_picture" style="display:none;">
+        <img src="{{ user.get_profile.get_portrait_url }}" alt="avatar" class="left mini_avatar_img">
+      </div>
+      <div class="left comment_box_full">
+        <input type="TEXT" id="comment-input_{{ bulletin.id }}_{{ bulletin.get_last_comment_id }}" class="comment_input comment_help" style="width:100%;" value="댓글을 입력하세요...">
+      </div>
+    </div>
+    <div class="clear"></div>
+  </td>
+  <td class="who">{{ bulletin.get_writerName|safe }}</td>
+</tr>
+{% endfor %}

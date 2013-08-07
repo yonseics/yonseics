@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}메일 보내기{% endblock %}
+{% block head %}<div class="portlet-header"><h4>동문에게 메일 보내기</h4></div>{% endblock %}
+{% block external %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
+<script language="javascript" src="{{ STATIC_URL }}js/setup_tiny_mce.js"></script>
+{% endblock %}
+<script>
+{% block onload %}
+  $('#SUBJECT').keypress(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+        }
+  });
+{% endblock %}
+</script>
+{% block content %}
+<form method="post" class="form" action=".">
+  {% csrf_token %}
+  <div class="field"><label>보내는이</label>{{ user.get_profile.get_pure_sid }}학번 {{ user.first_name }}</div>
+  <div class="field"><label for="CLASS">대상</label>
+    <select id="CLASS" name="CLASS">
+      <option value="0">내 동기들에게</option>
+      <option value="1">전체메일</option>
+    </select>
+  </div>
+  <div class="field"><label for="SUBJECT">제목</label><input type="text" id="SUBJECT" name="SUBJECT" size="60" class="inputContent"></div>
+  <div class="field"><label for="textareaContent">본문</label><textarea id="textareaContent" name="CONTENT" class="textareaContent" rows="30">
+    &lt;a href='http://www.yonseics.net/'&gt;연세대학교 컴퓨터과학과 홈페이지 www.yonseics.net&lt;a&gt; 에서 동문들에게 보내는 편지입니다. &lt;br&gt;
+    &lt;a href="mailto:{{ user.email }}"&gt;{{ user.get_profile.get_pure_sid }}학번 {{ user.first_name }}에게 메일 쓰기&lt;a&gt;
+    &lt;hr&gt;
+    &lt;br&gt;
+    </textarea></div>
+  <div class="right">
+    <span class="btn_pack medium"><input type="submit" value="전송하기"></span>
+  </div>
+</form>
+{% endblock %}

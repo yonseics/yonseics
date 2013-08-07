@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}지인 목록{% endblock %}
+{% block head %}<div class="portlet-header"><h4>지인 목록</h4></div>{% endblock %}
+{% block content %}
+<div class="department">
+  {% for target in user.get_profile.knowns.all %}
+  <div class="user-card">
+
+    <div class="avatar">
+      <img src="{{ target.get_profile.get_portrait_url }}" rel="tooltip" title="{{ target.get_profile.get_pure_full_name }}" class="avatar" height="60" alt="avatar">
+    </div> <!-- .user-card-avatar -->
+
+    <div class="details">
+      <p><strong>{{ target.get_profile|safe }}</strong><br>
+        {{ target.get_profile.phone }}<br>
+        {{ target.email }}</p>
+    </div> <!-- .user-card-content -->
+
+  </div> <!-- .user-card -->
+  {% empty %}
+  <h2>등록된 지인이 없습니다. 개인정보 페이지에 가서 지인을 등록하세요.</h2>
+  {% endfor %}
+</div>
+{% endblock %}

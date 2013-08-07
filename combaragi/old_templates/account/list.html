@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+<script>{% block onload %}
+  $("#sid_search").submit(function(){
+    var val = $("#sid").val();
+    if (val.length == 2 && parseInt(val) >= 0 && parseInt(val) < 100)
+      window.location.href="/account/sid_list/"+val;
+    else {
+      alert("올바른 학번을 입력하세요. 예) 04");
+      $("#sid").focus();
+    }
+    return false;
+  });
+  $("#sid").focus();
+  /*$(".department img[alt=avatar]").each(function(index, elem) {
+    $(elem).load(function(){
+      if ($(this).height() > $(this).width()) {
+        $(elem).height($(this).width());
+      }
+    });
+  }); // 높이가 더 큰건 짤라주자.*/
+  {% endblock %}</script>
+{% block title %}회원 명부{% endblock %}
+{% block head %}<div class="portlet-header"><h4>회원명부: {{ index_name }} [총: {{ total_cnt }}명]</h4></div>{% endblock %}
+{% block content %}
+<form id="sid_search">
+<div class='float_right'><label>학번검색:
+  <input id="sid" class="textbox" rel="tooltip" title="예) 04" type="text">
+  </label>
+  <span class="btn_pack medium"><button type="submit">검색</button></span>
+</div>
+</form>
+{% for index in index_list %}
+  {% if index.count %}<a href="{% url memberlist_page forloop.counter0 %}">{{ index.name }}<span class="index_count">[{{ index.count }}]</span></a>{% endif %}
+{% endfor %}
+<hr />
+<div class="department">
+  {% for target in user_list %}
+  <div class="user-card">
+
+    <div class="avatar">
+      <a rel="facebox" href="{{ target.get_profile.get_portrait_url }}"><img src="{{ target.get_profile.get_portrait_url }}" rel="tooltip" height="60" title="{{ target.get_profile.get_pure_full_name }}" class="avatar" alt="avatar"></a>
+    </div> <!-- .user-card-avatar -->
+
+    <div class="details">
+      <p><strong>{{ target.get_profile|safe }}</strong><br>
+        <span class="email">{{ target.get_profile.jobpos }}</span><br>
+        {{ target.get_profile.phone }}<br>
+        <span class="email">{{ target.get_profile.get_email_front }}<img class="at" src="{{ STATIC_URL }}images/at.png">{{ target.get_profile.get_email_end }}</span></p>
+    </div> <!-- .user-card-content -->
+
+  </div> <!-- .user-card -->
+  {% empty %}
+  <h2>검색 결과가 없습니다.</h2>
+  {% endfor %}
+</div>
+{% endblock %}

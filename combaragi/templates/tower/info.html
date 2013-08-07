@@ -1,0 +1,37 @@
+{% extends "tower/base.html" %}
+{% block tower_title %}{{ tower.name }}{% endblock %}
+{% block tower_external_js %}{% endblock %}
+{% block tower_external_css %}{% endblock %}
+<script>
+{% block tower_onload %}{% endblock %}
+</script>
+{% block tower_head %}{% if climb_info.cleared %}[클리어!]{% endif %}{{ tower.name }}{% endblock %}
+{% block tower_content %}
+  {% for level in tower.levels.all %}
+  <div>
+    {% if tower.owner == user and not tower.opened %}
+    <a href="{% url tower-add-message level.tower.slug level.level %}">
+      {{ level }} {% if level.message_size == 0 %}[ 대화 없음! ]{% endif %}
+    </a>
+    {% else %}
+      {% if level.level <= climb_info.current_level %}
+      <a href="{% url tower-level level.tower.slug level.level %}">
+        {{ level }}
+      </a>
+      {% else %}
+        {{ level }}
+      {% endif %}
+    {% endif %}
+  </div>
+  {% empty %}
+    층이 없습니다.
+  {% endfor %}
+  {% if climb_info.cleared %}축하합니다! {{ tower }}탑을 클리어하셨습니다. <a href="{% url account_emblem %}">업적 페이지</a>로 가셔서 새로운 업적을 받아보세요!{% endif %}
+  {% if tower.owner == user and not tower.opened %}
+  <div class='right'>
+    <span class="btn_pack medium"><a href="{% url tower-modify tower.slug %}">수정</a></span>
+    <span class="btn_pack medium icon"><span class="check"></span><a href="{% url tower-open tower.slug %}">탑 개방하기</a></span>
+    <span class="btn_pack medium icon"><span class="add"></span><a href="{% url tower-create-level tower.slug %}">층 추가</a></span>
+  </div>
+  {% endif %}
+{% endblock %}
