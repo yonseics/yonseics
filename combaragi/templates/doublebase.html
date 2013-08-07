@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="{% get_static_prefix %}css/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
   <link rel="stylesheet" href="{% get_static_prefix %}css/btn_pack.css" type="text/css" media="all" /-->
   <!-- Web font -->
-  <link href='http://fonts.googleapis.com/earlyaccess/nanumgothic.css' rel='stylesheet' type='text/css' />
-  <link href='http://fonts.googleapis.com/earlyaccess/nanumpenscript.css' rel='stylesheet' type='text/css' />
+  <link href='//fonts.googleapis.com/earlyaccess/nanumgothic.css' rel='stylesheet' type='text/css' />
+  <link href='//fonts.googleapis.com/earlyaccess/nanumpenscript.css' rel='stylesheet' type='text/css' />
 
 	<!-- jQuery framework and utilities -->
   <script type="text/javascript" src="{% get_static_prefix %}js/jquery/jquery.1.4.2.min.js"></script>
@@ -329,7 +329,7 @@
              	<div class="sideNavBox-2">
             <ul class="bullet-check">
               {% for recent_member in recent_members %}
-              <li><a href="{% url account-info recent_member.sidHash %}">{{ recent_member.get_pure_sid|render_sid:13|safe }} {{ recent_member.user.first_name|render_sharp_black:13|safe }} - {{ recent_member.recentActed|humanizeTimeDiff|render_sharp_black:13|safe }}</a></li>
+              <li><a href="{% url account-info recent_member.sidHash %}">{{ recent_member|safe }} - {{ recent_member.recentActed|humanizeTimeDiff|render_sharp_black:13|safe }}</a></li>
           
               {% endfor %}
             </ul>
