@@ -75,9 +75,9 @@
       {% if target.get_profile.birthday %}<li>{{ target.get_profile.birthday|render_black:13|safe }}</li>{% endif %}
       {% if target.get_profile.phone %}<li>{{ target.get_profile.phone|render_black:13|safe }}</li>{% endif %}
       {% if target.get_profile.homepageURL %}<li><a href="{{ target.get_profile.homepageURL }}" target="_blank">{{ target.get_profile.homepageURL|render_cyan:13|safe }}</a></li>{% endif %}
+      {% ifequal target user %}
       <li><span class="btn_pack large"><a href="{% url board-list 'my' %}">{{ "내가 작성한 글 목록"|render_cyan:13 }}</a></span></li>
       <li><span class="btn_pack large"><a href="{% url board-list 'likebook' %}">{{ "내가 좋아한 글 목록"|render_cyan:13 }}</a></span></li>
-      {% ifequal target user %}
       <li style="background-image:none;"><span class="btn_pack large"><button type="button" class="btn" onclick="window.location.href='{% url account-modify %}'"><span>{{ "정보수정"|render_button }}</span></button>`</span></li>
       {% endifequal %}
     </ul>
