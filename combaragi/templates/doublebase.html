@@ -180,16 +180,17 @@
 						<!-- Main Menu Links -->
 						<ul class="sf-menu">
               <li class="current"><a href="{% url home %}">홈</a></li>
-              <li>
-								<a href="{% url under_construction %}{#% url memberlist %#}">컴과 사람들</a>
+              <!--li>
+								<a href="javascript:;">컴퓨터과학과</a>
                 <ul>
                   <li><a href="{% url mail %}">메일보내기</a></li>
-									<!--li><a href="#">Bomb</a></li-->
                   <li><a href="{% url ranking %}">순위</a></li>
+                  <!--li><a href="#">Bomb</a></li->
+                  <!--li><a href="{% url under_construction %}{#% url memberlist %#}">컴과 사람들</a></li->
                 </ul>
-              </li>
+              </li-->
               <li>
-                <a href="{% url board-list 'all' %}">게시판</a>
+                <a href="javascript:;">게시판</a>
                 <ul>
                   {% for board in all_boards %}
                   <li{% if board.name == board.slug %} class="currentPage"{% endif %}><a href="{% url board-list board.slug %}">{{ board.name|render_cyan:13|safe }}</a></li>
@@ -197,7 +198,7 @@
                 </ul>
               </li>
               <li>
-								<a href="{% url group %}">소모임</a>
+								<a href="javascript:;">소모임</a>
                 <ul>
                   <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
                   {% for group in user.member_groups.all %}
@@ -338,10 +339,9 @@
           </div>
 					
 					<!-- Testimonial/Quote -->
-					<div class="quote">
+					<!--div class="quote">
 						<div class="quoteBox-1">
 							<div class="quoteBox-2">
-                <!--ygo130, 14, #000-->
                 <p>
                   컴과 회장님의 말씀이 무언가 들어가면 좋을 것 같은 공간이다. 과연 그러한 공간이다.
                   컴과 회장님의 말씀이 무언가 들어가면 좋을 것 같은 공간이다. 과연 그러한 공간이다.
@@ -352,7 +352,7 @@
 					<div class="quoteAuthor">
 						<p class="name">123대 회장 김갑수</p>
 						<p class="details">Chairman of CS dept. Yonsei Univ.</p>
-					</div>
+					</div-->
           {% endblock %}
         </div>
         <!-- End of Content -->
@@ -375,7 +375,7 @@
 		<!-- Copyright/legal text -->
 		<div id="Copyright">
 			<p>
-        컴바라기 V2.0, Copyright &copy; 2011 <a href="javascript:;" title="04 임승기" rel="tooltip">UNKI</a>, all rights reserved. E-mail: limsungkee<img class="at" src="{% get_static_prefix %}images/at.png" alt="at" />gmail.com
+        컴바라기 V2.0, Copyright &copy; 2013 <a href="javascript:;" title="04 임승기" rel="tooltip">UNKI</a>, all rights reserved. E-mail: limsungkee<img class="at" src="{% get_static_prefix %}images/at.png" alt="at" />gmail.com
 				Conforms to W3C Standard 
 				<a href="http://validator.w3.org/check?uri=referer" onclick="window.open(this.href); return false;">XHTML</a> &amp; 
 				<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3" onclick="window.open(this.href); return false;">CSS</a>
