@@ -307,7 +307,7 @@
 					<div class="sideNavWrapper">
 						<div class="sideNavBox-1">
 							<div class="sideNavBox-2">
-								<ul class="sideNav" style="font-size: 9pt;">
+								<ul class="sideNav">
                   {% if user.is_authenticated %}
                   <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
                     <li><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid|render_sid:13|safe }}{{ "학번 소모임"|render_cyan:13 }}</a></li>
