@@ -1,19 +1,21 @@
 {% extends "group/base.html" %}
 {% load rendertext %}
 {% block group_title %}메인{% endblock %}
-{% block group_head %}<a href="{% url group %}">{{ "소모임 목록"|render_head }}</a>{% endblock %}
-{% block group_breadcrumbs %}<a href="{% url group %}">{{ "List"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
+{% block group_head %}<a href="{% url group %}">소모임 목록</a>{% endblock %}
+{% block group_breadcrumbs %}<a href="{% url group %}">List</a><!-- <span>&raquo;</span>-->{% endblock %}
 {% block group_content %}
-  <h3 class="bullet_square">{{ "전체 공개 소모임"|render_headlet }}</h3>
+    <h4>현재 총 {{ total }}개의 소모임이 있습니다.</h4>
+    <div class="hr"></div>
+  <h3 class="bullet_square">전체 공개 소모임</h3>
   <ul class="group_list">
   {% for group in group_list %}
     <li class="bullet_dot"><a {% if group.is_new %}class="mark_new" {% endif %}href="{% url group_main group.id %}">{{ group.title }}</a></li>
   {% empty %}
-    <li class="bullet_dot">{{ "소모임이 없습니다."|render_black:13 }}</li>
+    <li class="bullet_dot">소모임이 없습니다.</li>
   {% endfor %}
   </ul>
   <div class="hr"></div>
-  <h3 class="bullet_square">{{ "내가 가입한 소모임"|render_headlet }}</h3>
+  <h3 class="bullet_square">내가 가입한 소모임</h3>
   <ul class="group_list">
   {% for group in my_group_list %}
     <li class="bullet_dot"><a {% if group.is_new %}class="mark_new" {% endif %}href="{% url group_main group.id %}">{{ group.title }}</a></li>

@@ -48,6 +48,7 @@ def main_page(request):
   ctx = RequestContext(request, {            # parameter를 dictionary형식으로 넣을 수 있습니다.
     'group_list':Group.objects.filter(hidden=False),
     'my_group_list':request.user.member_groups.all(),
+    'total': Group.objects.count(),
   })
   return HttpResponse(tpl.render(ctx))
 
