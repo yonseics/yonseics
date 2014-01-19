@@ -12,7 +12,10 @@ admin.site.register(Category)
 class MyBulletinAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         if not request.user.is_superuser:
-            self.fields = ('board', 'title', 'content', 'notice')
+            if obj and obj.isHiddenUser:
+                self.fields = ('board', 'title', 'content', 'notice')
+            else:
+                self.fields = ('board', 'writer', 'title', 'content', 'notice')
             self.exclude = None
         else:
             self.fields = None
@@ -25,8 +28,8 @@ class MyBulletinAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(
-            Q(isHiddenUser=False) &
-            Q(deleted=False) &
+            #Q(isHiddenUser=False) &
+            #Q(deleted=False) &
             Q(board__secret=False)
         )
 

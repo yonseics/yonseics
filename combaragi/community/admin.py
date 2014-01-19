@@ -69,5 +69,14 @@ class MyUserAdmin(UserAdmin):
     def isPasswordChanged(self, redirect):
         return redirect.status_code == 302 and 'location' in redirect and redirect['location'] == '..'
 
+def user_unicode(self):
+    try:
+        return self.get_profile().get_pure_full_name()
+    except:
+        pass
+    return self.username
+
+User.__unicode__ = user_unicode
+
 admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)

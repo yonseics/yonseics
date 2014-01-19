@@ -85,7 +85,7 @@ class CommentManager(SimpleCacheManager):
 
 class Bulletin(models.Model):  # 게시물이자 comment. parent가 있으면 comment이다.
   board = models.ForeignKey(Board, verbose_name='게시판')        # 게시판 외래키
-  writer = models.ForeignKey(User, null=True, related_name='my_bulletins')    # 글쓴이. 글쓴이가 없으면 익명사용자이다.
+  writer = models.ForeignKey(User, null=True, related_name='my_bulletins', verbose_name='글쓴이')    # 글쓴이. 글쓴이가 없으면 익명사용자이다.
   category = models.ForeignKey(Category, null=True, blank=True, related_name='related_bulletin')      # 카테고리
   parent = models.ForeignKey('self', null=True, blank=True, related_name='my_comments')  # 현 게시물의 부모
   title = models.CharField(max_length=100, verbose_name='제목')    # 게시물 제목

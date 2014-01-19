@@ -122,10 +122,10 @@
 		<!-- New member registration -->
 		<div class="right" style="margin:10px 0 0;">
 			<h1>
-        {{ "멤버가 아직 아닌가요?"|render_white:20 }}
-				<span>{{ "연대컴과 학생이라면 지금 등록하세요!"|render_grey:14 }}</span>
+        멤버가 아직 아닌가요?
+				<span>연대컴과 학생이라면 지금 등록하세요!</span>
 			</h1>
-      <button type="button" onclick="window.location.href='{% url register %}';">{{ "회원가입"|render_button }}</button>
+      <button type="button" onclick="window.location.href='{% url register %}';">회원가입</button>
 		</div>
 		
 		<!-- Alternate Login -->				
@@ -133,28 +133,28 @@
       <form class="loginForm" method="post" action="{% url login %}" style="height:auto;">
         {% csrf_token %}
 				<div id="loginBg"><img src="{% get_static_prefix %}images/icons/lock-and-key-110.png" width="110" height="110" alt="lock and key" /></div>
-				<h2 style="margin-top: 20px;">{{ "컴바라기 로그인"|render_white:24 }}</h2>
+				<h2 style="margin-top: 20px;">컴바라기 로그인</h2>
 				<fieldset>
 					<legend>컴바라기 로그인</legend>
 					<p class="left" style="margin: 0 8px 0 0;">
-						<label for="RevealUsername" class="overLabel">{{ "아이디"|render_form }}</label>
+						<label for="RevealUsername" class="overLabel">아이디</label>
 						<input id="RevealUsername" name="username" type="text" class="loginInput textInput rounded" />
 					</p>
 					<p class="left" style="margin: 0 5px 0 0;">
-						<label for="RevealPassword" class="overLabel">{{ "비밀번호"|render_form }}</label>
+						<label for="RevealPassword" class="overLabel">비밀번호</label>
 						<input id="RevealPassword" name="password" type="password" class="loginInput textInput rounded" />
 					</p>
 					<p class="left" style="margin: -7px 0 0;">
-						<button type="submit" class="btn" style="margin:0;"><span>{{ "로그인"|render_button }}</span></button>
+						<button type="submit" class="btn" style="margin:0;"><span>로그인</span></button>
 					</p>
 				</fieldset>
         {% if login_failed %}
 				<p class="left noMargin">
-        {{ "아이디 혹은 패스워드가 틀렸습니다!    "|render_red:14 }}
+        아이디 혹은 패스워드가 틀렸습니다!    
 				</p>
         {% endif %}
 				<p class="left noMargin">
-					<a href="mailto:limsungkee@gmail.com">{{ "혹시 패스워드를 분실하셨나요?"|render_cyan:13 }}</a>
+					<a href="mailto:limsungkee@gmail.com">혹시 패스워드를 분실하셨나요?</a>
 				</p>
 			</form>		
 		</div>
@@ -200,14 +200,14 @@
               <li>
 								<a href="javascript:;">소모임</a>
                 <ul>
-                  <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
+                  <li><a href="{% url group %}">소모임 목록</a></li>
                   {% for group in user.member_groups.all %}
                   <li><a href="/board/{{ group.name }}/">{{ group.title|render_cyan:13|safe }}</a></li>
                   {% endfor %}
                 </ul>
               </li>
               <li>
-                <a href="{% url bomb-list %}">폭탄</a>
+                <a href="{% url bomb-list %}">Bomb</a>
 			  </li>
               <!--li>
 								<a href="#">Study</a>
@@ -238,7 +238,7 @@
 							</li>
               {% if user.is_authenticated %}
               <li>
-              <a href="{% url account-info user.get_profile.sidHash %}"><span class="mmLogin">{{ user.first_name|render_grey:14|safe }}{{ "님"|render_grey:14 }}</span></a>
+              <a href="{% url account-info user.get_profile.sidHash %}"><span class="mmLogin">{{ user.first_name|render_grey:14|safe }}님</span></a>
                 <ul>
                   <li><a href="/account/modify/">Modify</a></li>
                   <li><a href="{% url logout %}" class="logout">Logout</a></li>
@@ -288,7 +288,7 @@
           {% block side_area %}
 					<!-- Category Menu -->
 					<h1 class="title" style="margin-bottom:0;">
-            {{ "게시판"|render_black:24 }}
+            게시판
 					</h1>
 					<div class="sideNavWrapper">
 						<div class="sideNavBox-1">
@@ -305,20 +305,20 @@
 				
 					<!-- Archive Menu -->
 					<h1 class="title" style="margin-bottom:0;">
-            {{ "소모임"|render_black:24 }}
+            소모임
 					</h1>
 					<div class="sideNavWrapper">
 						<div class="sideNavBox-1">
 							<div class="sideNavBox-2">
 								<ul class="sideNav">
                   {% if user.is_authenticated %}
-                  <li><a href="{% url group %}">{{ "소모임 목록"|render_cyan:13 }}</a></li>
-                    <li><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid|render_sid:13|safe }}{{ "학번 소모임"|render_cyan:13 }}</a></li>
+                  <li><a href="{% url group %}">소모임 목록</a></li>
+                    <li><a {% if user.get_profile.check_sid %}class="mark_new" {% endif %}href="/board/{{ user.get_profile.get_pure_sid }}/">{{ user.get_profile.get_pure_sid|render_sid:13|safe }}학번 소모임</a></li>
                     {% for group in user.member_groups.all %}
                     <li><a {% if group.is_new %}class="mark_new" {% endif %}href="/board/{{ group.name }}/">{{ group.title|render_cyan:13|safe }}</a></li>
                     {% endfor %}
                   {% else %}
-                    <li><a href="javascript:$('a#login').click();">{{ "로그인 해 주세요."|render_cyan:13 }}</a></li>
+                    <li><a href="javascript:$('a#login').click();">로그인 해 주세요.</a></li>
                   {% endif %}
 								</ul>
 							</div>
@@ -326,7 +326,7 @@
 					</div>
           <!-- Archive Menu -->
 					<h1 class="title" style="margin-bottom:0;">
-            {{ "최근 활동한 사람"|render_black:24 }}
+            최근 활동한 사람
 					</h1>
           <div class="sideNavWrapper">
             <div class="sideNavBox-1">
