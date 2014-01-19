@@ -84,12 +84,12 @@ class CommentManager(SimpleCacheManager):
     return super(CommentManager, self).get_query_set().exclude(parent=None)
 
 class Bulletin(models.Model):  # 게시물이자 comment. parent가 있으면 comment이다.
-  board = models.ForeignKey(Board)        # 게시판 외래키
+  board = models.ForeignKey(Board, verbose_name='게시판')        # 게시판 외래키
   writer = models.ForeignKey(User, null=True, related_name='my_bulletins')    # 글쓴이. 글쓴이가 없으면 익명사용자이다.
   category = models.ForeignKey(Category, null=True, blank=True, related_name='related_bulletin')      # 카테고리
   parent = models.ForeignKey('self', null=True, blank=True, related_name='my_comments')  # 현 게시물의 부모
-  title = models.CharField(max_length=100)    # 게시물 제목
-  content = models.TextField(null=False)      # 게시물 내용
+  title = models.CharField(max_length=100, verbose_name='제목')    # 게시물 제목
+  content = models.TextField(null=False, verbose_name='내용')      # 게시물 내용
   created = models.DateTimeField(auto_now_add=True)  # 만들어진 날짜
   updated = models.DateTimeField(auto_now=True)    # 업데이트된 날짜
   writerIP = models.CharField(null=True, blank=True, max_length=15)  # 글쓴이 IP
@@ -97,7 +97,7 @@ class Bulletin(models.Model):  # 게시물이자 comment. parent가 있으면 co
   hits = models.IntegerField(default=0)          # 조회수
   deleted = models.BooleanField(default=False)      # 삭제되었나?
   secret = models.BooleanField(default=False)        # 비밀글 여부(글이라면 운영자와 글쓴이에게 보이고 댓글이라면 원글 작성자와 댓글 작성자에게 보임)
-  notice = models.BooleanField(default=False)        # 공지사항인지 여부
+  notice = models.BooleanField(default=False, verbose_name='공지글?')        # 공지사항인지 여부
   commentCnt = models.PositiveSmallIntegerField(default=0)# 댓글 수
   gallery = models.OneToOneField(Gallery, null=True, blank=True)    # 갤러리
   file = MultiFileField()  # 업로드된 파일
