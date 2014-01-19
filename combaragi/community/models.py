@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils.html import escape
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -395,6 +396,19 @@ class BlackList(models.Model):
   user = models.ForeignKey(User, related_name='blacklist')
   desc = models.CharField(max_length=50)
 
+class RegisterQuizActiveManager(models.Manager):
+    def get_query_set(self):
+        return QuerySet(self.model, using=self._db).filter(active=True)
+
 class RegisterQuiz(models.Model):
-    question = models.CharField(max_length=100)
-    answer = models.CharField(max_length=100)
+    question = models.CharField(verbose_name='질문', max_length=100)
+    answer = models.CharField(verbose_name='정답', max_length=100)
+    active = models.BooleanField(default=True, verbose_name='활성화', help_text='활성화 되어 있어야 퀴즈가 나옵니다.')
+    objects = models.Manager()
+    actives = RegisterQuizActiveManager()
+
+    def __unicode__(self):
+        ret = u'%s: %s' % (self.question, self.answer)
+        if not self.active:
+            return u'[비활성화] - ' + ret
+        return ret

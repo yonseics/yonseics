@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext, ugettext_lazy as _
 from combaragi import settings
-from combaragi.community.models import UserProfile, Memo, PointLog, Emblem, Feed, BlackList
+from combaragi.community.models import UserProfile, Memo, PointLog, Emblem, Feed, BlackList, RegisterQuiz
 
 admin.site.register(UserProfile)
 admin.site.register(Memo)
@@ -16,6 +16,7 @@ admin.site.register(PointLog)
 admin.site.register(Emblem)
 admin.site.register(Feed)
 admin.site.register(BlackList)
+admin.site.register(RegisterQuiz)
 
 class MyUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):

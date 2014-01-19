@@ -49,13 +49,16 @@ class AuthenticationForm(forms.Form):
 
 class RegistrationForm(forms.Form):
 
-  def __init__(self, *args, **kwargs):
-    if not RegisterQuiz.objects.exists():
+  def __init__(self, qid=None, *args, **kwargs):
+    if not RegisterQuiz.actives.exists():
       RegisterQuiz.objects.create(question=u'연세대학교 학생이십니까? (예/아니오)', answer=u'예')
+    if qid:
+      quiz = RegisterQuiz.actives.get(id=qid)
+    else:
+      quiz = RegisterQuiz.actives.all()[randint(0, RegisterQuiz.actives.count() - 1)]
     super(RegistrationForm, self).__init__(*args, **kwargs)
-    quiz = RegisterQuiz.objects.all()[randint(0, RegisterQuiz.objects.count() - 1)]
-    self.fields['question'].help_text = '%s<input type="hidden" name="question_type" value="%d">' % (quiz.question, quiz.id)
-    #help_text=(lambda q: '%s<input type="hidden" name="question_type" value="%d">'%(RegisterQuiz.objects.all()[q].question, RegisterQuiz.objects.all()[q].id))(randint(0, RegisterQuiz.objects.count()-1)),
+    self.fields['question_type'].initial = quiz.pk
+    self.fields['question'].help_text = quiz.question
 
   username = forms.CharField(label='(*) 아이디', max_length=30, widget=forms.TextInput(attrs={'class':'i_text'}))    # 유저 이름
   password1 = forms.CharField(        # 패스워드.
@@ -88,7 +91,7 @@ class RegistrationForm(forms.Form):
 
   def clean_question(self):
     qid = int(self.cleaned_data['question_type'])
-    q = RegisterQuiz.objects.get(id=qid)
+    q = RegisterQuiz.actives.get(id=qid)
     if q.answer != self.cleaned_data['question']:
       raise forms.ValidationError('문제의 정답이 아닙니다.')
     return self.cleaned_data['question']

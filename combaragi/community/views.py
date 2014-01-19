@@ -161,7 +161,7 @@ def logout_page(request):
 def register_page(request):
   PORTRAIT_WIDTH = 300
   if request.method == 'POST':
-    form = RegistrationForm(request.POST, request.FILES)
+    form = RegistrationForm(qid=request.POST['question_type'], data=request.POST, files=request.FILES)
     if form.is_valid():
       user = User.objects.create_user(      # 여기서 유저 정보를 넣어 줍니다.
         username = form.cleaned_data['username'],
