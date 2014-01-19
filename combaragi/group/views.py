@@ -57,6 +57,8 @@ def group_main_page(request, gid):
   group = get_group(gid)
   if group is None:
     return render_to_response('noExist.html',{'user':request.user, 'target':'해당 소모임이'})
+  if group.hidden and request.user not in group.members.all():
+    return render_to_response('noExist.html',{'user':request.user, 'target':'해당 소모임에 접근할 권한이'})
 
   tpl = loader.get_template('group/info.html')    # write.html이라는 페이지를 template로 하여 출력합니다.
   ctx = RequestContext(request, {            # parameter를 dictionary형식으로 넣을 수 있습니다.

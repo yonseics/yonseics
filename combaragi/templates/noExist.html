@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load rendertext %}
+
+{% block title %}문제 발생!{% endblock %}
+{% block breadcrumbs %}<a href="#">Error!</a>{% endblock %}
+{% block content %}
+<h1>으악! 문제가 발생했어요! &gt;_&lt;</h1>
+
+<p>{{ target }} 없습니다.</p>
+<div class="right">
+  <button type="button" class="btn" onclick="javascript:history.back();"><span>{{ "뒤로가기"|render_button }}</span></button>
+</div>
+{% endblock %}
