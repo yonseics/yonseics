@@ -32,6 +32,7 @@ urlpatterns = patterns('',
   (r'^group/', include('combaragi.group.urls')),      # 소모임 기능
   (r'^mobile/', include('combaragi.mobile.urls')),    # 모바일
   (r'^tower/', include('combaragi.tower.urls')),      # 탑
+  (r'^bomb/', include('combaragi.bomb.urls')),
   (r'^wiki/', include('simplewiki.urls')),
   #(r'^photologue/', include('photologue.urls')),
   (r'^mentoring/', include('mentoring.urls')),

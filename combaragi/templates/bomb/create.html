@@ -1,0 +1,16 @@
+{% extends "form_base.html" %}
+{% block title %}폭탄 만들기{% endblock %}
+<form {% block form_option %}enctype="multipart/form-data"{% endblock %}></form>
+{% block breadcrumbs %}
+    <a href="{% url bomb-list %}">Bomb</a>
+    <span>&raquo;</span>
+    <a href="{% url bomb-create %}">Create</a>
+{% endblock %}
+{% block head %}폭탄 만들기{% endblock %}
+{% block form_content %}
+    모든 폭탄은 7일 후에 자동으로 폭파됩니다.
+{% endblock %}
+{% block form_buttons %}
+    <button type="submit" class="btn"><span>만들기</span></button>
+    <button type="button" class="btn" onclick="MoveTo('{% url bomb-list %}');"><span>취소</span></button>
+{% endblock %}

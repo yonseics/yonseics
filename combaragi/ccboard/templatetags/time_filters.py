@@ -15,7 +15,12 @@ def humanizeTimeDiff(timestamp = None):
   """
   from datetime import datetime
 
-  timeDiff = datetime.now() - timestamp
+  now = datetime.now()
+  reverse = now < timestamp
+  if not reverse:
+    timeDiff = now - timestamp
+  else:
+    timeDiff = timestamp - now
   years = timeDiff.days/365
   months = timeDiff.days%365/30
   days = timeDiff.days%365%30
@@ -23,7 +28,10 @@ def humanizeTimeDiff(timestamp = None):
   minutes = timeDiff.seconds%3600/60
   seconds = timeDiff.seconds%3600%60
 
-  str = u"%s %s전"
+  if not reverse:
+    str = u"%s %s전"
+  else:
+    str = u"%s %s후"
   if years > 0:
     str = str %(years, u"년")
     return str

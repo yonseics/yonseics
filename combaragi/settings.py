@@ -161,6 +161,7 @@ INSTALLED_APPS = (
   'combaragi.group',      # 그룹
   'combaragi.tower',      # 탑
   'combaragi.rendertext',      # 글씨를 그림으로
+  'combaragi.bomb',
   'photologue',        # 포토로그
   'tagging',          # 태깅
   'simplewiki',
@@ -217,3 +218,7 @@ RENDERTEXT_FONTMAP = {
 }
 
 HINT_DELAY_SECOND = 10  # 10초
+
+# Bomb
+BOMB_TIME_DAYS = 7
+BOMB_ALARM_BEFORE = [(1, 0, 0), (0, 12, 0)]

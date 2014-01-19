@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load time_filters %}
+
+{% block title %}폭탄 목록{% endblock %}
+{% block head %}폭탄 목록{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url bomb-list %}">Bomb</a>
+{% endblock %}
+
+{% block content %}
+    폭탄이란? - 파일을 일정기간({{ bomb_time }}일)동안 임시로 올려놓는 서비스 입니다. 공개, 비공개 설정이 가능합니다.
+    <ul class="bullet-disc-blue">
+    {% for bomb in bomb_list %}
+        <li{% if bomb.private %} style="text-decoration: line-through;"{% endif %}>
+            <a href="{{ bomb.bombfile.url }}">{{ bomb }}</a>
+            (남은시간: {{ bomb.getDueDate|humanizeTimeDiff }} - {{ bomb.getDueDate|date:'Y/m/d H:i:s' }}까지)
+            <a href="javascript:if (confirm('정말요?')) { MoveTo('{% url bomb-delete bomb.id %}') }">지금폭파</a>
+        </li>
+    {% empty %}
+        <li>현재 폭탄이 없습니다.</li>
+    {% endfor %}
+    </ul>
+
+    <div class="clear"></div>
+    <div class='float_right'>
+        <button type="button" class="btn" onclick="MoveTo('{% url bomb-create %}');"><span>만들기</span></button>
+        <button type="button" class="btn" onclick="MoveTo('{% url bomb-list %}');"><span>목록</span></button>
+    </div>
+    <div class="clear"></div>
+{% endblock %}
