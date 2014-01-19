@@ -4,7 +4,7 @@
 {% block title %}{{target.first_name}}{% endblock %}
 {% block breadcrumbs %}<a href="{% url account-info target.get_profile.sidHash %}">{{ "Personal Infomation"|render_bread }}</a><!-- <span>&raquo;</span>-->{% endblock %}
 {% block head %}
-  {{ "개인정보"|render_head }} - 
+  {{ "개인정보"|render_head }} -
   {{ target.get_profile.get_pure_sid|render_sid:18|safe }}
   {{ target.first_name|render_darkgrey:18|safe }}{{ "님"|render_darkgrey:18 }}
 {% endblock %}
@@ -59,7 +59,6 @@
     {% endfor %}
     </div>
   {% endif %}
-  </h1>
 
   <div id="personal_info_box">
     <img src="{{ target.get_profile.get_portrait_url }}" class="avatar_img" alt="avatar">

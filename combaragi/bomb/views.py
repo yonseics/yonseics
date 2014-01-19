@@ -57,13 +57,16 @@ class BombListView(ListView):
         deleted_list.delete()
         context = super(BombListView, self).get_context_data(**kwargs)
         context['bomb_time'] = settings.BOMB_TIME_DAYS
+        context['total'] = Bomb.objects.count()
+        context['used'] = Bomb.getMyUsed(self.request.user)
+        context['given'] = settings.BOMB_SPACE_PERSONAL
         return context
 
 
 @login_required
 def create_bomb_view(request):
     if request.method == 'POST':
-        form = BombCreateForm(request.POST, request.FILES)
+        form = BombCreateForm(user=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             bomb = form.save(False)
             bomb.user = request.user
@@ -74,7 +77,7 @@ def create_bomb_view(request):
                 BombAlarm.objects.create(bomb=bomb, time=alarm_time)
             return HttpResponseRedirect(reverse('bomb-list'))
     else:
-        form = BombCreateForm()
+        form = BombCreateForm(user=request.user)
     return direct_to_template(request, "bomb/create.html", {
         'form': form,
     })

@@ -19,6 +19,8 @@ class Group(models.Model):
 
   def __unicode__(self):
     return self.title
+
   def is_new(self):
-    return Bulletin.objects.filter(Q(board=self.board) & Q(updated__gte=datetime.now()-timedelta(days=1))).exists()
+    #return Bulletin.objects.filter(Q(board=self.board) & Q(updated__gte=datetime.now()-timedelta(days=1))).exists()
+    return self.board.is_new()
 

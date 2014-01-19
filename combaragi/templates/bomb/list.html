@@ -9,12 +9,15 @@
 {% endblock %}
 
 {% block content %}
-    폭탄이란? - 파일을 일정기간({{ bomb_time }}일)동안 임시로 올려놓는 서비스 입니다. 공개, 비공개 설정이 가능합니다.
+    <p>폭탄이란? - 파일을 일정기간({{ bomb_time }}일)동안 임시로 올려놓는 서비스 입니다. 공개, 비공개 설정이 가능합니다.</p>
+    <p>총 {{ total }}개의 폭탄이 있습니다. - 현재 당신의 사용량: {{ used|filesizeformat }}/{{ given|filesizeformat }}</p>
     <ul class="bullet-disc-blue">
     {% for bomb in bomb_list %}
-        <li{% if bomb.private %} style="text-decoration: line-through;"{% endif %}>
+        <li>
+            [{{ bomb.getDueDate|humanizeTimeDiff }}]
+            {% if bomb.private %}[비공개]{% endif %}
             <a href="{{ bomb.bombfile.url }}">{{ bomb }}</a>
-            (남은시간: {{ bomb.getDueDate|humanizeTimeDiff }} - {{ bomb.getDueDate|date:'Y/m/d H:i:s' }}까지)
+            (남은시간:  - {{ bomb.getDueDate|date:'Y/m/d H:i:s' }}까지)
             <a href="javascript:if (confirm('정말요?')) { MoveTo('{% url bomb-delete bomb.id %}') }">지금폭파</a>
         </li>
     {% empty %}

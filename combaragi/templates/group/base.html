@@ -54,7 +54,7 @@
   <form {% block form_option %}{% endblock %}class="form label-inline" method="post" action="." onSubmit="{% block form_onSubmit %}{% endblock %}">
     {% csrf_token %}
     {% if current_group %}
-      <div class="float_right">{{ "소모임장: "|render_black:13 }}{{ current_group.owner.get_profile.get_pure_sid|render_sid:13|safe }} {{ current_group.owner.first_name|render_black:13|safe }}</div>
+      <div class="float_right">소모임장: {{ current_group.owner.get_profile|safe }}</div>
     {% endif %}
     <div class="clear"></div>
   {% block group_content %}{% endblock %}

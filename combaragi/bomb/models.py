@@ -25,6 +25,21 @@ class Bomb(models.Model):
     def getDueDate(self):
         return self.uploaded + timedelta(days=settings.BOMB_TIME_DAYS)
 
+    @classmethod
+    def getMyUsed(cls, user):
+        used = 0
+        for bomb in Bomb.objects.filter(user=user):
+            used += bomb.bombfile.size
+        return used
+
+    @classmethod
+    def getMyRemaining(cls, user):
+        return settings.BOMB_SPACE_PERSONAL - cls.getMyUsed(user)
+
+    @classmethod
+    def isUploadable(cls, user, file):
+        return cls.getMyRemaining(user) - file.size > 0
+
 
 @receiver(pre_delete, sender=Bomb)
 def mymodel_delete(sender, instance, **kwargs):
