@@ -48,6 +48,7 @@ from django.core.exceptions import ObjectDoesNotExist     # 오브젝트가 없�
 from django.core import serializers
 
 from combaragi import utils
+from combaragi.community.models import CurrentAdmin
 from combaragi.context_processor import ALL_BOARDS
 
 from django.template import Context, loader
@@ -96,7 +97,11 @@ def main_page(request, login_failed=False):
   birthdays = [birthday_tuple[1] for birthday_tuple in birthday_array]
   birthday_left = map(lambda i: birthdays[i],filter(lambda i: i%2 == 0,range(len(birthdays))))
   birthday_right = map(lambda i: birthdays[i],filter(lambda i: i%2 == 1,range(len(birthdays))))
-  
+
+  if not CurrentAdmin.objects.exists():
+    CurrentAdmin.objects.create(user=User.objects.filter(is_superuser=True)[0])
+  current_admin = CurrentAdmin.objects.all()[0]
+
   is_mobile = 'HTTP_USER_AGENT' in request.META and any(device in request.META['HTTP_USER_AGENT'].lower() for device in ['iphone', 'android', 'ipad'])
   return direct_to_template(request, 'index.html', {        # parameter를 dictionary형식으로 넣을 수 있습니다.
     'notice':notice,
@@ -106,6 +111,7 @@ def main_page(request, login_failed=False):
     'birthday_left': birthday_left,
     'birthday_right': birthday_right,
     'is_mobile': is_mobile,
+    'current_admin': current_admin
   })
 
 # 장고에서 기본으로 제공하는 로그인 메서드를 그대로 가져옴

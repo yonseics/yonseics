@@ -19,8 +19,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
   url(r'^login/$', login_page, {'template_name': 'account/login.html'}, name='login' ),    # 로그인
-  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html' }, name='login-page'),
-  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html' }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':CurrentAdmin.objects.all()[0].user.email } }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':CurrentAdmin.objects.all()[0].user.email } }, name='login-page'),
   (r'^register/success/$', direct_to_template, { 'template':'account/register_success.html' }),
   (r'^meta/$', meta_page),
   # 미디어 폴더에 있는 파일들은 그냥 접근할 수 있게 해줍니다. img, sound등.

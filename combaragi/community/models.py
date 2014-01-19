@@ -412,3 +412,9 @@ class RegisterQuiz(models.Model):
         if not self.active:
             return u'[비활성화] - ' + ret
         return ret
+
+class CurrentAdmin(models.Model):
+    user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return self.user.first_name

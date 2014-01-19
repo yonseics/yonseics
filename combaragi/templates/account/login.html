@@ -31,7 +31,7 @@
 		<!--button type="button" class="btn" onclick="$.fn.fancybox.close(); return false;"><span>Cancel</span></button-->
 	</p>
 	<p class="left" style="margin: 8px 0 0 15px">
-  <a href="mailto:limsungkee@gmail.com">{{ "패스워드를"|render_cyan:14 }}<br />{{ "분실하셨나요?"|render_cyan:14 }}</a>
+  <a href="mailto:{{ admin_email }}">{{ "패스워드를"|render_cyan:14 }}<br />{{ "분실하셨나요?"|render_cyan:14 }}</a>
 	</p>
   <input type="hidden" name="next" value="{{ params.next }}">
 </form>
