@@ -12,6 +12,8 @@ from community.rsa import decrypt
 from unicodedata import normalize
 
 # Django 기본 패키지에서 가져옴
+from combaragi.community.models import RegisterQuiz
+
 class AuthenticationForm(forms.Form):
   """
   Base class for authenticating users. Extend this to get a form that accepts
@@ -45,13 +47,16 @@ class AuthenticationForm(forms.Form):
   def get_user(self):
     return self.user_cache
 
-QUESTION_LIST = (
-  #(u'그래픽스를 가르치시는 교수님의 성함은?', u'최윤철'),
-  #(u'PL를 가르치시는 교수님의 성함은?', u'조성배'),
-  #(u'차포스라는 별명을 가졌으며 3학년 학생들을 많이 울리시는 교수님은?', u'차호정'),
-  (u'현재 컴퓨터과학과의 회장의 이름은?', u'김승덕'),
-)
 class RegistrationForm(forms.Form):
+
+  def __init__(self, *args, **kwargs):
+    if not RegisterQuiz.objects.exists():
+      RegisterQuiz.objects.create(question=u'연세대학교 학생이십니까? (예/아니오)', answer=u'예')
+    super(RegistrationForm, self).__init__(*args, **kwargs)
+    quiz = RegisterQuiz.objects.all()[randint(0, RegisterQuiz.objects.count() - 1)]
+    self.fields['question'].help_text = '%s<input type="hidden" name="question_type" value="%d">' % (quiz.question, quiz.id)
+    #help_text=(lambda q: '%s<input type="hidden" name="question_type" value="%d">'%(RegisterQuiz.objects.all()[q].question, RegisterQuiz.objects.all()[q].id))(randint(0, RegisterQuiz.objects.count()-1)),
+
   username = forms.CharField(label='(*) 아이디', max_length=30, widget=forms.TextInput(attrs={'class':'i_text'}))    # 유저 이름
   password1 = forms.CharField(        # 패스워드.
       label='(*) 비밀번호',
@@ -79,10 +84,12 @@ class RegistrationForm(forms.Form):
   portrait = forms.ImageField(label=u'초상화', required=False, widget=forms.FileInput(attrs={'no_overlabel': True}))
   introduction = forms.CharField(label='자기소개', required=False, widget=forms.Textarea)
   question_type = forms.CharField(widget=forms.HiddenInput())
-  question = forms.CharField(label='(*) 가입퀴즈', help_text=(lambda q: '%s<input type="hidden" name="question_type" value="%d">'%(QUESTION_LIST[q][0], q))(randint(0, len(QUESTION_LIST)-1)), required=True)
+  question = forms.CharField(label='(*) 가입퀴즈', required=True)
 
   def clean_question(self):
-    if QUESTION_LIST[int(self.cleaned_data['question_type'])][1] != self.cleaned_data['question']:
+    qid = int(self.cleaned_data['question_type'])
+    q = RegisterQuiz.objects.get(id=qid)
+    if q.answer != self.cleaned_data['question']:
       raise forms.ValidationError('문제의 정답이 아닙니다.')
     return self.cleaned_data['question']
 

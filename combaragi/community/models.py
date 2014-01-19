@@ -394,3 +394,7 @@ class Feed(models.Model):
 class BlackList(models.Model):
   user = models.ForeignKey(User, related_name='blacklist')
   desc = models.CharField(max_length=50)
+
+class RegisterQuiz(models.Model):
+    question = models.CharField(max_length=100)
+    answer = models.CharField(max_length=100)
