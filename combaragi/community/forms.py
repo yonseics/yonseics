@@ -49,7 +49,8 @@ QUESTION_LIST = (
   #(u'그래픽스를 가르치시는 교수님의 성함은?', u'최윤철'),
   #(u'PL를 가르치시는 교수님의 성함은?', u'조성배'),
   #(u'차포스라는 별명을 가졌으며 3학년 학생들을 많이 울리시는 교수님은?', u'차호정'),
-  (u'현재 컴퓨터과학과의 회장의 이름은?', u'김승덕'),
+  # (u'현재 컴퓨터과학과의 회장의 이름은?', u'김승덕'),
+  (u'현재 컴퓨터과학과의 회장의 이름은?', u'김지호'),
 )
 class RegistrationForm(forms.Form):
   username = forms.CharField(label='(*) 아이디', max_length=30, widget=forms.TextInput(attrs={'class':'i_text'}))    # 유저 이름
