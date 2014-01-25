@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
-from django.views.generic.simple import direct_to_template
-from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from community.feeds import RssFeed, AtomFeed
 from community.views import *
-from django.contrib.auth.views import login as login_page_django
 from ccboard.views import like_book_page, all_page
 # 이 부분은 모듈에서도 사용합니다.
 from community.views import meta_page
@@ -15,12 +11,14 @@ ROOT_PATH = os.path.dirname(__file__)
 from django.contrib import admin
 admin.autodiscover()
 
+current_user = CurrentAdmin.objects.all()[0].user
+
 # Django가 기본으로 제공하는 패턴들
 
 urlpatterns = patterns('',
   url(r'^login/$', login_page, {'template_name': 'account/login.html'}, name='login' ),    # 로그인
-  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':CurrentAdmin.objects.all()[0].user.email } }, name='login-page'),
-  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':CurrentAdmin.objects.all()[0].user.email } }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':current_user.email } }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':current_user.email } }, name='login-page'),
   (r'^register/success/$', direct_to_template, { 'template':'account/register_success.html' }),
   (r'^meta/$', meta_page),
   # 미디어 폴더에 있는 파일들은 그냥 접근할 수 있게 해줍니다. img, sound등.

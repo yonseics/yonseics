@@ -98,8 +98,6 @@ def main_page(request, login_failed=False):
   birthday_left = map(lambda i: birthdays[i],filter(lambda i: i%2 == 0,range(len(birthdays))))
   birthday_right = map(lambda i: birthdays[i],filter(lambda i: i%2 == 1,range(len(birthdays))))
 
-  if not CurrentAdmin.objects.exists():
-    CurrentAdmin.objects.create(user=User.objects.filter(is_superuser=True)[0])
   current_admin = CurrentAdmin.objects.all()[0]
 
   is_mobile = 'HTTP_USER_AGENT' in request.META and any(device in request.META['HTTP_USER_AGENT'].lower() for device in ['iphone', 'android', 'ipad'])
