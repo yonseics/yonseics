@@ -11,14 +11,20 @@ ROOT_PATH = os.path.dirname(__file__)
 from django.contrib import admin
 admin.autodiscover()
 
-current_user = CurrentAdmin.objects.all()[0].user
+if not CurrentAdmin.objects.exists():
+    CurrentAdmin.objects.create(user=None)
+current_admin = CurrentAdmin.objects.all()[0].user
+if current_admin:
+    admin_email = current_admin.email
+else:
+    admin_email = ''
 
 # Django가 기본으로 제공하는 패턴들
 
 urlpatterns = patterns('',
   url(r'^login/$', login_page, {'template_name': 'account/login.html'}, name='login' ),    # 로그인
-  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':current_user.email } }, name='login-page'),
-  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':current_user.email } }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)_(?P<login_failed>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':admin_email } }, name='login-page'),
+  url(r'^login_page_(?P<next>.*)/$', direct_to_template, { 'template':'account/login.html', 'extra_context':{ 'admin_email':admin_email } }, name='login-page'),
   (r'^register/success/$', direct_to_template, { 'template':'account/register_success.html' }),
   (r'^meta/$', meta_page),
   # 미디어 폴더에 있는 파일들은 그냥 접근할 수 있게 해줍니다. img, sound등.

@@ -414,7 +414,9 @@ class RegisterQuiz(models.Model):
         return ret
 
 class CurrentAdmin(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True, blank=True)
 
     def __unicode__(self):
-        return self.user.first_name
+        if self.user:
+            return self.user.first_name
+        return u'없음'
