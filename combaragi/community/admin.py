@@ -27,23 +27,13 @@ class MyUserAdmin(UserAdmin):
         field_list = list()
         if request.user.is_superuser:
             field_list.append((None, {'fields': ('username', 'password')}))
+            field_list.append((_('Personal info'), {'fields': ('first_name', 'email')}))
+            field_list.append((_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                               'groups', 'user_permissions')}))
+            field_list.append((_('Important dates'), {'fields': ('last_login', 'date_joined')}))
         else:
             field_list.append((None, {'fields': ('password',)}))
-
-        field_list.append((_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}))
-
-        if request.user.is_superuser:
-            perm_fields = ('is_active', 'is_staff', 'is_superuser',
-                           'groups', 'user_permissions')
-        else:
-            # modify these to suit the fields you want your
-            # staff user to be able to edit
-            perm_fields = ('is_active', 'is_staff')
-
-        field_list.append((_('Permissions'), {'fields': perm_fields}))
-
-        if request.user.is_superuser:
-            field_list.append((_('Important dates'), {'fields': ('last_login', 'date_joined')}))
+            field_list.append((_('Personal info'), {'fields': ('first_name', 'email')}))
 
         return field_list
 
