@@ -438,4 +438,6 @@ class MainPictureSlide(models.Model):
     enable = models.BooleanField(verbose_name='사용', default=True, help_text='이 체크가 꺼져 있으면 메인에 나타나지 않습니다.')
 
     def __unicode__(self):
-        return self.title
+        if self.enable:
+            return self.title
+        return u'[미사용] ' + self.title
