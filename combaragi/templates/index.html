@@ -1,7 +1,6 @@
 {% extends "doublebase.html" %}
 {% load linebreaksbrpre %}
 {% load static %}
-{% load linebreaksbrpre %}
 {% load rendertext %}
 {% block title %}메인화면{% endblock %}
 {% block external_js %}
@@ -56,12 +55,11 @@
   <div id="SlideRepeat"></div>
   <div id="SlideBottom"></div>
   <div id="Slides">
-    <a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-1.png" width="948" height="341" alt="Slide 1" /></a>
-    <img src="{% get_static_prefix %}images/slideshow/slide-2.png" width="948" height="341" alt="Slide 2" />
-    <!--a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-3.png" width="948" height="341" alt="Slide 3" /></a>
-    <img src="{% get_static_prefix %}images/slideshow/slide-4.png" width="948" height="341" alt="Slide 4" />
-    <a href="#"><img src="{% get_static_prefix %}images/slideshow/slide-5.png" width="948" height="341" alt="Slide 5" /></a>
-    <img src="{% get_static_prefix %}images/slideshow/slide-6.png" width="948" height="341" alt="Slide 6" /-->
+      {% for slide in slides %}
+          <a href="{{ slide.link }}"><img src="{{ slide.image.url_948x341 }}" width="948" height="341" alt="{{ slide.title }}" /></a>
+      {% empty %}
+          <img src="{% get_static_prefix %}images/slideshow/slide_default.png" width="948" height="341" alt="슬라이드가 없습니다." />
+      {% endfor %}
   </div>
   <a href="#" class="slidePrev"></a>
   <a href="#" class="slideNext"></a>
@@ -73,13 +71,13 @@
   <div>
     <img src="{% get_static_prefix %}images/icons/board.png" width="85" height="75" alt="computer monitor" style="float:right; margin: -2px 30px 0 15px;" /> 
     {% if must_notice %}
-      <h1><a{% if must_notice.is_new %} class="mark_new"{% endif %} href="{% url board-read must_notice.board.name must_notice.id %}">{{ must_notice.title|render_black:24|safe }}</a> - {{ must_notice.get_writerName|safe }}</h1>
+      <h1><a{% if must_notice.is_new %} class="mark_new"{% endif %} href="{% url board-read must_notice.board.name must_notice.id %}">{{ must_notice.title }}</a> - {{ must_notice.get_writerName|safe }}</h1>
       <hr />
       <p>
         {{ must_notice.content|safe|urlize|linebreaksbrpre|safe }}
       </p>
     {% else %}
-    <h1>{{ "최근 공지사항이 없습니다."|render_black:24 }}</h1>
+    <h1>최근 공지사항이 없습니다.</h1>
     {% endif %}
   </div>
 
@@ -89,14 +87,14 @@
   <div class="ribbon">
     <div class="wrapAround"></div>
     <div class="tab">
-      <span>{{ "이번달 생일을 맞은 학우들"|render_ribbon }}</span>
+      <span>이번달 생일을 맞은 학우들</span>
     </div>
   </div>
   {% if birthday_left %}
   <div class="two-thirds-half">
     <ul class="bullet-disc-blue">
       {% for birthday in birthday_left %}
-      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a> - {{ birthday.birthday.month }}월 {{ birthday.birthday.day }}일</li>
       {% endfor %}
     </ul>
   </div>
@@ -105,7 +103,7 @@
   <div class="two-thirds-half">
     <ul class="bullet-disc-blue">
       {% for birthday in birthday_right %}
-      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a>{{ " - "|render_black:14 }}{{ birthday.birthday.month|render_black:14|safe }}{{ "월 "|render_black:14 }}{{ birthday.birthday.day|render_black:14|safe }}{{ "일"|render_black:14 }}</li>
+      <li><a href="{% url account-info birthday.sidHash %}">{{ birthday.user.get_profile|safe }}</a> - {{ birthday.birthday.month }}월 {{ birthday.birthday.day }}일</li>
       {% endfor %}
     </ul>
   </div>

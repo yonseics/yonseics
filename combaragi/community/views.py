@@ -48,7 +48,7 @@ from django.core.exceptions import ObjectDoesNotExist     # 오브젝트가 없�
 from django.core import serializers
 
 from combaragi import utils
-from combaragi.community.models import CurrentAdmin
+from combaragi.community.models import CurrentAdmin, MainPictureSlide
 from combaragi.context_processor import ALL_BOARDS
 
 from django.template import Context, loader
@@ -107,6 +107,7 @@ def main_page(request, login_failed=False):
     'birthday_left': birthday_left,
     'birthday_right': birthday_right,
     'is_mobile': is_mobile,
+    'slides': MainPictureSlide.objects.filter(enable=True),
   })
 
 # 장고에서 기본으로 제공하는 로그인 메서드를 그대로 가져옴

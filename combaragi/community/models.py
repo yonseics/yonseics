@@ -11,7 +11,7 @@ from ccboard.models import Board
 from django.core.exceptions import ObjectDoesNotExist     # 오브젝트가 없는 exception
 from group.models import Group
 
-from utils import get_portrait_path
+from utils import get_portrait_path, get_upload_path
 from time import mktime
 
 from mentoring.models import Question, Relation
@@ -19,7 +19,6 @@ from mentoring.models import Question, Relation
 from emblem import emblem_titles
 from tower.models import Tower, ClimbInfo
 from thumbs import ImageWithThumbsField
-
 
 def get_tower_difficulty_color(difficulty):
   if difficulty == u'E':
@@ -29,7 +28,6 @@ def get_tower_difficulty_color(difficulty):
   elif difficulty == u'H':
     return 'red'
   return 'purple'
-
 
 def has_batchim(unichar):
   return (ord(unichar) - 44032) % 28
@@ -86,6 +84,7 @@ class EmblemTool():
     )
 emblem_tool = EmblemTool()
 
+
 class Emblem(models.Model):
   user = models.ManyToManyField(User, related_name='emblems')
   title = models.CharField(unique=True, max_length=30)
@@ -103,7 +102,7 @@ class Emblem(models.Model):
 #  Emblem = models.ForeignKey(Emblem)
 #  available = models.BooleanField(default=False)  # 기본으로 false로 들어가고 유저가 승낙하면 true가 되어 사용가능
 
-# Create your models here.
+
 class UserProfile(models.Model):
   GENDER_CHOICES = (
     (u'M', u'남자'),
@@ -261,13 +260,16 @@ class UserProfile(models.Model):
   def check_sid(self):
     return self.check_board(self.get_pure_sid())
 
+
 class MemoManager(models.Manager):
   def get_query_set(self):
     return super(MemoManager, self).get_query_set().filter(secret=True)
 
+
 class GuestBookManager(models.Manager):
   def get_query_set(self):
     return super(GuestBookManager, self).get_query_set().filter(secret=False)
+
 
 class Memo(models.Model):
   from_user = models.ForeignKey(User, related_name='from')
@@ -286,6 +288,7 @@ class Memo(models.Model):
   def __unicode__(self):
     return ' >> '.join([ self.from_user.first_name, self.to_user.first_name ])
 
+
 class PointLog(models.Model):
   user = models.ForeignKey(User)
   year = models.PositiveSmallIntegerField()
@@ -297,6 +300,7 @@ class PointLog(models.Model):
 
   def __unicode__(self):
     return u'%s년 %s월 %s님의 포인트: %d점' % (self.year, self.month, self.user.first_name, self.point)
+
 
 # Feed는 표시해 줄때
 # 1. ~님이 당신의 방명록에 새 글을 남겼습니다.
@@ -391,14 +395,17 @@ class Feed(models.Model):
     #return u"%s <a id='feed_del_%s' href='#'><span class='btn_pack small icon'><span class='delete'></span><button type='button'>삭제</button></span></a>" % (self.get_message(), self.id)
     return self.get_message()
 
+
 # 수상한 짓을 하는 사람들 정보를 저장해 놓는 곳
 class BlackList(models.Model):
   user = models.ForeignKey(User, related_name='blacklist')
   desc = models.CharField(max_length=50)
 
+
 class RegisterQuizActiveManager(models.Manager):
     def get_query_set(self):
         return QuerySet(self.model, using=self._db).filter(active=True)
+
 
 class RegisterQuiz(models.Model):
     question = models.CharField(verbose_name='질문', max_length=100)
@@ -413,6 +420,7 @@ class RegisterQuiz(models.Model):
             return u'[비활성화] - ' + ret
         return ret
 
+
 class CurrentAdmin(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
 
@@ -420,3 +428,14 @@ class CurrentAdmin(models.Model):
         if self.user:
             return self.user.first_name
         return u'없음'
+
+
+class MainPictureSlide(models.Model):
+    title = models.CharField(max_length=50, verbose_name='이름')
+    image = ImageWithThumbsField(upload_to=get_upload_path, verbose_name='이미지', sizes=((948, 341),), help_text='이미지는 948x341크기입니다.')
+    psd = models.FileField(upload_to=get_upload_path, verbose_name='PSD파일', blank=True)
+    link = models.URLField(verbose_name='링크')
+    enable = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return self.title

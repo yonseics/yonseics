@@ -178,5 +178,5 @@ class ImageWithThumbsField(ImageField):
     self.width_field=width_field
     self.height_field=height_field
     self.sizes = sizes
-    super(ImageField, self).__init__(**kwargs)
+    super(ImageField, self).__init__(verbose_name, name, **kwargs)
 
