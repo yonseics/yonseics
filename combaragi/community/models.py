@@ -435,7 +435,7 @@ class MainPictureSlide(models.Model):
     image = ImageWithThumbsField(upload_to=get_upload_path, verbose_name='이미지', sizes=((948, 341),), help_text='이미지는 948x341크기입니다.')
     psd = models.FileField(upload_to=get_upload_path, verbose_name='PSD파일', blank=True)
     link = models.URLField(verbose_name='링크')
-    enable = models.BooleanField(default=True)
+    enable = models.BooleanField(verbose_name='사용', default=True, help_text='이 체크가 꺼져 있으면 메인에 나타나지 않습니다.')
 
     def __unicode__(self):
         return self.title
