@@ -30,7 +30,8 @@ class MyBulletinAdmin(admin.ModelAdmin):
         return qs.filter(
             #Q(isHiddenUser=False) &
             #Q(deleted=False) &
-            Q(board__secret=False)
+            Q(board__secret=False) &
+            Q(parent=None)
         )
 
 
