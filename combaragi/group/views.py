@@ -2,6 +2,7 @@
 # Author: UNKI
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.template import RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render_to_response
@@ -144,7 +145,8 @@ def manage_page(request, gid):
   if group.hidden and not group.members.filter(id=request.user.id).exists():
     return render_to_response('noExist.html',{'user':request.user, 'target':'해당 소모임에 접근할 권한이'})
   if group.owner != request.user:
-    return render_to_response('noExist.html',{'user':request.user, 'target':'관리자가 아닙니다. 권한이'})
+    #return render_to_response('noExist.html',{'user':request.user, 'target':'관리자가 아닙니다. 권한이'})
+    return HttpResponseRedirect(reverse('group_main', args=[gid]))
 
   if request.method == "POST":
     form = ManageGroupForm(group=group, data=request.POST)
@@ -153,6 +155,8 @@ def manage_page(request, gid):
       group.desc = form.cleaned_data['desc']
       group.title = form.cleaned_data['title']
       group.hidden = form.cleaned_data['hidden']
+      if form.cleaned_data['owner']:
+          group.owner = form.cleaned_data['owner']
       group.save()  # 그룹 저장
       group.board.title = form.cleaned_data['title']
       # TODO(limsungkee): Data truncated error 떠서 일단은 보드 설명은 업데이트 안되게 해 놓었습니다.
