@@ -77,10 +77,8 @@ def CompleteHTML(html):
   for c in html:
     if not is_in_pre_tag:
       if c == '<':
-        print previous_6
         bracket_cnt += 1
       elif c == '>':
-        print previous_6
         bracket_cnt -= 1
     previous_6 = (previous_6 + c)[-6:]
     if previous_6.endswith('<pre>'):
