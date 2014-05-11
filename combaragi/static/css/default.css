@@ -19,13 +19,14 @@ body {
 
 #Wrapper	{ 
   /*background: #E8EBEC url("../images/bodyBg.gif") repeat-x 0 0; */
-  background-image: url("/static/images/background/spring.jpg");
+  /*background-image: url("/static/images/background/spring.jpg");
   background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture1_1200.jpg");
   background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture6_1200.jpg");
   background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture26_1200.jpg");
   background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture27_1200.jpg");
   background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture19_1200.jpg");
-  background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture13_1200.jpg");
+  background-image: url("http://www.unsigneddesign.com/Seamless_background_textures/thumbs/seamlesstexture13_1200.jpg");*/
+  background-image: url("../images/background/seamlesstexture13_1200.jpg");
   background-repeat: repeat;
   background-attachment: fixed;
   min-height: 1000px;
