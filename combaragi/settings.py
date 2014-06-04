@@ -165,6 +165,7 @@ INSTALLED_APPS = (
   'photologue',        # 포토로그
   'tagging',          # 태깅
   'simplewiki',
+  'tastypie',         # Api
   # Uncomment the next line to enable admin documentation:
   # 'django.contrib.admindocs',
 )
