@@ -87,8 +87,9 @@ urlpatterns += patterns('',
 )
 
 # 모듈을 만드는 사람은 반드시 url include에 관하여 공부한 뒤에 모듈을 개발하도록 합니다.
+from ccboard.api import BoardResource, BulletinResource
 from community.api import UserResource
 
 urlpatterns += patterns('',
-  (r'^api/', include(UserResource().urls)),
+  (r'^api/', include(BulletinResource().urls+BoardResource().urls+UserResource().urls)),
 )
