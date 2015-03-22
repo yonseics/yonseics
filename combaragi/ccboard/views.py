@@ -695,6 +695,7 @@ def read_page(request, boardname, bid):
       #  bulletin = comment
       #)
       # 익명이면 - 아니면 +를 달아준다.
+      '''
       if comment.isHiddenUser:
         anomChar = '-'
       else:
@@ -737,6 +738,7 @@ def read_page(request, boardname, bid):
               additional='%s%s'%(anomChar, sum_content),
               type=u'SR',
             )
+      '''
       try:
         if board.group_board:
           # 소모임 상태를 갱신해준다(new)
@@ -744,7 +746,7 @@ def read_page(request, boardname, bid):
       except ObjectDoesNotExist:
         pass
       bulletin.save()    # 글 상태도 갱신해준다.
-      board.save()  # 보드 상태도 갱신
+#      board.save()  # 보드 상태도 갱신  2015/01/06 it slows down comment.
       return HttpResponseRedirect('/board/%s/read/%d/?page=%d'% (boardname, int(bid), page))
   else:
     form = CommentForm(board=board, bulletin=bulletin, user=request.user)

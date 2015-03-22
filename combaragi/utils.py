@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'unki'
-import Image
+from PIL import Image
 from os import path as os_path
 from re import compile as re_compile
 from re import findall as re_findall

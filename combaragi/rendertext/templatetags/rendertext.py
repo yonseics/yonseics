@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 import md5, os
-import Image, ImageFont, ImageDraw, ImageColor
+from PIL import Image, ImageFont, ImageDraw, ImageColor
 from django.conf import settings
 
 ## def generate_palette(bg_color, fg_color):

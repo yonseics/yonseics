@@ -82,7 +82,7 @@ urlpatterns += patterns('',
   (r'^feed/more/recent_comments/(?P<bid>\d+)/(?P<lcid>\d+)/$', get_recent_comments_ajax),
   (r'^feed/more/(?P<page>\d+)/$', get_more_feeds_ajax),
   (r'^feed/more/(?P<board_name>\w+)/(?P<page>\d+)/$', get_more_feeds_ajax),
-  url(r'^feed/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}, name='feeds'),
+  url(r'^feed/(?P<url>.*)/$', 'django.contrib.syndication.views.Feed', {'feed_dict': feeds}, name='feeds'),
   (r'^gcalendar/$', login_required(TemplateView.as_view(template_name="gcalendar/gcalendar.html"))), #@UndefinedVariable
 )
 

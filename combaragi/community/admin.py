@@ -38,6 +38,7 @@ class MyUserAdmin(UserAdmin):
 
         return field_list
 
+    '''
     def user_change_password(self, request, id):
         ret = super(MyUserAdmin, self).user_change_password(request, id)
         if self.isPasswordChanged(ret):
@@ -58,6 +59,7 @@ class MyUserAdmin(UserAdmin):
             except:
                 pass
         return ret
+    '''
 
     def isPasswordChanged(self, redirect):
         return redirect.status_code == 302 and 'location' in redirect and redirect['location'] == '..'
