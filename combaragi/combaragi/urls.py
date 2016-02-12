@@ -31,15 +31,15 @@ urlpatterns = patterns('',
   (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
   (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/static'}),
   (r'^admin/', include(admin.site.urls)),    # 관리자 권한을 위하여
-  (r'^board/', include('combaragi.ccboard.urls')),    # ccboard
-  (r'^mail/', include('combaragi.mail.urls')),      # 메일 보내기
-  (r'^group/', include('combaragi.group.urls')),      # 소모임 기능
-  (r'^mobile/', include('combaragi.mobile.urls')),    # 모바일
-  (r'^tower/', include('combaragi.tower.urls')),      # 탑
-  (r'^bomb/', include('combaragi.bomb.urls')),
-  (r'^wiki/', include('simplewiki.urls')),
+  (r'^board/', include('ccboard.urls')),    # ccboard
+  (r'^mail/', include('mail.urls')),      # 메일 보내기
+  (r'^group/', include('group.urls')),      # 소모임 기능
+  #(r'^mobile/', include('mobile.urls')),    # 모바일
+  #(r'^tower/', include('tower.urls')),      # 탑
+  #(r'^bomb/', include('bomb.urls')),
+  #(r'^wiki/', include('simplewiki.urls')),
   #(r'^photologue/', include('photologue.urls')),
-  (r'^mentoring/', include('mentoring.urls')),
+  #(r'^mentoring/', include('mentoring.urls')),
   # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
   (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow:", mimetype="text/plain")),  # robots.txt
 )

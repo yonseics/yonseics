@@ -26,7 +26,7 @@ from re import search as re_search
 from django.utils.html import strip_tags
 
 from photologue.models import GalleryUpload, Photo
-from combaragi.ccboard.models import Scrap, Like
+from ccboard.models import Scrap, Like
 
 from utils import unique
 

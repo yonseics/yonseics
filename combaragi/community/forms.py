@@ -12,7 +12,7 @@ from community.rsa import decrypt
 from unicodedata import normalize
 
 # Django 기본 패키지에서 가져옴
-from combaragi.community.models import RegisterQuiz
+from community.models import RegisterQuiz
 
 class AuthenticationForm(forms.Form):
   """

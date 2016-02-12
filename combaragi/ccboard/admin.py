@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models.query_utils import Q
-from combaragi.ccboard.models import Board, Bulletin, RelatedPosition, RelatedFile, PhotoTag, Scrap, Category
+from ccboard.models import Board, Bulletin, RelatedPosition, RelatedFile, PhotoTag, Scrap, Category
 
 admin.site.register(Board)
 admin.site.register(RelatedPosition)

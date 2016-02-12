@@ -4,7 +4,7 @@
 import os
 from hashlib import md5
 from random import random
-ROOT_PATH = os.path.dirname(__file__)
+ROOT_PATH = os.path.dirname(os.path.dirname(__file__))
 from community.utils import get_image_path
 
 DEBUG = True        # 상용이므로 False
@@ -24,7 +24,7 @@ MANAGERS = ADMINS
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': ROOT_PATH+'/combaragi.db',    # MySQL일 경우 DB에서 create database combaragi_test collate=utf8_general_ci로 만들어줍시다.
+    'NAME': ROOT_PATH + '/combaragi.db',    # MySQL일 경우 DB에서 create database combaragi_test collate=utf8_general_ci로 만들어줍시다.
     'USER': '',            # Not used with sqlite3.
     'PASSWORD': '',          # Not used with sqlite3.
     'HOST': '',            # Set to empty string for localhost. Not used with sqlite3.
@@ -84,7 +84,7 @@ STATICFILES_DIRS = (
   # Always use forward slashes, even on Windows.
   # Don't forget to use absolute paths, not relative paths.
   ROOT_PATH+'/static',
-  ROOT_PATH+'/simplewiki/media',
+  #ROOT_PATH+'/simplewiki/media',
 )
 
 # List of finder classes that know how to find static files in
@@ -143,7 +143,7 @@ ROOT_URLCONF = 'combaragi.urls'
 
 TEMPLATE_DIRS = (
   ROOT_PATH + '/templates',
-  ROOT_PATH + '/simplewiki/templates',
+  #ROOT_PATH + '/simplewiki/templates',
 )
 
 # 가능하면 모듈은 abc순서로 정렬하기 바랍니다.
@@ -155,17 +155,17 @@ INSTALLED_APPS = (
   'django.contrib.sites',
   'django.contrib.messages',
   'django.contrib.staticfiles',
-  'combaragi.community',    # 커뮤니티. 기본이 되는 App
-  'combaragi.ccboard',    # 컴바라기 게시판
-  'combaragi.mail',      # 메일 보내기
-  'combaragi.mentoring',    # 멘토링
-  'combaragi.group',      # 그룹
-  'combaragi.tower',      # 탑
-  'combaragi.rendertext',      # 글씨를 그림으로
-  'combaragi.bomb',
+  'community',    # 커뮤니티. 기본이 되는 App
+  'ccboard',    # 컴바라기 게시판
+  'mail',      # 메일 보내기
+  #'mentoring',    # 멘토링
+  'group',      # 그룹
+  #'tower',      # 탑
+  'rendertext',      # 글씨를 그림으로
+  #'bomb',
   'photologue',        # 포토로그
   'tagging',          # 태깅
-  'simplewiki',
+  #'simplewiki',
   # Uncomment the next line to enable admin documentation:
   # 'django.contrib.admindocs',
 )

@@ -47,9 +47,9 @@ from django.contrib.auth import login as auth_login
 from django.core.exceptions import ObjectDoesNotExist     # 오브젝트가 없는 exception
 from django.core import serializers
 
-from combaragi import utils
-from combaragi.community.models import CurrentAdmin, MainPictureSlide
-from combaragi.context_processor import ALL_BOARDS
+from . import utils
+from community.models import CurrentAdmin, MainPictureSlide
+from combaragi import context_processor
 
 from django.template import Context, loader
 
@@ -65,7 +65,7 @@ def server_error(request, template_name='500.html'):
     t = loader.get_template(template_name) # You need to create a 500.html template.
     return HttpResponseServerError(t.render(Context({
         'user': request.user,
-        'all_boards': ALL_BOARDS,
+        'all_boards': context_processor.ALL_BOARDS,
     })))
 
 
